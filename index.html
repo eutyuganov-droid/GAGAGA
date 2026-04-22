@@ -1,17 +1,779 @@
 <!DOCTYPE html>
-
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MELEECITY+ // MANHUNT</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700;800&family=Share+Tech+Mono&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            cursor: none;
+        }
+
+        body {
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* ФОНОВОЕ ИЗОБРАЖЕНИЕ ГОРОДА (ГЕНЕРИРУЕМ ЧЕРЕЗ SVG — СЕРО-ЧЁРНАЯ ГАММА) */
+        .city-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            z-index: 1;
+        }
+
+        /* SVG ГОРОДА С ЭФФЕКТОМ ГЛУБИНЫ */
+        .city-scene {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            filter: grayscale(100%) contrast(1.2) brightness(0.7);
+        }
+
+        /* ФОНАРНЫЙ СТОЛБ НА ПЕРЕДНЕМ ПЛАНЕ (БЕЗ БЛЮРА) */
+        .lamp-post {
+            position: fixed;
+            bottom: 0;
+            right: 80px;
+            width: 120px;
+            height: 400px;
+            z-index: 3;
+            pointer-events: none;
+            filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
+        }
+
+        /* БЛЮР ДЛЯ ФОНА (ГОРОД) */
+        .background-blur {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(4px);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* ЭФФЕКТ КАМЕРЫ НАБЛЮДЕНИЯ */
+        .crt-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0.1) 50%, rgba(30, 20, 20, 0.2) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 10;
+            animation: camFlicker 0.1s infinite;
+            opacity: 0.7;
+        }
+
+        .crt-overlay::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.6) 100%);
+            box-shadow: inset 0 0 150px rgba(0,0,0,0.95);
+            pointer-events: none;
+        }
+
+        /* ВИНЬЕТКА */
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, transparent 25%, #000000 95%);
+            pointer-events: none;
+            z-index: 11;
+            opacity: 0.8;
+        }
+
+        /* СКАН-ЛАЙН КАМЕРЫ */
+        .scan-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(200, 200, 200, 0.08);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+            z-index: 12;
+            animation: scanMove 5s linear infinite;
+        }
+
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-radial-gradient(circle at 50% 50%, rgba(0,0,0,0.05) 0%, rgba(30,30,30,0.15) 10%);
+            pointer-events: none;
+            z-index: 9;
+            mix-blend-mode: overlay;
+            animation: grain 0.4s steps(6) infinite;
+        }
+
+        .container {
+            position: relative;
+            z-index: 20;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-transform: uppercase;
+        }
+
+        /* REC ИНДИКАТОР */
+        .rec {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            color: #cc1111;
+            font-family: 'Oxanium', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-shadow: 0 0 20px #ff0000;
+            opacity: 0.95;
+            z-index: 30;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 5px 14px;
+            border: 1px solid rgba(180, 20, 20, 0.5);
+            border-radius: 2px;
+            backdrop-filter: blur(2px);
+        }
+
+        .rec-dot {
+            width: 12px;
+            height: 12px;
+            background: #cc1111;
+            border-radius: 50%;
+            box-shadow: 0 0 25px #ff0000;
+            animation: pulse 1s infinite;
+        }
+
+        /* ИНФО КАМЕРЫ */
+        .camera-info {
+            position: absolute;
+            top: 25px;
+            left: 35px;
+            color: #aaa;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            text-shadow: 0 0 8px #888;
+            opacity: 0.9;
+            z-index: 30;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 18px;
+            border: 1px solid rgba(150, 150, 150, 0.3);
+            border-radius: 2px;
+            backdrop-filter: blur(2px);
+            line-height: 1.5;
+        }
+
+        .camera-id {
+            color: #ccc;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        .camera-coords {
+            color: #999;
+            font-size: 0.7rem;
+        }
+
+        /* ЗАГОЛОВОК */
+        .title-block {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 15px 50px;
+            background: rgba(0, 0, 0, 0.55);
+            border: 1px solid rgba(120, 120, 120, 0.25);
+            border-left: 4px solid #888;
+            border-right: 4px solid #888;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.8), 0 0 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(3px);
+            transform: skew(-2deg);
+        }
+
+        .main-title {
+            font-family: 'Oxanium', sans-serif;
+            font-weight: 800;
+            font-size: 5.5rem;
+            letter-spacing: 18px;
+            color: #ddd;
+            text-shadow: 4px 4px 0 #1a1a1a, 8px 8px 20px #000;
+            line-height: 1;
+        }
+
+        .main-title span {
+            color: #aaa;
+            text-shadow: 4px 4px 0 #111, 0 0 30px #666;
+        }
+
+        /* ПРОГРЕСС-БАР */
+        .progress-container {
+            width: 500px;
+            margin-top: 50px;
+            position: relative;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            color: #aaa;
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            margin-bottom: 6px;
+            padding: 0 5px;
+            text-shadow: 0 0 5px black;
+        }
+
+        .progress-bar-bg {
+            height: 8px;
+            background: #111;
+            border: 1px solid #444;
+            box-shadow: inset 0 0 15px #000, 0 0 8px rgba(100, 100, 100, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #555, #888, #aaa, #888);
+            box-shadow: 0 0 15px #aaa;
+            transition: width 0.15s linear;
+            position: relative;
+        }
+
+        #progress-fill::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            animation: scan 1.5s infinite;
+        }
+
+        /* НИЖНЯЯ ПАНЕЛЬ */
+        .info-grid {
+            position: absolute;
+            bottom: 25px;
+            left: 35px;
+            right: 35px;
+            display: flex;
+            justify-content: space-between;
+            color: #999;
+            font-size: 0.85rem;
+            border-top: 1px solid #333;
+            padding-top: 15px;
+            text-transform: uppercase;
+            z-index: 30;
+            background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+        }
+
+        .map-info {
+            display: flex;
+            gap: 20px;
+        }
+
+        .map-label {
+            color: #888;
+        }
+
+        .map-name {
+            color: #ccc;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .player-info {
+            display: flex;
+            gap: 15px;
+        }
+
+        .player-count {
+            color: #aaa;
+            font-weight: bold;
+        }
+
+        .timestamp {
+            color: #888;
+            letter-spacing: 3px;
+        }
+
+        /* РАМКА УГЛОВ */
+        .corner-lines {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 1px solid rgba(100, 100, 100, 0.15);
+            pointer-events: none;
+            z-index: 25;
+        }
+
+        .corner-lines::before,
+        .corner-lines::after {
+            content: "";
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            border-color: #777;
+            border-style: solid;
+            opacity: 0.5;
+        }
+
+        .corner-lines::before {
+            top: -1px;
+            left: -1px;
+            border-width: 2px 0 0 2px;
+        }
+
+        .corner-lines::after {
+            bottom: -1px;
+            right: -1px;
+            border-width: 0 2px 2px 0;
+        }
+
+        /* ПЕРЕКРЕСТИЕ */
+        .crosshair {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            pointer-events: none;
+            z-index: 26;
+            opacity: 0.2;
+        }
+
+        .crosshair::before,
+        .crosshair::after {
+            content: "";
+            position: absolute;
+            background: rgba(180, 180, 180, 0.4);
+        }
+
+        .crosshair::before {
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            transform: translateY(-50%);
+        }
+
+        .crosshair::after {
+            left: 50%;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            transform: translateX(-50%);
+        }
+
+        /* ЗУМ ИНДИКАТОР */
+        .zoom-indicator {
+            position: absolute;
+            bottom: 60px;
+            right: 35px;
+            color: #999;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            background: rgba(0,0,0,0.4);
+            padding: 4px 10px;
+            border: 1px solid #444;
+            z-index: 30;
+        }
+
+        /* АНИМАЦИИ */
+        @keyframes camFlicker {
+            0% { opacity: 0.7; transform: translateY(0); }
+            3% { opacity: 0.6; transform: translateY(1px); }
+            6% { opacity: 0.75; }
+            10% { opacity: 0.65; }
+            20% { opacity: 0.7; }
+            50% { opacity: 0.65; }
+            80% { opacity: 0.75; }
+            100% { opacity: 0.7; }
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.85); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes grain {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-2%, -3%); }
+            20% { transform: translate(-5%, 2%); }
+            30% { transform: translate(3%, -6%); }
+            40% { transform: translate(-2%, 8%); }
+            50% { transform: translate(-5%, 3%); }
+            60% { transform: translate(5%, 0%); }
+            70% { transform: translate(0%, 5%); }
+            80% { transform: translate(1%, 10%); }
+            90% { transform: translate(-3%, 3%); }
+        }
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+
+        @keyframes scanMove {
+            0% { top: 0%; }
+            50% { top: 100%; }
+            100% { top: 0%; }
+        }
+    </style>
 </head>
 <body>
+    <!-- ФОН: ГОРОДСКОЙ ПЕЙЗАЖ SVG (ЧЁРНО-БЕЛО-СЕРЫЙ) -->
+    <div class="city-background">
+        <svg class="city-scene" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <!-- НЕБО (ТЁМНО-СЕРОЕ) -->
+            <rect width="1200" height="800" fill="#2a2a2a"/>
+            
+            <!-- ЛУНА / ИСТОЧНИК СВЕТА -->
+            <circle cx="900" cy="150" r="50" fill="#ddd" opacity="0.15"/>
+            <circle cx="900" cy="150" r="80" fill="#ccc" opacity="0.05"/>
+            
+            <!-- ДАЛЬНИЕ ЗДАНИЯ (СВЕТЛО-СЕРЫЕ, РАЗМЫТЫЕ) -->
+            <!-- Здание 1 -->
+            <rect x="50" y="300" width="80" height="500" fill="#4a4a4a" opacity="0.6"/>
+            <rect x="60" y="320" width="15" height="20" fill="#777" opacity="0.4"/>
+            <rect x="85" y="320" width="15" height="20" fill="#777" opacity="0.3"/>
+            <rect x="60" y="360" width="15" height="20" fill="#888" opacity="0.2"/>
+            <rect x="85" y="360" width="15" height="20" fill="#666" opacity="0.5"/>
+            
+            <!-- Здание 2 -->
+            <rect x="150" y="250" width="100" height="550" fill="#3d3d3d" opacity="0.7"/>
+            <rect x="160" y="270" width="15" height="20" fill="#888" opacity="0.3"/>
+            <rect x="190" y="270" width="15" height="20" fill="#555" opacity="0.5"/>
+            <rect x="220" y="270" width="15" height="20" fill="#999" opacity="0.2"/>
+            <rect x="160" y="310" width="15" height="20" fill="#777" opacity="0.4"/>
+            <rect x="190" y="310" width="15" height="20" fill="#666" opacity="0.3"/>
+            
+            <!-- Здание 3 (высокое) -->
+            <rect x="280" y="180" width="90" height="620" fill="#383838" opacity="0.65"/>
+            <rect x="290" y="200" width="12" height="15" fill="#aaa" opacity="0.2"/>
+            <rect x="315" y="200" width="12" height="15" fill="#555" opacity="0.4"/>
+            <rect x="340" y="200" width="12" height="15" fill="#777" opacity="0.3"/>
+            <rect x="290" y="240" width="12" height="15" fill="#888" opacity="0.2"/>
+            <rect x="315" y="240" width="12" height="15" fill="#666" opacity="0.5"/>
+            
+            <!-- Здание 4 -->
+            <rect x="400" y="280" width="120" height="520" fill="#454545" opacity="0.6"/>
+            <rect x="415" y="300" width="15" height="20" fill="#777" opacity="0.3"/>
+            <rect x="445" y="300" width="15" height="20" fill="#555" opacity="0.5"/>
+            <rect x="475" y="300" width="15" height="20" fill="#999" opacity="0.2"/>
+            
+            <!-- Здание 5 -->
+            <rect x="550" y="220" width="85" height="580" fill="#3a3a3a" opacity="0.7"/>
+            <rect x="565" y="240" width="12" height="15" fill="#888" opacity="0.3"/>
+            <rect x="590" y="240" width="12" height="15" fill="#666" opacity="0.4"/>
+            
+            <!-- Здание 6 -->
+            <rect x="660" y="300" width="110" height="500" fill="#4e4e4e" opacity="0.55"/>
+            <rect x="675" y="320" width="15" height="20" fill="#777" opacity="0.3"/>
+            <rect x="705" y="320" width="15" height="20" fill="#555" opacity="0.5"/>
+            
+            <!-- Здание 7 (высокое) -->
+            <rect x="800" y="150" width="95" height="650" fill="#333" opacity="0.7"/>
+            <rect x="815" y="170" width="12" height="15" fill="#aaa" opacity="0.2"/>
+            <rect x="840" y="170" width="12" height="15" fill="#666" opacity="0.4"/>
+            <rect x="865" y="170" width="12" height="15" fill="#888" opacity="0.3"/>
+            <rect x="815" y="210" width="12" height="15" fill="#555" opacity="0.5"/>
+            <rect x="840" y="210" width="12" height="15" fill="#777" opacity="0.3"/>
+            
+            <!-- Здание 8 -->
+            <rect x="920" y="260" width="100" height="540" fill="#424242" opacity="0.6"/>
+            <rect x="935" y="280" width="15" height="20" fill="#888" opacity="0.3"/>
+            <rect x="965" y="280" width="15" height="20" fill="#666" opacity="0.4"/>
+            
+            <!-- Здание 9 -->
+            <rect x="1050" y="320" width="90" height="480" fill="#3c3c3c" opacity="0.6"/>
+            
+            <!-- ДОРОГА / ЗЕМЛЯ (ЧЁРНАЯ) -->
+            <rect x="0" y="650" width="1200" height="150" fill="#111"/>
+            
+            <!-- ЛИНИИ РАЗМЕТКИ -->
+            <rect x="0" y="730" width="1200" height="2" fill="#444" opacity="0.3"/>
+            <rect x="0" y="760" width="1200" height="2" fill="#444" opacity="0.3"/>
+            
+            <!-- ФОНАРИ НА ФОНЕ (МАЛЕНЬКИЕ ТОЧКИ СВЕТА) -->
+            <circle cx="100" cy="620" r="3" fill="#aaa" opacity="0.3"/>
+            <circle cx="300" cy="600" r="3" fill="#aaa" opacity="0.25"/>
+            <circle cx="500" cy="610" r="3" fill="#aaa" opacity="0.2"/>
+            <circle cx="700" cy="590" r="3" fill="#aaa" opacity="0.3"/>
+            <circle cx="950" cy="615" r="3" fill="#aaa" opacity="0.25"/>
+        </svg>
+    </div>
+    
+    <!-- БЛЮР ДЛЯ ФОНА (ГОРОД РАЗМЫТ) -->
+    <div class="background-blur"></div>
 
-<!-- ТВОЙ HTML НЕ ТРОГАЕМ -->
+    <!-- ФОНАРНЫЙ СТОЛБ НА ПЕРЕДНЕМ ПЛАНЕ (ЧЁТКИЙ, SVG) -->
+    <div class="lamp-post">
+        <svg viewBox="0 0 120 400" width="120" height="400" xmlns="http://www.w3.org/2000/svg">
+            <!-- СТОЛБ -->
+            <rect x="55" y="100" width="10" height="300" fill="#1a1a1a"/>
+            <rect x="53" y="100" width="14" height="5" fill="#333"/>
+            <rect x="53" y="395" width="14" height="5" fill="#333"/>
+            
+            <!-- ОСНОВАНИЕ -->
+            <rect x="40" y="380" width="40" height="20" fill="#222" rx="2"/>
+            <rect x="35" y="390" width="50" height="10" fill="#1a1a1a"/>
+            
+            <!-- КРОНШТЕЙН -->
+            <path d="M 60 100 Q 60 80 80 70 L 90 65" stroke="#2a2a2a" stroke-width="4" fill="none"/>
+            <path d="M 65 120 Q 65 105 75 95" stroke="#2a2a2a" stroke-width="3" fill="none"/>
+            
+            <!-- ФОНАРЬ -->
+            <rect x="85" y="55" width="20" height="30" fill="#333" rx="3"/>
+            <rect x="87" y="57" width="16" height="26" fill="#555" rx="2"/>
+            
+            <!-- СВЕТ ОТ ФОНАРЯ (СВЕТЛО-СЕРОЕ СВЕЧЕНИЕ) -->
+            <ellipse cx="95" cy="75" rx="30" ry="50" fill="#aaa" opacity="0.08"/>
+            <ellipse cx="95" cy="75" rx="20" ry="35" fill="#ccc" opacity="0.05"/>
+            
+            <!-- ЛАМПА -->
+            <rect x="88" y="58" width="14" height="10" fill="#bbb" opacity="0.6" rx="2"/>
+        </svg>
+    </div>
 
-<!-- (оставь весь свой код как есть до <script>) -->
+    <!-- ЭФФЕКТЫ КАМЕРЫ -->
+    <div class="noise"></div>
+    <div class="crt-overlay"></div>
+    <div class="vignette"></div>
+    <div class="scan-line"></div>
+    
+    <div class="corner-lines"></div>
+    <div class="crosshair"></div>
+
+    <!-- REC ИНДИКАТОР -->
+    <div class="rec">
+        <span class="rec-dot"></span> 
+        REC
+    </div>
+
+    <!-- ИНФО КАМЕРЫ -->
+    <div class="camera-info">
+        <div><span class="camera-id">CAM-09</span> <span style="color: #aaa;">// MELEECITY+</span></div>
+        <div class="camera-coords">LAT: 34.0522°N | LON: 118.2437°W</div>
+        <div class="camera-coords">ALT: 124M | AZ: 247° | FOV: 78°</div>
+    </div>
+
+    <div class="container">
+        <div class="title-block">
+            <div class="main-title">MELEE<span>CITY+</span></div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-label">
+                <span id="status-text">FEED STABILIZED</span>
+                <span id="progress-percent">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div id="progress-fill"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 6px; font-size: 0.65rem; color: #777;">
+                <span id="download-info">SYNCING CAMERA FEED...</span>
+                <span id="file-count">// 0/12 PKTS</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- НИЖНЯЯ ПАНЕЛЬ -->
+    <div class="info-grid">
+        <div class="map-info">
+            <span class="map-label">LOCATION:</span>
+            <span class="map-name" id="current-map">Z-CITY_UNDERPASS</span>
+        </div>
+        <div class="player-info">
+            <span class="map-label">SUBJECTS:</span>
+            <span class="player-count" id="player-count">?/?</span>
+        </div>
+        <div class="timestamp" id="live-timestamp">22:47:03</div>
+    </div>
+
+    <!-- ЗУМ ИНДИКАТОР -->
+    <div class="zoom-indicator">
+        ZOOM: 1.0x | IR: ACTIVE
+    </div>
+
+    <script>
+        (function() {
+            // DOM элементы
+            const fill = document.getElementById('progress-fill');
+            const percentEl = document.getElementById('progress-percent');
+            const fileCountEl = document.getElementById('file-count');
+            const statusText = document.getElementById('status-text');
+            const downloadInfo = document.getElementById('download-info');
+            const mapElement = document.getElementById('current-map');
+            const playerCountEl = document.getElementById('player-count');
+            const timestampEl = document.getElementById('live-timestamp');
+            
+            // Обновление времени
+            function updateTimestamp() {
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                if (timestampEl) {
+                    timestampEl.textContent = `${hours}:${minutes}:${seconds}`;
+                }
+            }
+            setInterval(updateTimestamp, 1000);
+            updateTimestamp();
+            
+            // Переменные состояния
+            let lastPercent = 0;
+            let serverMap = 'Z-CITY_UNDERPASS';
+            let maxPlayers = 32;
+            let currentPlayers = 0;
+            let downloadTotal = 0;
+            let downloadCurrent = 0;
+            
+            // Обновление количества игроков
+            function updatePlayerCount() {
+                const serverIP = window.location.hostname || 'localhost';
+                const serverPort = window.location.port || '27015';
+                
+                fetch(`https://api.servers4.net/api/server/${serverIP}:${serverPort}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.players !== undefined) {
+                            currentPlayers = data.players;
+                            maxPlayers = data.maxplayers || maxPlayers;
+                            playerCountEl.textContent = `${currentPlayers}/${maxPlayers}`;
+                        }
+                    })
+                    .catch(() => {
+                        playerCountEl.textContent = `?/${maxPlayers}`;
+                    });
+            }
+            
+            // CALLBACKS ДЛЯ GARRY'S MOD
+            window.GameDetails = function(servername, serverurl, mapname, maxplayers, steamid, gamemode, volume, language) {
+                serverMap = mapname || 'Z-CITY_UNDERPASS';
+                maxPlayers = maxplayers || 32;
+                
+                if (mapElement) {
+                    mapElement.textContent = serverMap.toUpperCase().replace(/_/g, ' ');
+                }
+                
+                if (playerCountEl) {
+                    playerCountEl.textContent = `?/${maxPlayers}`;
+                }
+                
+                updatePlayerCount();
+                setInterval(updatePlayerCount, 5000);
+            };
+            
+            window.SetFilesTotal = function(total) {
+                downloadTotal = total;
+                if (fileCountEl) {
+                    fileCountEl.textContent = `// 0/${total} PKTS`;
+                }
+            };
+            
+            window.DownloadingFile = function(fileName) {
+                downloadCurrent++;
+                if (fileCountEl && downloadTotal > 0) {
+                    fileCountEl.textContent = `// ${downloadCurrent}/${downloadTotal} PKTS`;
+                }
+                if (downloadInfo) {
+                    const shortName = fileName.split('/').pop() || fileName;
+                    downloadInfo.textContent = `FETCHING: ${shortName}`;
+                }
+            };
+            
+            window.SetStatusChanged = function(status) {
+                if (statusText) {
+                    statusText.textContent = status.toUpperCase();
+                }
+                if (downloadInfo && status) {
+                    downloadInfo.textContent = status;
+                }
+            };
+            
+            window.SetFilesNeeded = function(needed) {
+                const downloaded = downloadTotal - needed;
+                if (fileCountEl && downloadTotal > 0) {
+                    fileCountEl.textContent = `// ${downloaded}/${downloadTotal} PKTS`;
+                }
+            };
+            
+            // Обновление прогресса
+            function updateProgress() {
+                try {
+                    if (typeof LoadingProgress !== 'undefined' && LoadingProgress.total > 0) {
+                        let percent = Math.floor((LoadingProgress.current / LoadingProgress.total) * 100);
+                        if (percent > lastPercent) lastPercent = percent;
+                        else percent = lastPercent;
+                        
+                        fill.style.width = percent + '%';
+                        percentEl.innerText = percent + '%';
+                        
+                        if (percent >= 100) {
+                            if (statusText) statusText.innerText = 'FEED ACTIVE';
+                            if (downloadInfo) downloadInfo.innerText = 'CAMERA ONLINE';
+                        }
+                    } else {
+                        if (lastPercent < 100) {
+                            lastPercent += 0.3;
+                            if (lastPercent > 99) lastPercent = 99;
+                        }
+                        fill.style.width = lastPercent + '%';
+                        percentEl.innerText = Math.floor(lastPercent) + '%';
+                    }
+                } catch (e) {}
+                
+                requestAnimationFrame(updateProgress);
+            }
+            
+            requestAnimationFrame(updateProgress);
+            setInterval(updateProgress, 100);
+            
+            // Инициализация
+            mapElement.textContent = serverMap.toUpperCase().replace(/_/g, ' ');
+            playerCountEl.textContent = `?/${maxPlayers}`;
+        })();
 
 <script>
+
 (function() {
     const fill = document.getElementById('progress-fill');
     const percentEl = document.getElementById('progress-percent');
