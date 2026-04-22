@@ -1,35 +1,124 @@
 <!DOCTYPE html>
+
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>MELEECITY+</title>
-    <link rel="stylesheet" href="style.css">
+    <title>MELEECITY+ // MANHUNT</title>
 </head>
 <body>
 
-<!-- Видео фон -->
-<video autoplay muted loop id="bgvideo">
-    <source src="bg.mp4" type="video/mp4">
-</video>
+<!-- ТВОЙ HTML НЕ ТРОГАЕМ -->
 
-<div class="overlay"></div>
-<div class="scanlines"></div>
+<!-- (оставь весь свой код как есть до <script>) -->
 
-<div class="container">
-    <h1 class="logo glitch" data-text="MELEECITY+">MELEECITY+</h1>
-    <p class="subtitle">Z-CITY // YOU ARE BEING WATCHED</p>
+<script>
+(function() {
+    const fill = document.getElementById('progress-fill');
+    const percentEl = document.getElementById('progress-percent');
+    const fileCountEl = document.getElementById('file-count');
+    const statusText = document.getElementById('status-text');
+    const downloadInfo = document.getElementById('download-info');
+    const mapElement = document.getElementById('current-map');
+    const playerCountEl = document.getElementById('player-count');
+    const timestampEl = document.getElementById('live-timestamp');
 
-    <div class="loading">
-        <div class="bar"></div>
-    </div>
+    function updateTimestamp() {
+        const now = new Date();
+        timestampEl.textContent =
+            String(now.getHours()).padStart(2,'0') + ':' +
+            String(now.getMinutes()).padStart(2,'0') + ':' +
+            String(now.getSeconds()).padStart(2,'0');
+    }
+    setInterval(updateTimestamp, 1000);
+    updateTimestamp();
 
-    <p class="status" id="status">Подключение...</p>
-</div>
+    let lastPercent = 0;
+    let serverMap = 'Z-CITY_UNDERPASS';
+    let maxPlayers = 32;
+    let currentPlayers = 0;
+    let downloadTotal = 0;
+    let downloadCurrent = 0;
 
-<audio autoplay loop>
-    <source src="ambient.mp3" type="audio/mpeg">
-</audio>
+    // 🔥 СИНХРОНИЗАЦИЯ SUBJECTS С ИГРОКАМИ
+    function updatePlayerCount() {
+        const serverIP = window.location.hostname || 'localhost';
+        const serverPort = window.location.port || '27015';
 
-<script src="script.js"></script>
+        fetch(`https://api.servers4.net/api/server/${serverIP}:${serverPort}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.players !== undefined) {
+                    currentPlayers = data.players;
+                    maxPlayers = data.maxplayers || maxPlayers;
+
+                    // 👉 SUBJECTS = ИГРОКИ
+                    playerCountEl.textContent = `${currentPlayers}/${maxPlayers}`;
+                }
+            })
+            .catch(() => {
+                playerCountEl.textContent = `0/${maxPlayers}`;
+            });
+    }
+
+    // 🎮 GARRY'S MOD CALLBACK
+    window.GameDetails = function(servername, serverurl, mapname, maxplayers) {
+        serverMap = mapname || 'Z-CITY_UNDERPASS';
+        maxPlayers = maxplayers || 32;
+
+        mapElement.textContent = serverMap.toUpperCase().replace(/_/g, ' ');
+
+        // 👉 сразу 0 субъектов
+        currentPlayers = 0;
+        playerCountEl.textContent = `0/${maxPlayers}`;
+
+        updatePlayerCount();
+        setInterval(updatePlayerCount, 5000);
+    };
+
+    window.SetFilesTotal = function(total) {
+        downloadTotal = total;
+        fileCountEl.textContent = `// 0/${total} PKTS`;
+    };
+
+    window.DownloadingFile = function(fileName) {
+        downloadCurrent++;
+        if (downloadTotal > 0) {
+            fileCountEl.textContent = `// ${downloadCurrent}/${downloadTotal} PKTS`;
+        }
+        downloadInfo.textContent = `FETCHING: ${fileName.split('/').pop()}`;
+    };
+
+    window.SetStatusChanged = function(status) {
+        statusText.textContent = status.toUpperCase();
+        downloadInfo.textContent = status;
+    };
+
+    window.SetFilesNeeded = function(needed) {
+        const downloaded = downloadTotal - needed;
+        if (downloadTotal > 0) {
+            fileCountEl.textContent = `// ${downloaded}/${downloadTotal} PKTS`;
+        }
+    };
+
+    function updateProgress() {
+        if (typeof LoadingProgress !== 'undefined' && LoadingProgress.total > 0) {
+            let percent = Math.floor((LoadingProgress.current / LoadingProgress.total) * 100);
+            if (percent > lastPercent) lastPercent = percent;
+
+            fill.style.width = percent + '%';
+            percentEl.innerText = percent + '%';
+        }
+        requestAnimationFrame(updateProgress);
+    }
+
+    requestAnimationFrame(updateProgress);
+
+    // стартовые значения
+    mapElement.textContent = serverMap.toUpperCase().replace(/_/g, ' ');
+    playerCountEl.textContent = `0/${maxPlayers}`;
+
+})();
+</script>
+
 </body>
 </html>
