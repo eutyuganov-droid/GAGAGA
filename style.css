@@ -1,0 +1,112 @@
+body {
+    margin: 0;
+    background: black;
+    font-family: Arial Black, sans-serif;
+    overflow: hidden;
+    color: white;
+}
+
+/* Видео */
+#bgvideo {
+    position: fixed;
+    min-width: 100%;
+    min-height: 100%;
+    filter: grayscale(100%) contrast(120%) brightness(60%);
+    z-index: -2;
+}
+
+/* Затемнение */
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: -1;
+}
+
+/* Scanlines */
+.scanlines {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,0.03),
+        rgba(255,255,255,0.03) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+}
+
+/* Контент */
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+/* Глитч логотип */
+.logo {
+    font-size: 80px;
+    color: white;
+    text-shadow: 0 0 15px red;
+    position: relative;
+}
+
+/* Глитч эффект */
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+}
+
+.glitch::before {
+    color: red;
+    animation: glitch 0.3s infinite;
+}
+
+.glitch::after {
+    color: blue;
+    animation: glitch 0.3s infinite reverse;
+}
+
+@keyframes glitch {
+    0% { transform: translate(2px, -2px); }
+    50% { transform: translate(-2px, 2px); }
+    100% { transform: translate(0); }
+}
+
+.subtitle {
+    color: #aaa;
+    margin-bottom: 40px;
+}
+
+/* Загрузка */
+.loading {
+    width: 350px;
+    height: 10px;
+    border: 1px solid red;
+    margin: auto;
+}
+
+.bar {
+    width: 0%;
+    height: 100%;
+    background: red;
+    animation: load 8s infinite;
+}
+
+@keyframes load {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+.status {
+    margin-top: 15px;
+    font-size: 13px;
+    color: #888;
+}
