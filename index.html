@@ -1,1 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Неостанавливаемое видео</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #000; }
+        video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- ЗАМЕНИТЕ "video.mp4" НА ИМЯ ВАШЕГО ФАЙЛА -->
+    <video id="myVideo" src="video.mp4" autoplay muted loop playsinline>
+        Ваш браузер не поддерживает видео.
+    </video>
 
+    <script>
+        const video = document.getElementById('myVideo');
+        
+        video.addEventListener('pause', () => video.play());
+        video.addEventListener('volumechange', () => { if (video.muted) video.muted = false; });
+        video.addEventListener('contextmenu', (e) => e.preventDefault());
+        video.addEventListener('ended', () => video.play());
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'MediaPlayPause') {
+                e.preventDefault();
+                video.play();
+            }
+        });
+        
+        setInterval(() => { if (video.paused) video.play(); }, 500);
+    </script>
+</body>
+</html>
