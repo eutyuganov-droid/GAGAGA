@@ -3,44 +3,696 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Неостанавливаемое видео</title>
+    <title>MELEECITY+ | Manhunt Style</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: #000; }
-        video {
+        :root {
+            --bg: #0a0a0a;
+            --text: #9a9a9a;
+            --white: #e0e0e0;
+            --accent: #ffffff;
+            --dark-line: #2a2a2a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            font-family: 'Courier New', 'Lucida Console', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            cursor: none;
+        }
+
+        /* Grain overlay */
+        .grain {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
             pointer-events: none;
-            user-select: none;
+            z-index: 10;
+            background-image: repeating-radial-gradient(circle at 50% 50%, 
+                transparent 0, 
+                rgba(255, 255, 255, 0.012) 1px, 
+                transparent 2px);
+            background-size: 4px 4px;
+            animation: grain 0.5s steps(5) infinite;
+        }
+
+        @keyframes grain {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-1px, 1px); }
+            50% { transform: translate(1px, -1px); }
+            75% { transform: translate(-1px, -1px); }
+        }
+
+        /* Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 11;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.1) 2px,
+                rgba(0, 0, 0, 0.1) 4px
+            );
+        }
+
+        /* Vignette */
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 12;
+            box-shadow: inset 0 0 180px 100px rgba(0, 0, 0, 0.75);
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 35px;
+        }
+
+        /* Title with VHS glitch */
+        .title-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .title {
+            font-size: 76px;
+            font-weight: bold;
+            color: #ffffff;
+            letter-spacing: 14px;
+            text-transform: uppercase;
+            text-shadow: 
+                3px 3px 0 rgba(255, 255, 255, 0.08),
+                -1px -1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            line-height: 1;
+        }
+
+        /* Glitch chromatic aberration */
+        .title::before,
+        .title::after {
+            content: 'MELEECITY+';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .title::before {
+            color: #aaaaaa;
+            animation: glitch-1 3.5s infinite linear alternate-reverse;
+            clip-path: inset(0 0 55% 0);
+        }
+
+        .title::after {
+            color: #666666;
+            animation: glitch-2 2.8s infinite linear alternate-reverse;
+            clip-path: inset(45% 0 0 0);
+        }
+
+        @keyframes glitch-1 {
+            0%, 92%, 100% { transform: translate(0); }
+            93% { transform: translate(-2px, 1px); }
+            94% { transform: translate(3px, -2px); }
+            95% { transform: translate(-1px, -2px); }
+            96% { transform: translate(2px, 1px); }
+        }
+
+        @keyframes glitch-2 {
+            0%, 88%, 100% { transform: translate(0); }
+            89% { transform: translate(2px, -1px); }
+            90% { transform: translate(-3px, 2px); }
+            91% { transform: translate(1px, 1px); }
+            92% { transform: translate(-2px, -1px); }
+        }
+
+        /* Subtitle */
+        .subtitle {
+            font-size: 13px;
+            color: #9a9a9a;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            margin-top: -12px;
+            animation: pulse-text 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-text {
+            0%, 100% { opacity: 0.45; }
+            50% { opacity: 0.85; }
+        }
+
+        /* Separator line */
+        .separator {
+            width: 180px;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                #3a3a3a 15%,
+                #6a6a6a 50%,
+                #3a3a3a 85%,
+                transparent 100%
+            );
+            opacity: 0.6;
+        }
+
+        /* Static noise text */
+        .static-text {
+            font-size: 11px;
+            color: #555555;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            opacity: 0.5;
+            animation: flicker 4s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 0.5; }
+            20%, 24%, 55% { opacity: 0.15; }
+        }
+
+        /* Corner decorations */
+        .corner-decoration {
+            position: fixed;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .corner-top-left { top: 30px; left: 30px; }
+        .corner-top-right { top: 30px; right: 30px; }
+        .corner-bottom-left { bottom: 30px; left: 30px; }
+        .corner-bottom-right { bottom: 30px; right: 30px; }
+
+        .corner-line {
+            display: block;
+            width: 30px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.12);
+            margin: 5px 0;
+        }
+
+        .corner-top-left .corner-line:nth-child(1) { width: 32px; }
+        .corner-top-left .corner-line:nth-child(2) { width: 20px; }
+        .corner-top-left .corner-line:nth-child(3) { width: 10px; }
+
+        .corner-top-right .corner-line:nth-child(1) { width: 10px; margin-left: auto; }
+        .corner-top-right .corner-line:nth-child(2) { width: 20px; margin-left: auto; }
+        .corner-top-right .corner-line:nth-child(3) { width: 32px; margin-left: auto; }
+
+        .corner-bottom-left .corner-line:nth-child(1) { width: 10px; }
+        .corner-bottom-left .corner-line:nth-child(2) { width: 20px; }
+        .corner-bottom-left .corner-line:nth-child(3) { width: 32px; }
+
+        .corner-bottom-right .corner-line:nth-child(1) { width: 32px; margin-left: auto; }
+        .corner-bottom-right .corner-line:nth-child(2) { width: 20px; margin-left: auto; }
+        .corner-bottom-right .corner-line:nth-child(3) { width: 10px; margin-left: auto; }
+
+        /* Blinking dot */
+        .blink-dot {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background: #ffffff;
+            border-radius: 50%;
+            margin-left: 2px;
+            vertical-align: middle;
+            animation: dot-blink 1.3s step-end infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes dot-blink {
+            0%, 55% { opacity: 0.7; }
+            56%, 100% { opacity: 0; }
+        }
+
+        /* --- FLOATING TEXT STYLES --- */
+        .float-text {
+            position: fixed;
+            pointer-events: none;
+            z-index: 8;
+            font-family: 'Courier New', monospace;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            text-transform: uppercase;
+        }
+
+        /* Different size classes */
+        .float-sm {
+            font-size: 10px;
+            letter-spacing: 4px;
+        }
+
+        .float-md {
+            font-size: 13px;
+            letter-spacing: 6px;
+            font-weight: bold;
+        }
+
+        .float-lg {
+            font-size: 18px;
+            letter-spacing: 8px;
+            font-weight: bold;
+        }
+
+        .float-xl {
+            font-size: 24px;
+            letter-spacing: 10px;
+            font-weight: bold;
+        }
+
+        /* Color variations — all grayscale */
+        .float-bright { color: #ffffff; text-shadow: 0 0 8px rgba(255,255,255,0.5); }
+        .float-mid { color: #999999; text-shadow: 0 0 4px rgba(255,255,255,0.2); }
+        .float-dim { color: #555555; }
+        .float-faint { color: #333333; }
+
+        /* Distortion class */
+        .float-glitch {
+            animation: float-glitch-anim 0.3s steps(3) forwards;
+        }
+
+        @keyframes float-glitch-anim {
+            0% { transform: translate(0, 0); opacity: 0.9; }
+            20% { transform: translate(-4px, 2px); opacity: 0.7; }
+            40% { transform: translate(3px, -1px); opacity: 1; }
+            60% { transform: translate(-2px, -3px); opacity: 0.5; }
+            80% { transform: translate(5px, 1px); opacity: 0.8; }
+            100% { transform: translate(0, 0); opacity: 0; }
+        }
+
+        /* VHS tracking line */
+        .tracking-line {
+            position: fixed;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.08);
+            pointer-events: none;
+            z-index: 9;
+            animation: tracking-move 4s linear infinite;
+        }
+
+        @keyframes tracking-move {
+            0% { top: -5%; }
+            100% { top: 105%; }
+        }
+
+        /* Random static burst */
+        .static-burst {
+            position: fixed;
+            pointer-events: none;
+            z-index: 13;
+            background: rgba(255, 255, 255, 0.03);
+            animation: burst 0.15s steps(4) forwards;
+        }
+
+        @keyframes burst {
+            0% { opacity: 0.6; }
+            50% { opacity: 0.1; }
+            100% { opacity: 0; }
+        }
+
+        /* Corner bracket flash */
+        .bracket-flash {
+            position: fixed;
+            pointer-events: none;
+            z-index: 4;
+            color: #ffffff;
+            font-size: 20px;
+            opacity: 0;
+            animation: bracket-pop 0.6s ease-out forwards;
+        }
+
+        @keyframes bracket-pop {
+            0% { opacity: 0; transform: scale(0.8); }
+            30% { opacity: 0.9; transform: scale(1.1); }
+            100% { opacity: 0; transform: scale(1); }
         }
     </style>
 </head>
 <body>
-    <!-- ЗАМЕНИТЕ "video.mp4" НА ИМЯ ВАШЕГО ФАЙЛА -->
-    <video id="myVideo" src="bg.mp4" autoplay muted loop playsinline>
-        Ваш браузер не поддерживает видео.
-    </video>
+    <!-- Grain overlay -->
+    <div class="grain"></div>
+    
+    <!-- Scanlines -->
+    <div class="scanlines"></div>
+    
+    <!-- Vignette -->
+    <div class="vignette"></div>
+
+    <!-- Tracking line -->
+    <div class="tracking-line"></div>
+
+    <!-- Corner decorations -->
+    <div class="corner-decoration corner-top-left" id="cornerTL">
+        <div class="corner-line"></div>
+        <div class="corner-line"></div>
+        <div class="corner-line"></div>
+    </div>
+    <div class="corner-decoration corner-top-right" id="cornerTR">
+        <div class="corner-line"></div>
+        <div class="corner-line"></div>
+        <div class="corner-line"></div>
+    </div>
+    <div class="corner-decoration corner-bottom-left" id="cornerBL">
+        <div class="corner-line"></div>
+        <div class="corner-line"></div>
+        <div class="corner-line"></div>
+    </div>
+    <div class="corner-decoration corner-bottom-right" id="cornerBR">
+        <div class="corner-line"></div>
+        <div class="corner-line"></div>
+        <div class="corner-line"></div>
+    </div>
+
+    <!-- Main content -->
+    <div class="container">
+        <div class="title-wrapper">
+            <h1 class="title">MELEECITY+</h1>
+        </div>
+        
+        <p class="subtitle">// SURVIVE THE HUNT</p>
+        
+        <div class="separator"></div>
+        
+        <p class="static-text">
+            AWAITING CONNECTION<span class="blink-dot"></span>
+        </p>
+    </div>
+
+    <!-- Container for floating texts -->
+    <div id="floatingTexts"></div>
 
     <script>
-        const video = document.getElementById('myVideo');
-        
-        video.addEventListener('pause', () => video.play());
-        video.addEventListener('volumechange', () => { if (video.muted) video.muted = false; });
-        video.addEventListener('contextmenu', (e) => e.preventDefault());
-        video.addEventListener('ended', () => video.play());
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space' || e.code === 'MediaPlayPause') {
-                e.preventDefault();
-                video.play();
+        // ============================================
+        // MANHUNT-STYLE FLOATING TEXT SYSTEM
+        // ============================================
+
+        const floatingContainer = document.getElementById('floatingTexts');
+
+        // Phrases pool — mostly English, rarely Russian
+        const phrases = [
+            // English — Manhunt vibes
+            { text: "KILL OR BE KILLED", weight: 3 },
+            { text: "NO ESCAPE", weight: 3 },
+            { text: "WATCH YOUR BACK", weight: 2 },
+            { text: "HE'S WATCHING", weight: 2 },
+            { text: "RUN", weight: 3 },
+            { text: "HIDE", weight: 2 },
+            { text: "SURVIVE", weight: 3 },
+            { text: "EXECUTE", weight: 2 },
+            { text: "HUNTED", weight: 2 },
+            { text: "PREY", weight: 2 },
+            { text: "PREDATOR", weight: 1 },
+            { text: "NO MERCY", weight: 2 },
+            { text: "PAIN", weight: 1 },
+            { text: "FEAR", weight: 2 },
+            { text: "DEATH", weight: 2 },
+            { text: "BLOOD", weight: 1 },
+            { text: "SILENCE", weight: 2 },
+            { text: "DARKNESS", weight: 2 },
+            { text: "OBEY", weight: 1 },
+            { text: "SUBMIT", weight: 1 },
+            { text: "NO HOPE", weight: 1 },
+            { text: "THE HUNT BEGINS", weight: 1 },
+            { text: "YOU ARE NOT SAFE", weight: 1 },
+            { text: "THEY SEE YOU", weight: 1 },
+            { text: "DON'T LOOK BACK", weight: 1 },
+            { text: "STAY LOW", weight: 1 },
+            { text: "MOVE FAST", weight: 1 },
+            { text: "NO WITNESSES", weight: 1 },
+            { text: "CLEAN CUT", weight: 1 },
+            { text: "BLADE READY", weight: 1 },
+            { text: "SHADOW WALK", weight: 1 },
+            { text: "GHOST", weight: 1 },
+            { text: "VOID", weight: 1 },
+            { text: "ABYSS", weight: 1 },
+            { text: "NOTHING", weight: 1 },
+            { text: "ENDLESS", weight: 1 },
+            { text: "FORGOTTEN", weight: 1 },
+            { text: "ALONE", weight: 1 },
+            { text: "TRAPPED", weight: 1 },
+            { text: "NO WAY OUT", weight: 1 },
+            { text: "TERROR", weight: 1 },
+            { text: "DREAD", weight: 1 },
+            { text: "SUFFER", weight: 1 },
+            { text: "BLEED", weight: 1 },
+            { text: "SCREAM", weight: 1 },
+            { text: "WHISPER", weight: 1 },
+            { text: "HUSH", weight: 1 },
+            { text: "CREEP", weight: 1 },
+            { text: "STALK", weight: 1 },
+            { text: "POUNCE", weight: 1 },
+
+            // Russian — rare (lower weight = less frequent)
+            { text: "УБЕЙ ИЛИ УМРИ", weight: 1 },
+            { text: "ВЫХОДА НЕТ", weight: 1 },
+            { text: "ОГЛЯНИСЬ", weight: 1 },
+            { text: "ТИШИНА", weight: 1 },
+            { text: "СТРАХ", weight: 1 },
+            { text: "СМЕРТЬ", weight: 1 },
+            { text: "БОЛЬ", weight: 1 },
+            { text: "КРОВЬ", weight: 1 },
+            { text: "ТЕНЬ", weight: 1 },
+            { text: "ПУСТОТА", weight: 1 },
+            { text: "ЗАБВЕНИЕ", weight: 1 },
+            { text: "БЕГИ", weight: 1 },
+            { text: "ПРЯЧЬСЯ", weight: 1 },
+            { text: "ЖЕРТВА", weight: 1 },
+            { text: "ОХОТНИК", weight: 1 },
+            { text: "ПОЩАДЫ НЕТ", weight: 1 },
+            { text: "НЕ СМОТРИ", weight: 1 },
+            { text: "ТЕМНОТА", weight: 1 },
+            { text: "ОДИНОЧЕСТВО", weight: 1 },
+            { text: "АГОНИЯ", weight: 1 },
+        ];
+
+        // Build weighted array
+        let weightedPhrases = [];
+        phrases.forEach(p => {
+            for (let i = 0; i < p.weight; i++) {
+                weightedPhrases.push(p.text);
             }
         });
-        
-        setInterval(() => { if (video.paused) video.play(); }, 500);
+
+        // Size classes
+        const sizeClasses = ['float-sm', 'float-md', 'float-md', 'float-lg', 'float-xl'];
+        const sizeWeights = [4, 5, 4, 2, 1]; // smaller = more common
+
+        let weightedSizes = [];
+        sizeClasses.forEach((s, i) => {
+            for (let j = 0; j < sizeWeights[i]; j++) {
+                weightedSizes.push(s);
+            }
+        });
+
+        // Color classes
+        const colorClasses = ['float-bright', 'float-mid', 'float-mid', 'float-dim', 'float-dim', 'float-faint'];
+        const colorWeights = [1, 3, 3, 3, 2, 2];
+
+        let weightedColors = [];
+        colorClasses.forEach((c, i) => {
+            for (let j = 0; j < colorWeights[i]; j++) {
+                weightedColors.push(c);
+            }
+        });
+
+        function randomFromArray(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function randomFloat(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        // Spawn a floating text element
+        function spawnFloatingText() {
+            const el = document.createElement('div');
+            el.classList.add('float-text');
+
+            // Random size
+            const sizeClass = randomFromArray(weightedSizes);
+            el.classList.add(sizeClass);
+
+            // Random color
+            const colorClass = randomFromArray(weightedColors);
+            el.classList.add(colorClass);
+
+            // Random text
+            const text = randomFromArray(weightedPhrases);
+            el.textContent = text;
+
+            // Random position — avoid very center (where title is)
+            let x, y;
+            const zone = Math.random();
+            if (zone < 0.25) {
+                // Top area
+                x = randomFloat(5, 90);
+                y = randomFloat(3, 25);
+            } else if (zone < 0.5) {
+                // Bottom area
+                x = randomFloat(5, 90);
+                y = randomFloat(70, 93);
+            } else if (zone < 0.75) {
+                // Left area
+                x = randomFloat(2, 20);
+                y = randomFloat(20, 75);
+            } else {
+                // Right area
+                x = randomFloat(78, 95);
+                y = randomFloat(20, 75);
+            }
+
+            el.style.left = x + '%';
+            el.style.top = y + '%';
+
+            // Random rotation — slight tilt
+            const rotation = randomFloat(-8, 8);
+            el.style.transform = `rotate(${rotation}deg)`;
+
+            // 15% chance of glitch effect
+            if (Math.random() < 0.15) {
+                el.classList.add('float-glitch');
+            }
+
+            floatingContainer.appendChild(el);
+
+            // Fade in
+            requestAnimationFrame(() => {
+                el.style.opacity = '1';
+            });
+
+            // Decide lifetime
+            const isGlitch = el.classList.contains('float-glitch');
+            const lifetime = isGlitch ? randomFloat(300, 600) : randomFloat(2000, 5000);
+
+            // Start fading out before removal
+            const fadeOutStart = lifetime * 0.7;
+
+            setTimeout(() => {
+                el.style.opacity = '0';
+            }, fadeOutStart);
+
+            // Remove element
+            setTimeout(() => {
+                if (el.parentNode) {
+                    el.remove();
+                }
+            }, lifetime);
+        }
+
+        // Spawn static burst
+        function spawnStaticBurst() {
+            const burst = document.createElement('div');
+            burst.classList.add('static-burst');
+
+            const x = randomFloat(0, 95);
+            const y = randomFloat(0, 95);
+            const w = randomFloat(30, 200);
+            const h = randomFloat(2, 8);
+
+            burst.style.left = x + '%';
+            burst.style.top = y + '%';
+            burst.style.width = w + 'px';
+            burst.style.height = h + 'px';
+
+            document.body.appendChild(burst);
+
+            setTimeout(() => {
+                if (burst.parentNode) burst.remove();
+            }, 200);
+        }
+
+        // Spawn bracket flash
+        function spawnBracketFlash() {
+            const flash = document.createElement('div');
+            flash.classList.add('bracket-flash');
+
+            const symbols = ['[', ']', '//', '\\\\', '<', '>', '{', '}', '|', '#'];
+            flash.textContent = randomFromArray(symbols);
+
+            const x = randomFloat(3, 93);
+            const y = randomFloat(3, 93);
+            flash.style.left = x + '%';
+            flash.style.top = y + '%';
+
+            document.body.appendChild(flash);
+
+            setTimeout(() => {
+                if (flash.parentNode) flash.remove();
+            }, 700);
+        }
+
+        // Main spawning loop
+        function spawnLoop() {
+            // Spawn 1-3 texts at a time
+            const count = randomInt(1, 3);
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    spawnFloatingText();
+                }, i * randomInt(50, 400));
+            }
+
+            // Occasionally spawn static burst
+            if (Math.random() < 0.3) {
+                spawnStaticBurst();
+            }
+
+            // Rarely spawn bracket flash
+            if (Math.random() < 0.1) {
+                spawnBracketFlash();
+            }
+
+            // Next spawn interval
+            const nextInterval = randomFloat(400, 2200);
+            setTimeout(spawnLoop, nextInterval);
+        }
+
+        // Start the madness
+        setTimeout(spawnLoop, 800);
+
+        // Initial burst of texts on load
+        setTimeout(() => {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => spawnFloatingText(), i * 150);
+            }
+        }, 300);
     </script>
 </body>
 </html>
