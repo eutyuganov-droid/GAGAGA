@@ -707,3 +707,60 @@
     </script>
 </body>
 </html>
+    <!-- АУДИО ПЛЕЕР -->
+    <audio id="bg-music" loop preload="auto" style="display: none;">
+        <source src="Manhunt%20-%20Main%20Theme.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // ============================================
+        // MUSIC SYSTEM
+        // ============================================
+        
+        const audio = document.getElementById('bg-music');
+        audio.volume = 0.7; // Громкость 70%
+        
+        // Попытка автовоспроизведения
+        function tryPlayMusic() {
+            const playPromise = audio.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    // Браузер заблокировал автовоспроизведение — ждём клика
+                    console.log('Click anywhere to start music');
+                    
+                    const resumeMusic = () => {
+                        audio.play().catch(e => console.error(e));
+                        document.removeEventListener('click', resumeMusic);
+                        // Показать вспышку при запуске
+                        spawnBracketFlash();
+                    };
+                    
+                    document.addEventListener('click', resumeMusic, { once: true });
+                });
+            }
+        }
+        
+        // Запуск при загрузке страницы
+        window.addEventListener('load', () => {
+            setTimeout(tryPlayMusic, 500);
+        });
+        
+        // Синхронизация текста с битами (каждые 2-3 секунды — больше спавнов)
+        let beatInterval;
+        
+        audio.addEventListener('play', () => {
+            beatInterval = setInterval(() => {
+                spawnFloatingText();
+                if (Math.random() < 0.3) spawnStaticBurst();
+            }, randomFloat(1000, 2500));
+        });
+        
+        audio.addEventListener('pause', () => {
+            clearInterval(beatInterval);
+        });
+        
+        audio.addEventListener('ended', () => {
+            clearInterval(beatInterval);
+        });
+    </script>
