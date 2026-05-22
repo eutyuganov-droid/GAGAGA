@@ -447,10 +447,29 @@
         preloadedImages.push(img);
       });
 
-      function spawnPsychoImage() {
+      // Функция для получения нескольких уникальных случайных индексов
+      function getUniqueRandomIndices(count, maxIndex) {
+        // Создаём массив всех возможных индексов
+        const availableIndices = [];
+        for (let i = 0; i <= maxIndex; i++) {
+          availableIndices.push(i);
+        }
+        
+        // Перемешиваем массив (алгоритм Фишера-Йетса)
+        for (let i = availableIndices.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [availableIndices[i], availableIndices[j]] = [availableIndices[j], availableIndices[i]];
+        }
+        
+        // Возвращаем первые count элементов
+        return availableIndices.slice(0, count);
+      }
+
+      function spawnPsychoImage(forcedIndex = null) {
         if (preloadedImages.length === 0) return;
         
-        const randomIndex = Math.floor(Math.random() * preloadedImages.length);
+        // Если индекс не передан — выбираем случайный
+        const randomIndex = (forcedIndex !== null) ? forcedIndex : Math.floor(Math.random() * preloadedImages.length);
         const imgSrc = imageFiles[randomIndex];
         
         const imgEl = document.createElement('img');
@@ -526,10 +545,16 @@
         if (Math.random() < 0.3) spawnStaticBurst();
         if (Math.random() < 0.1) spawnBracketFlash();
         
+        // КАРТИНКИ: теперь всегда уникальные при групповом появлении
         if (Math.random() < 0.22) {
           const imageBurst = randomInt(1, 3);
+          
+          // Получаем уникальные индексы для этого всплеска
+          const uniqueIndices = getUniqueRandomIndices(imageBurst, imageFiles.length - 1);
+          
+          // Спавним каждую картинку с уникальным индексом
           for (let i = 0; i < imageBurst; i++) {
-            setTimeout(() => spawnPsychoImage(), i * randomInt(50, 200));
+            setTimeout(() => spawnPsychoImage(uniqueIndices[i]), i * randomInt(50, 200));
           }
         }
         
@@ -544,8 +569,12 @@
         if (Math.random() < 0.6) {
           setTimeout(() => {
             const initialBurst = randomInt(1, 3);
+            
+            // Уникальные индексы для начального всплеска
+            const uniqueIndices = getUniqueRandomIndices(initialBurst, imageFiles.length - 1);
+            
             for (let i = 0; i < initialBurst; i++) {
-              setTimeout(() => spawnPsychoImage(), i * 180);
+              setTimeout(() => spawnPsychoImage(uniqueIndices[i]), i * 180);
             }
           }, 400);
         }
