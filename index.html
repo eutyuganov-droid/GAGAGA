@@ -62,7 +62,6 @@
       background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.3) 2px, rgba(0, 0, 0, 0.3) 4px);
     }
     
-    /* Vignette убран для чистого чёрного фона */
     .vignette {
       display: none;
     }
@@ -263,29 +262,20 @@
       100% { opacity: 0; transform: scale(1); }
     }
 
-    /* ===== СТИЛИ ДЛЯ ПСИХОЗНЫХ КАРТИНОК (ИСПРАВЛЕННЫЕ) ===== */
+    /* СТИЛИ ДЛЯ ПСИХОЗНЫХ КАРТИНОК */
     .psycho-image {
       position: fixed;
       pointer-events: none;
       z-index: 20;
-      
-      /* Убираем видимые края */
       border: none;
       outline: none;
-      
-      /* Мощное размытие краёв + тень для скрытия границ */
       box-shadow: 
-        0 0 40px 20px rgba(0, 0, 0, 0.9),      /* Внешняя тень */
-        0 0 80px 40px rgba(0, 0, 0, 0.8),      /* Дополнительное размытие */
-        inset 0 0 60px 30px rgba(0, 0, 0, 0.7); /* Внутренняя тень */
-      
-      /* Скругление углов для мягкости */
+        0 0 40px 20px rgba(0, 0, 0, 0.9),
+        0 0 80px 40px rgba(0, 0, 0, 0.8),
+        inset 0 0 60px 30px rgba(0, 0, 0, 0.7);
       border-radius: 8px;
-      
       opacity: 0;
       transition: opacity 0.06s ease;
-      
-      /* Градиентная маска для плавного исчезновения краёв */
       -webkit-mask-image: radial-gradient(ellipse at center, 
         rgba(0, 0, 0, 1) 40%, 
         rgba(0, 0, 0, 0.8) 60%, 
@@ -296,18 +286,15 @@
         rgba(0, 0, 0, 0.8) 60%, 
         rgba(0, 0, 0, 0.3) 80%, 
         rgba(0, 0, 0, 0) 100%);
-      
       filter: grayscale(0.85) contrast(1.4) brightness(0.75) blur(0.5px);
       mix-blend-mode: hard-light;
       transform-origin: center;
       image-rendering: auto;
     }
-    
     .psycho-image.show {
       opacity: 0.8;
       animation: psycho-pop 0.12s ease-out;
     }
-    
     @keyframes psycho-pop {
       0% { 
         transform: scale(0.7); 
@@ -325,7 +312,6 @@
         filter: grayscale(0.85) contrast(1.4) brightness(0.75) blur(0.5px);
       }
     }
-    
     .psycho-image.flash {
       opacity: 0.95;
       filter: grayscale(0.1) contrast(2.0) brightness(1.2) blur(0px);
@@ -335,65 +321,11 @@
         0 0 100px 50px rgba(0, 0, 0, 0.6);
       border-radius: 12px;
     }
-
-    /* ===== КНОПКА МУЗЫКИ ===== */
-    .music-toggle {
-      position: fixed;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 30;
-      background: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      color: #999;
-      font-family: 'Courier New', monospace;
-      font-size: 11px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      padding: 10px 25px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-shadow: 0 0 5px rgba(255,255,255,0.3);
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-      outline: none;
-      pointer-events: all;
-    }
-    .music-toggle:hover {
-      border-color: rgba(255, 255, 255, 0.8);
-      color: #fff;
-      text-shadow: 0 0 10px rgba(255,255,255,0.7);
-      box-shadow: 0 0 20px rgba(255,255,255,0.2);
-      background: rgba(255, 255, 255, 0.05);
-    }
-    .music-toggle.muted {
-      border-color: rgba(255, 0, 0, 0.4);
-      color: #660000;
-      text-shadow: 0 0 5px rgba(255,0,0,0.5);
-    }
-    .music-toggle.muted:hover {
-      border-color: rgba(255, 0, 0, 0.8);
-      color: #ff0000;
-      text-shadow: 0 0 10px rgba(255,0,0,0.8);
-      box-shadow: 0 0 20px rgba(255,0,0,0.3);
-      background: rgba(255, 0, 0, 0.1);
-    }
-    
-    .speaker-icon {
-      display: inline-block;
-      margin-right: 8px;
-      font-size: 12px;
-    }
-    
-    .music-status {
-      display: inline-block;
-      transition: color 0.3s ease;
-    }
   </style>
 </head>
 <body>
   <div class="grain"></div>
   <div class="scanlines"></div>
-  <!-- Vignette удалён -->
   <div class="tracking-line"></div>
 
   <div class="corner-decoration corner-top-left"><div class="corner-line"></div><div class="corner-line"></div><div class="corner-line"></div></div>
@@ -411,108 +343,8 @@
   <div id="floatingTexts"></div>
   <div id="psychoImages"></div>
 
-  <!-- КНОПКА УПРАВЛЕНИЯ МУЗЫКОЙ -->
-  <button id="musicToggle" class="music-toggle">
-    <span class="speaker-icon">🔊</span>
-    <span class="music-status">MUSIC: ON</span>
-  </button>
-
-  <!-- АУДИО ПЛЕЕР (изменено на ambient.mp3) -->
-  <audio id="bg-music" loop preload="auto" style="display: none;">
-    <source src="manhunt_theme.mp3" type="audio/mpeg">
-  </audio>
-
   <script>
     (function() {
-      // ========== МУЗЫКА И КНОПКА УПРАВЛЕНИЯ ==========
-      const audio = document.getElementById('bg-music');
-      const musicToggle = document.getElementById('musicToggle');
-      const speakerIcon = musicToggle.querySelector('.speaker-icon');
-      const musicStatus = musicToggle.querySelector('.music-status');
-      
-      // Громкость по умолчанию
-      audio.volume = 0.7;
-      
-      // Состояние музыки (по умолчанию включена)
-      let musicPlaying = true;
-      
-      // Функция обновления кнопки
-      function updateMusicButton() {
-        if (musicPlaying) {
-          musicToggle.classList.remove('muted');
-          speakerIcon.textContent = '🔊';
-          musicStatus.textContent = 'MUSIC: ON';
-        } else {
-          musicToggle.classList.add('muted');
-          speakerIcon.textContent = '🔇';
-          musicStatus.textContent = 'MUSIC: OFF';
-        }
-      }
-      
-      // Переключение музыки
-      function toggleMusic() {
-        musicPlaying = !musicPlaying;
-        
-        if (musicPlaying) {
-          audio.play().catch(e => {
-            console.log('Не удалось воспроизвести музыку:', e);
-            musicPlaying = false;
-            updateMusicButton();
-          });
-        } else {
-          audio.pause();
-        }
-        
-        updateMusicButton();
-        
-        // Визуальная обратная связь при переключении
-        spawnBracketFlash();
-        if (Math.random() < 0.5) spawnStaticBurst();
-      }
-      
-      // Обработчик клика по кнопке
-      musicToggle.addEventListener('click', (e) => {
-        e.stopPropagation(); // Чтобы не сработал автозапуск при клике
-        toggleMusic();
-      });
-      
-      // Попытка автовоспроизведения при загрузке
-      function tryAutoPlay() {
-        const playPromise = audio.play();
-        
-        if (playPromise !== undefined) {
-          playPromise.then(() => {
-            musicPlaying = true;
-            updateMusicButton();
-            console.log('Музыка автоматически запущена');
-          }).catch(() => {
-            // Браузер заблокировал автовоспроизведение
-            console.log('Автовоспроизведение заблокировано. Нажмите на кнопку MUSIC для запуска.');
-            musicPlaying = false;
-            updateMusicButton();
-            
-            // Ждём любого клика для разблокировки
-            const resumeOnClick = () => {
-              document.removeEventListener('click', resumeOnClick);
-              // Просто разблокируем аудио, но не включаем автоматически
-              audio.play().then(() => {
-                audio.pause();
-                console.log('Аудио разблокировано, используйте кнопку MUSIC');
-              }).catch(e => console.error(e));
-            };
-            document.addEventListener('click', resumeOnClick, { once: true });
-          });
-        }
-      }
-      
-      // Запуск при загрузке
-      window.addEventListener('load', () => {
-        setTimeout(tryAutoPlay, 500);
-      });
-      
-      // Начальное состояние кнопки
-      updateMusicButton();
-
       // ---------- ПЛАВАЮЩИЙ ТЕКСТ ----------
       const floatingContainer = document.getElementById('floatingTexts');
       const phrases = [
@@ -599,7 +431,6 @@
       // ---------- ПСИХОЗНЫЕ КАРТИНКИ ----------
       const imageContainer = document.getElementById('psychoImages');
       
-      // Генерируем массив имён файлов: 0.jpg, 1.jpg, 2.jpg, ..., 19.jpg
       const imageFiles = [];
       for (let i = 0; i <= 19; i++) {
         imageFiles.push(i + '.jpg');
@@ -607,7 +438,6 @@
       
       console.log('Загружено изображений: ' + imageFiles.length + ' (0.jpg - 19.jpg)');
       
-      // Предзагрузка всех 20 изображений
       const preloadedImages = [];
       imageFiles.forEach((file, index) => {
         const img = new Image();
@@ -620,7 +450,6 @@
       function spawnPsychoImage() {
         if (preloadedImages.length === 0) return;
         
-        // Выбираем случайную картинку из 20 доступных
         const randomIndex = Math.floor(Math.random() * preloadedImages.length);
         const imgSrc = imageFiles[randomIndex];
         
@@ -628,12 +457,10 @@
         imgEl.src = imgSrc;
         imgEl.classList.add('psycho-image');
         
-        // Случайный размер: от 150px до 500px (немного увеличены из-за маски)
         const size = randomInt(150, 500);
         imgEl.style.width = size + 'px';
         imgEl.style.height = 'auto';
         
-        // Позиция: случайная по всему экрану
         let left, top;
         const edge = Math.random();
         if (edge < 0.25) {
@@ -653,18 +480,15 @@
         imgEl.style.left = left + '%';
         imgEl.style.top = top + '%';
         
-        // Случайный поворот от -20 до +20 градусов
         const rotation = randomFloat(-20, 20);
         imgEl.style.transform = `rotate(${rotation}deg)`;
         
         imageContainer.appendChild(imgEl);
         
-        // Запускаем появление
         requestAnimationFrame(() => {
           imgEl.classList.add('show');
         });
         
-        // Эффект "вспышки" (20% шанс)
         if (Math.random() < 0.2) {
           setTimeout(() => {
             if (imgEl.parentNode) {
@@ -676,10 +500,8 @@
           }, randomInt(20, 150));
         }
         
-        // Время жизни: от 0.4 до 2.2 секунд
         const lifetime = randomFloat(400, 2200);
         
-        // Плавное исчезновение
         setTimeout(() => {
           if (imgEl.parentNode) {
             imgEl.style.opacity = '0';
@@ -687,7 +509,6 @@
           }
         }, lifetime * 0.7);
         
-        // Удаление
         setTimeout(() => {
           if (imgEl.parentNode) {
             imgEl.remove();
@@ -705,9 +526,7 @@
         if (Math.random() < 0.3) spawnStaticBurst();
         if (Math.random() < 0.1) spawnBracketFlash();
         
-        // КАРТИНКИ: появляются с вероятностью ~22%
         if (Math.random() < 0.22) {
-          // Иногда спавним 1-3 картинки подряд
           const imageBurst = randomInt(1, 3);
           for (let i = 0; i < imageBurst; i++) {
             setTimeout(() => spawnPsychoImage(), i * randomInt(50, 200));
@@ -718,36 +537,10 @@
         setTimeout(spawnLoop, nextInterval);
       }
 
-      // Синхронизация с музыкой (только когда играет)
-      let beatInterval;
-      
-      function startBeatSync() {
-        stopBeatSync(); // Очищаем предыдущий интервал
-        beatInterval = setInterval(() => {
-          if (musicPlaying) {
-            spawnFloatingText();
-            if (Math.random() < 0.3) spawnStaticBurst();
-            if (Math.random() < 0.18) spawnPsychoImage();
-          }
-        }, randomFloat(800, 2200));
-      }
-      
-      function stopBeatSync() {
-        if (beatInterval) {
-          clearInterval(beatInterval);
-          beatInterval = null;
-        }
-      }
-      
-      audio.addEventListener('play', startBeatSync);
-      audio.addEventListener('pause', stopBeatSync);
-      audio.addEventListener('ended', stopBeatSync);
-
       // Старт
       setTimeout(spawnLoop, 800);
       setTimeout(() => {
         for (let i = 0; i < 5; i++) setTimeout(() => spawnFloatingText(), i * 120);
-        // Начальный всплеск картинок
         if (Math.random() < 0.6) {
           setTimeout(() => {
             const initialBurst = randomInt(1, 3);
