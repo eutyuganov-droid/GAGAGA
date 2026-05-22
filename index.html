@@ -411,21 +411,29 @@
 
       // ---------- ПСИХОЗНЫЕ КАРТИНКИ ----------
       const imageContainer = document.getElementById('psychoImages');
-      const imageFiles = ['1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg'];
       
-      // Предзагрузка для уменьшения задержки
+      // Генерируем массив имён файлов: 0.jpg, 1.jpg, 2.jpg, ..., 19.jpg
+      const imageFiles = [];
+      for (let i = 0; i <= 19; i++) {
+        imageFiles.push(i + '.jpg');
+      }
+      
+      console.log('Загружено изображений: ' + imageFiles.length + ' (0.jpg - 19.jpg)');
+      
+      // Предзагрузка всех 20 изображений
       const preloadedImages = [];
       imageFiles.forEach((file, index) => {
         const img = new Image();
         img.src = file;
-        img.onerror = () => console.warn('Image not found: ' + file);
+        img.onerror = () => console.warn('Изображение не найдено: ' + file);
+        img.onload = () => console.log('Загружено: ' + file);
         preloadedImages.push(img);
       });
 
       function spawnPsychoImage() {
         if (preloadedImages.length === 0) return;
         
-        // Выбираем случайную картинку
+        // Выбираем случайную картинку из 20 доступных
         const randomIndex = Math.floor(Math.random() * preloadedImages.length);
         const imgSrc = imageFiles[randomIndex];
         
@@ -433,33 +441,33 @@
         imgEl.src = imgSrc;
         imgEl.classList.add('psycho-image');
         
-        // Случайный размер: от 120px до 380px
-        const size = randomInt(140, 380);
+        // Случайный размер: от 100px до 450px (расширенный диапазон)
+        const size = randomInt(100, 450);
         imgEl.style.width = size + 'px';
         imgEl.style.height = 'auto';
         
-        // Позиция: избегаем самого центра, но может быть где угодно
+        // Позиция: случайная по всему экрану
         let left, top;
         const edge = Math.random();
-        if (edge < 0.3) {
-          left = randomFloat(-5, 25);
-          top = randomFloat(10, 80);
-        } else if (edge < 0.6) {
-          left = randomFloat(70, 95);
-          top = randomFloat(10, 80);
-        } else if (edge < 0.8) {
-          left = randomFloat(20, 70);
-          top = randomFloat(-5, 15);
+        if (edge < 0.25) {
+          left = randomFloat(-5, 30);
+          top = randomFloat(5, 85);
+        } else if (edge < 0.5) {
+          left = randomFloat(65, 95);
+          top = randomFloat(5, 85);
+        } else if (edge < 0.75) {
+          left = randomFloat(15, 75);
+          top = randomFloat(-5, 20);
         } else {
-          left = randomFloat(20, 70);
-          top = randomFloat(80, 95);
+          left = randomFloat(15, 75);
+          top = randomFloat(75, 95);
         }
         
         imgEl.style.left = left + '%';
         imgEl.style.top = top + '%';
         
-        // Случайный поворот
-        const rotation = randomFloat(-15, 15);
+        // Случайный поворот от -25 до +25 градусов
+        const rotation = randomFloat(-25, 25);
         imgEl.style.transform = `rotate(${rotation}deg)`;
         
         imageContainer.appendChild(imgEl);
@@ -469,38 +477,38 @@
           imgEl.classList.add('show');
         });
         
-        // Редкий эффект "вспышки" (20% шанс)
-        if (Math.random() < 0.2) {
+        // Эффект "вспышки" (25% шанс)
+        if (Math.random() < 0.25) {
           setTimeout(() => {
             if (imgEl.parentNode) {
               imgEl.classList.add('flash');
               setTimeout(() => {
                 if (imgEl.parentNode) imgEl.classList.remove('flash');
-              }, 120);
+              }, 100);
             }
-          }, randomInt(40, 150));
+          }, randomInt(30, 180));
         }
         
-        // Время жизни: от 0.4 до 1.8 секунды (быстрое мелькание)
-        const lifetime = randomFloat(400, 1800);
+        // Время жизни: от 0.3 до 2.0 секунд
+        const lifetime = randomFloat(300, 2000);
         
         // Плавное исчезновение
         setTimeout(() => {
           if (imgEl.parentNode) {
             imgEl.style.opacity = '0';
-            imgEl.style.transition = 'opacity 0.25s ease';
+            imgEl.style.transition = 'opacity 0.3s ease';
           }
-        }, lifetime * 0.7);
+        }, lifetime * 0.75);
         
         // Удаление
         setTimeout(() => {
           if (imgEl.parentNode) {
             imgEl.remove();
           }
-        }, lifetime + 50);
+        }, lifetime + 100);
       }
 
-      // Основной цикл спавна (текст + картинки)
+      // Основной цикл спавна
       function spawnLoop() {
         const textCount = randomInt(1, 3);
         for (let i = 0; i < textCount; i++) {
@@ -510,16 +518,16 @@
         if (Math.random() < 0.3) spawnStaticBurst();
         if (Math.random() < 0.1) spawnBracketFlash();
         
-        // КАРТИНКИ: появляются редко, с вероятностью ~18%
-        if (Math.random() < 0.18) {
-          // Иногда спавним 1-2 картинки подряд
-          const imageBurst = randomInt(1, 2);
+        // КАРТИНКИ: появляются с вероятностью ~22% (немного увеличено)
+        if (Math.random() < 0.22) {
+          // Иногда спавним 1-3 картинки подряд
+          const imageBurst = randomInt(1, 3);
           for (let i = 0; i < imageBurst; i++) {
-            setTimeout(() => spawnPsychoImage(), i * randomInt(60, 250));
+            setTimeout(() => spawnPsychoImage(), i * randomInt(50, 200));
           }
         }
         
-        const nextInterval = randomFloat(450, 2400);
+        const nextInterval = randomFloat(400, 2200);
         setTimeout(spawnLoop, nextInterval);
       }
 
@@ -550,9 +558,9 @@
         beatInterval = setInterval(() => {
           spawnFloatingText();
           if (Math.random() < 0.3) spawnStaticBurst();
-          // Под бит также редко картинки
-          if (Math.random() < 0.12) spawnPsychoImage();
-        }, randomFloat(1000, 2500));
+          // Под бит картинки появляются чаще
+          if (Math.random() < 0.18) spawnPsychoImage();
+        }, randomFloat(800, 2200));
       });
       
       audio.addEventListener('pause', () => clearInterval(beatInterval));
@@ -561,9 +569,16 @@
       // Старт
       setTimeout(spawnLoop, 800);
       setTimeout(() => {
-        for (let i = 0; i < 4; i++) setTimeout(() => spawnFloatingText(), i * 130);
-        // Сразу один шанс на картинку при загрузке
-        if (Math.random() < 0.5) setTimeout(spawnPsychoImage, 200);
+        for (let i = 0; i < 5; i++) setTimeout(() => spawnFloatingText(), i * 120);
+        // Начальный всплеск картинок
+        if (Math.random() < 0.6) {
+          setTimeout(() => {
+            const initialBurst = randomInt(1, 3);
+            for (let i = 0; i < initialBurst; i++) {
+              setTimeout(() => spawnPsychoImage(), i * 180);
+            }
+          }, 400);
+        }
       }, 300);
     })();
   </script>
