@@ -349,84 +349,24 @@
       border-radius: 12px;
     }
 
-    /* ===== ГАЗЕТНЫЕ ВЫРЕЗКИ С ЭФФЕКТОМ НАСТОЯЩЕЙ БУМАГИ ===== */
+    /* ГАЗЕТНЫЕ ВЫРЕЗКИ */
     .newspaper-clipping {
       position: fixed;
       pointer-events: none;
       z-index: 15;
-      
-      /* Базовый цвет бумаги */
       background-color: #c4b896;
-      
-      /* Текстура бумаги: волокна */
       background-image: 
-        /* Микроволокна */
-        repeating-linear-gradient(
-          2deg,
-          transparent,
-          transparent 2px,
-          rgba(180, 160, 130, 0.3) 2px,
-          rgba(180, 160, 130, 0.3) 2.5px
-        ),
-        /* Длинные волокна */
-        repeating-linear-gradient(
-          87deg,
-          transparent,
-          transparent 40px,
-          rgba(200, 180, 150, 0.2) 40px,
-          rgba(200, 180, 150, 0.2) 41px
-        ),
-        /* Пятна влаги */
-        radial-gradient(
-          ellipse at 20% 30%,
-          rgba(160, 140, 100, 0.4) 0%,
-          transparent 50%
-        ),
-        radial-gradient(
-          ellipse at 75% 60%,
-          rgba(180, 160, 120, 0.3) 0%,
-          transparent 40%
-        ),
-        radial-gradient(
-          ellipse at 50% 80%,
-          rgba(200, 180, 140, 0.25) 0%,
-          transparent 35%
-        ),
-        /* Жирные пятна */
-        radial-gradient(
-          circle at 85% 15%,
-          rgba(140, 120, 80, 0.5) 0%,
-          transparent 25%
-        ),
-        /* Выцветание */
-        radial-gradient(
-          ellipse at 30% 70%,
-          rgba(220, 210, 180, 0.3) 0%,
-          transparent 45%
-        ),
-        /* Микротрещины */
-        repeating-linear-gradient(
-          45deg,
-          transparent,
-          transparent 15px,
-          rgba(0, 0, 0, 0.03) 15px,
-          rgba(0, 0, 0, 0.03) 15.5px
-        );
-      
-      /* Рваные края через clip-path */
-      clip-path: polygon(
-        0% 2%, 2% 0%, 8% 1%, 15% 0%, 20% 3%, 28% 0%, 35% 2%, 42% 0%, 50% 3%, 58% 0%, 65% 2%, 72% 1%, 80% 3%, 88% 0%, 95% 2%, 98% 0%, 100% 3%,
-        100% 95%, 98% 100%, 92% 97%, 85% 100%, 78% 98%, 70% 100%, 62% 97%, 55% 100%, 48% 98%, 40% 100%, 32% 97%, 25% 100%, 18% 98%, 10% 100%, 5% 97%, 0% 95%,
-        0% 70%, 2% 55%, 0% 40%, 3% 25%, 0% 10%
-      );
-      
+        repeating-linear-gradient(2deg, transparent, transparent 2px, rgba(180, 160, 130, 0.3) 2px, rgba(180, 160, 130, 0.3) 2.5px),
+        repeating-linear-gradient(87deg, transparent, transparent 40px, rgba(200, 180, 150, 0.2) 40px, rgba(200, 180, 150, 0.2) 41px),
+        radial-gradient(ellipse at 20% 30%, rgba(160, 140, 100, 0.4) 0%, transparent 50%),
+        radial-gradient(ellipse at 75% 60%, rgba(180, 160, 120, 0.3) 0%, transparent 40%),
+        radial-gradient(ellipse at 50% 80%, rgba(200, 180, 140, 0.25) 0%, transparent 35%),
+        radial-gradient(circle at 85% 15%, rgba(140, 120, 80, 0.5) 0%, transparent 25%),
+        radial-gradient(ellipse at 30% 70%, rgba(220, 210, 180, 0.3) 0%, transparent 45%),
+        repeating-linear-gradient(45deg, transparent, transparent 15px, rgba(0, 0, 0, 0.03) 15px, rgba(0, 0, 0, 0.03) 15.5px);
+      clip-path: polygon(0% 2%, 2% 0%, 8% 1%, 15% 0%, 20% 3%, 28% 0%, 35% 2%, 42% 0%, 50% 3%, 58% 0%, 65% 2%, 72% 1%, 80% 3%, 88% 0%, 95% 2%, 98% 0%, 100% 3%, 100% 95%, 98% 100%, 92% 97%, 85% 100%, 78% 98%, 70% 100%, 62% 97%, 55% 100%, 48% 98%, 40% 100%, 32% 97%, 25% 100%, 18% 98%, 10% 100%, 5% 97%, 0% 95%, 0% 70%, 2% 55%, 0% 40%, 3% 25%, 0% 10%);
       border: none;
-      box-shadow: 
-        0 5px 25px rgba(0, 0, 0, 0.9),
-        0 2px 10px rgba(0, 0, 0, 0.7),
-        inset 0 0 30px rgba(0, 0, 0, 0.3),
-        inset 0 0 5px rgba(0, 0, 0, 0.2);
-      
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.9), 0 2px 10px rgba(0, 0, 0, 0.7), inset 0 0 30px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(0, 0, 0, 0.2);
       padding: 25px 28px;
       max-width: 520px;
       min-width: 300px;
@@ -440,7 +380,6 @@
       overflow: hidden;
     }
 
-    /* Эффект печатной машинки для текста */
     .newspaper-text {
       font-size: 12px;
       line-height: 1.6;
@@ -452,7 +391,6 @@
       text-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
     }
 
-    /* Заголовок газеты */
     .newspaper-header {
       font-size: 10px;
       letter-spacing: 4px;
@@ -489,7 +427,6 @@
       letter-spacing: 1px;
     }
 
-    /* Кровавая печать */
     .blood-stamp {
       position: absolute;
       bottom: 18px;
@@ -501,12 +438,9 @@
       transform: rotate(-15deg);
       letter-spacing: 3px;
       pointer-events: none;
-      text-shadow: 
-        0 0 10px rgba(255, 0, 0, 0.3),
-        0 0 20px rgba(200, 0, 0, 0.2);
+      text-shadow: 0 0 10px rgba(255, 0, 0, 0.3), 0 0 20px rgba(200, 0, 0, 0.2);
     }
 
-    /* Печать СЕКРЕТНО */
     .secret-stamp {
       position: absolute;
       top: 15px;
@@ -524,20 +458,16 @@
       text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
     }
 
-    /* Фотография в газете */
     .newspaper-image {
       width: 100%;
       height: auto;
       margin: 12px 0;
       filter: sepia(0.8) contrast(1.1) brightness(0.75) grayscale(0.3);
       border: 2px solid rgba(60, 40, 20, 0.3);
-      box-shadow: 
-        0 2px 8px rgba(0, 0, 0, 0.5),
-        inset 0 0 10px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(0, 0, 0, 0.3);
       border-radius: 2px;
     }
 
-    /* Номер дела */
     .case-number {
       position: absolute;
       top: 8px;
@@ -548,16 +478,6 @@
       letter-spacing: 2px;
     }
 
-    /* Красная пометка маркером */
-    .red-mark {
-      background: rgba(255, 200, 0, 0.2);
-      border-left: 3px solid rgba(200, 30, 30, 0.6);
-      padding-left: 8px;
-      margin: 6px 0;
-      font-weight: bold;
-    }
-
-    /* Эффект сложенной бумаги */
     .fold-line {
       position: absolute;
       top: 50%;
@@ -613,6 +533,139 @@
 
   <script>
     (function() {
+      // ========== СЕРДЦЕБИЕНИЕ (Web Audio API) ==========
+      let audioCtx = null;
+      let heartbeatInterval = null;
+      let currentBPM = 65;
+      let targetBPM = 65;
+      let fearLevel = 0;
+
+      function initAudio() {
+        if (audioCtx) return;
+        try {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+          console.warn('Web Audio API не поддерживается');
+        }
+      }
+
+      function playHeartbeat() {
+        if (!audioCtx) return;
+        
+        const now = audioCtx.currentTime;
+        
+        // Первый удар (lub)
+        const osc1 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        const filter1 = audioCtx.createBiquadFilter();
+        
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(55, now);
+        osc1.frequency.exponentialRampToValueAtTime(30, now + 0.15);
+        
+        filter1.type = 'lowpass';
+        filter1.frequency.setValueAtTime(200, now);
+        filter1.frequency.exponentialRampToValueAtTime(50, now + 0.15);
+        
+        gain1.gain.setValueAtTime(0, now);
+        gain1.gain.linearRampToValueAtTime(0.25, now + 0.03);
+        gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+        
+        osc1.connect(filter1);
+        filter1.connect(gain1);
+        gain1.connect(audioCtx.destination);
+        
+        osc1.start(now);
+        osc1.stop(now + 0.25);
+        
+        // Второй удар (dub) - через 0.2 секунды
+        const osc2 = audioCtx.createOscillator();
+        const gain2 = audioCtx.createGain();
+        const filter2 = audioCtx.createBiquadFilter();
+        
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(60, now + 0.2);
+        osc2.frequency.exponentialRampToValueAtTime(35, now + 0.35);
+        
+        filter2.type = 'lowpass';
+        filter2.frequency.setValueAtTime(180, now + 0.2);
+        filter2.frequency.exponentialRampToValueAtTime(40, now + 0.35);
+        
+        gain2.gain.setValueAtTime(0, now + 0.2);
+        gain2.gain.linearRampToValueAtTime(0.2, now + 0.23);
+        gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+        
+        osc2.connect(filter2);
+        filter2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+        
+        osc2.start(now + 0.2);
+        osc2.stop(now + 0.45);
+        
+        // Реверберация (эхо)
+        const oscEcho = audioCtx.createOscillator();
+        const gainEcho = audioCtx.createGain();
+        
+        oscEcho.type = 'sine';
+        oscEcho.frequency.setValueAtTime(20, now + 0.3);
+        
+        gainEcho.gain.setValueAtTime(0, now + 0.3);
+        gainEcho.gain.linearRampToValueAtTime(0.08, now + 0.35);
+        gainEcho.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        
+        oscEcho.connect(gainEcho);
+        gainEcho.connect(audioCtx.destination);
+        
+        oscEcho.start(now + 0.3);
+        oscEcho.stop(now + 0.65);
+      }
+
+      function updateHeartbeat() {
+        if (heartbeatInterval) clearInterval(heartbeatInterval);
+        
+        // Плавное приближение к целевому BPM
+        currentBPM += (targetBPM - currentBPM) * 0.1;
+        
+        const beatInterval = (60 / currentBPM) * 1000;
+        
+        playHeartbeat();
+        
+        heartbeatInterval = setInterval(() => {
+          currentBPM += (targetBPM - currentBPM) * 0.15;
+          const newInterval = (60 / currentBPM) * 1000;
+          
+          // Перенастраиваем интервал
+          clearInterval(heartbeatInterval);
+          heartbeatInterval = setInterval(() => {
+            currentBPM += (targetBPM - currentBPM) * 0.15;
+            const adjustedInterval = (60 / currentBPM) * 1000;
+            clearInterval(heartbeatInterval);
+            heartbeatInterval = setInterval(arguments.callee, adjustedInterval);
+            playHeartbeat();
+          }, newInterval);
+          
+          playHeartbeat();
+        }, beatInterval);
+      }
+
+      function increaseFear(amount = 10) {
+        targetBPM = Math.min(130, targetBPM + amount);
+        
+        // Постепенное снижение страха
+        clearTimeout(window.fearTimeout);
+        window.fearTimeout = setTimeout(() => {
+          targetBPM = 65;
+        }, 3000);
+      }
+
+      // Запуск аудио при первом клике
+      document.addEventListener('click', () => {
+        initAudio();
+        if (audioCtx && !heartbeatInterval) {
+          updateHeartbeat();
+        }
+      }, { once: true });
+
       // ========== ЗАГОЛОВОК ==========
       const titleText = "MELEECITY+";
       const mainTitleElement = document.getElementById('mainTitle');
@@ -649,10 +702,12 @@
           } else if (effectType < 0.55) {
             letter.classList.add('red-letter');
             setTimeout(() => letter.classList.remove('red-letter'), randomFloat(300, 700));
+            increaseFear(5);
           } else {
             const glitchClass = randomFromArray(glitchClasses);
             letter.classList.add(glitchClass);
             setTimeout(() => letter.classList.remove(glitchClass), 400);
+            increaseFear(3);
           }
         });
         const nextDelay = randomFloat(1500, 5000);
@@ -708,6 +763,7 @@
         const delay = randomFloat(8000, 20000);
         setTimeout(() => {
           mainPhraseElement.classList.add('red-flash');
+          increaseFear(15);
           const dots = mainPhraseElement.querySelectorAll('.dot');
           dots.forEach(dot => dot.classList.add('red-dot'));
           setTimeout(() => {
@@ -766,8 +822,14 @@
         el.style.left = x + '%';
         el.style.top = y + '%';
         el.style.transform = `rotate(${randomFloat(-8, 8)}deg)`;
-        if (Math.random() < 0.15) el.classList.add('float-glitch');
-        if (Math.random() < 0.03) el.classList.add('float-red-flash');
+        if (Math.random() < 0.15) {
+          el.classList.add('float-glitch');
+          increaseFear(3);
+        }
+        if (Math.random() < 0.03) {
+          el.classList.add('float-red-flash');
+          increaseFear(8);
+        }
         floatingContainer.appendChild(el);
         requestAnimationFrame(() => { el.style.opacity = '1'; });
         const isGlitch = el.classList.contains('float-glitch');
@@ -846,11 +908,13 @@
         const rotation = randomFloat(-20, 20);
         imgEl.style.transform = `rotate(${rotation}deg)`;
         imageContainer.appendChild(imgEl);
+        increaseFear(12);
         requestAnimationFrame(() => { imgEl.classList.add('show'); });
         if (Math.random() < 0.2) {
           setTimeout(() => {
             if (imgEl.parentNode) {
               imgEl.classList.add('flash');
+              increaseFear(20);
               setTimeout(() => { if (imgEl.parentNode) imgEl.classList.remove('flash'); }, 80);
             }
           }, randomInt(20, 150));
@@ -865,102 +929,18 @@
       let newspaperActive = false;
 
       const newspaperArticles = [
-        {
-          header: "CHELYABINSK - C.L.K. | ДОСЬЕ",
-          title: "ПРОЕКТ «ЧЕЛЯБИНСК»",
-          text: "Закрытый научный эксперимент, замаскированный под промышленный объект где-то в уральской глуши. Официальная легенда: исследовательский центр изучения поведенческих паттернов. Реальность: полигон для моделирования идеальных условий зарождения и выявления насилия.",
-          footer: "СЕКРЕТНО | УРОВЕНЬ ДОПУСКА: АЛЬФА",
-          stamp: "СЕКРЕТНО",
-          case: "ДЕЛО №734-Ч"
-        },
-        {
-          header: "МЕДИЦИНСКИЙ ПРОТОКОЛ",
-          title: "ПРЕПАРАТ «Ч-0»",
-          text: "Всем испытуемым вводится синтетическое соединение, временно стирающее автобиографическую память. Человек не помнит ни имени, ни прошлого, ни причин своего попадания на полигон. Базовая личность сохраняется, но контекст исчезает.",
-          footer: "ДОЗИРОВКА: 15ml | ЭФФЕКТ: 4-6 ЧАСОВ",
-          stamp: "Ч-0",
-          case: "ПРОТОКОЛ Ч-0/47"
-        },
-        {
-          header: "ОТЧЁТ НАБЛЮДЕНИЯ",
-          title: "ПОЛИГОН",
-          text: "Каждая сессия разворачивается в новом, случайно сгенерированном или заранее подготовленном месте. Проект не привязан к единой локации. Место всегда замкнуто, изолировано, лишено связи с внешним миром.",
-          footer: "СЕССИЯ №47 | ЛОКАЦИЯ: ЗАСЕКРЕЧЕНО",
-          stamp: "ПОЛИГОН",
-          case: "ОТЧЁТ Н-47"
-        },
-        {
-          header: "ВНУТРЕННИЙ ДОКУМЕНТ",
-          title: "ИСПЫТУЕМЫЕ",
-          text: "Группа людей, прошедших принудительную амнезию. Среди них скрыт Маньяк — человек, которому имплантирована ложная директива. Он искренне убеждён, что убийство всех остальных — его единственный путь к свободе.",
-          footer: "СТАТУС: АКТИВЕН | МАНЬЯК НЕ ИДЕНТИФИЦИРОВАН",
-          stamp: "МАНЬЯК",
-          case: "ДОСЬЕ М-12"
-        },
-        {
-          header: "ПРОТОКОЛ ЭКСТРЕННОГО ПЕРЕНОСА",
-          title: "ПОЛИЦЕЙСКИЙ",
-          text: "Если Свидетель погибает от руки Маньяка, его сознание не исчезает. Нейро-слепок личности загружается в резервное тело — Полицейского. Он возвращается на полигон с памятью о собственной смерти.",
-          footer: "СТАЗИС-КАМЕРА: АКТИВНА | ТЕЛО ГОТОВО",
-          stamp: "ВОЗВРАТ",
-          case: "ПРОТОКОЛ П-03"
-        },
-        {
-          header: "ТАКТИЧЕСКОЕ РАСПОРЯЖЕНИЕ",
-          title: "ГАНМЕН",
-          text: "Среди Свидетелей всегда присутствует один человек, которому система выдаёт оружие. Он не выбирает эту роль, не помнит, как обращаться с пистолетом до момента пробуждения — но инстинкты тела сохраняются.",
-          footer: "ОРУЖИЕ: ПМ | ПАТРОНЫ: 6",
-          stamp: "СТРЕЛОК",
-          case: "РАСПОРЯЖЕНИЕ Г-09"
-        },
-        {
-          header: "ТЕХНИЧЕСКАЯ ДОКУМЕНТАЦИЯ",
-          title: "СИСТЕМА КАРМЫ",
-          text: "Этический Якорь — нейро-имплант, регистрирующий каждое действие испытуемого. Убийство истинного Маньяка не штрафуется. Убийство невиновного Свидетеля — тяжелейшее нарушение. Мучительная смерть удваивает кару.",
-          footer: "ПОРОГ: -50 | СТАТУС ЯКОРЯ: ОНЛАЙН",
-          stamp: "КАРМА",
-          case: "ТЕХ.ДОК ЭЯ-12"
-        },
-        {
-          header: "ПРОТОКОЛ ИЗОЛЯЦИИ",
-          title: "ЧИСТИЛИЩЕ",
-          text: "Если карма опускается ниже критического порога, сознание перемещается в Чистилище. Белые стены, абсолютная тишина, сенсорная депривация. Субъект остаётся там 2-3 часа реального времени, которые субъективно растягиваются в вечность.",
-          footer: "МОДУЛЬ: АВТОНОМНЫЙ | ВРЕМЯ: БЕСКОНЕЧНОСТЬ",
-          stamp: "ТИШИНА",
-          case: "ПРОТОКОЛ ЧЩ-00"
-        },
-        {
-          header: "ЦИКЛИЧЕСКИЙ ОТЧЁТ",
-          title: "ПЕТЛЯ СЕССИЙ",
-          text: "Эксперимент не заканчивается одной игрой. Препарат вводится снова. Меняется полигон. Старая сессия завершена, начинается новая. Память обнуляется, но шрамы на Этическом Якоре остаются. Никто не знает, сколько кругов они уже прошли.",
-          footer: "ЦИКЛ: БЕСКОНЕЧНЫЙ | ПАМЯТЬ: СТЁРТА",
-          stamp: "ПЕТЛЯ",
-          case: "ОТЧЁТ Ц-99"
-        },
-        {
-          header: "АНАЛИТИЧЕСКАЯ ЗАПИСКА",
-          title: "ИСТИННАЯ ЦЕЛЬ",
-          text: "Является ли человек добрым по природе, а зло — лишь искажением, или же тьма живёт в каждом и ждёт лишь подходящих условий? У эксперимента нет конечной точки. Есть только новая сессия. Новый Маньяк. И старая карма, переходящая по кругу.",
-          footer: "ВОПРОС БЕЗ ОТВЕТА | НАБЛЮДЕНИЕ ПРОДОЛЖАЕТСЯ",
-          stamp: "?",
-          case: "АНАЛИЗ ИЦ-01"
-        },
-        {
-          header: "ОБРЫВОК ЗАПИСКИ",
-          title: "Я БЫЛ ЗДЕСЬ",
-          text: "Я был здесь до тебя. Это не выход. Это круг. Маньяк — не человек. Маньяк — сам эксперимент. Не верь им. Не верь никому. Чистилище ждёт всех.",
-          footer: "НАЙДЕНО НА ПОЛИГОНЕ №12",
-          stamp: "ЖЕРТВА",
-          case: "ВЕЩДОК 12-Б"
-        },
-        {
-          header: "ПРЕДУПРЕЖДЕНИЕ",
-          title: "НЕ СМОТРИ В КАМЕРЫ",
-          text: "Они видят всё. Кроме слепых зон. Найди слепую зону. Только там ты свободен. Только там ты можешь думать. Но помни — Маньяк тоже ищет слепые зоны.",
-          footer: "ЗАПИСКА ПРЕДЫДУЩЕГО ИСПЫТУЕМОГО",
-          stamp: "СМОТРИ",
-          case: "ЗАПИСКА №47"
-        }
+        { header: "CHELYABINSK - C.L.K. | ДОСЬЕ", title: "ПРОЕКТ «ЧЕЛЯБИНСК»", text: "Закрытый научный эксперимент, замаскированный под промышленный объект где-то в уральской глуши. Официальная легенда: исследовательский центр изучения поведенческих паттернов. Реальность: полигон для моделирования идеальных условий зарождения и выявления насилия.", footer: "СЕКРЕТНО | УРОВЕНЬ ДОПУСКА: АЛЬФА", stamp: "СЕКРЕТНО", case: "ДЕЛО №734-Ч" },
+        { header: "МЕДИЦИНСКИЙ ПРОТОКОЛ", title: "ПРЕПАРАТ «Ч-0»", text: "Всем испытуемым вводится синтетическое соединение, временно стирающее автобиографическую память. Человек не помнит ни имени, ни прошлого, ни причин своего попадания на полигон.", footer: "ДОЗИРОВКА: 15ml | ЭФФЕКТ: 4-6 ЧАСОВ", stamp: "Ч-0", case: "ПРОТОКОЛ Ч-0/47" },
+        { header: "ОТЧЁТ НАБЛЮДЕНИЯ", title: "ПОЛИГОН", text: "Каждая сессия разворачивается в новом, случайно сгенерированном или заранее подготовленном месте. Место всегда замкнуто, изолировано, лишено связи с внешним миром.", footer: "СЕССИЯ №47 | ЛОКАЦИЯ: ЗАСЕКРЕЧЕНО", stamp: "ПОЛИГОН", case: "ОТЧЁТ Н-47" },
+        { header: "ВНУТРЕННИЙ ДОКУМЕНТ", title: "ИСПЫТУЕМЫЕ", text: "Группа людей, прошедших принудительную амнезию. Среди них скрыт Маньяк — человек, которому имплантирована ложная директива.", footer: "СТАТУС: АКТИВЕН | МАНЬЯК НЕ ИДЕНТИФИЦИРОВАН", stamp: "МАНЬЯК", case: "ДОСЬЕ М-12" },
+        { header: "ПРОТОКОЛ ЭКСТРЕННОГО ПЕРЕНОСА", title: "ПОЛИЦЕЙСКИЙ", text: "Если Свидетель погибает от руки Маньяка, его сознание не исчезает. Нейро-слепок личности загружается в резервное тело — Полицейского.", footer: "СТАЗИС-КАМЕРА: АКТИВНА | ТЕЛО ГОТОВО", stamp: "ВОЗВРАТ", case: "ПРОТОКОЛ П-03" },
+        { header: "ТАКТИЧЕСКОЕ РАСПОРЯЖЕНИЕ", title: "ГАНМЕН", text: "Среди Свидетелей всегда присутствует один человек, которому система выдаёт оружие. Он не выбирает эту роль, не помнит, как обращаться с пистолетом.", footer: "ОРУЖИЕ: ПМ | ПАТРОНЫ: 6", stamp: "СТРЕЛОК", case: "РАСПОРЯЖЕНИЕ Г-09" },
+        { header: "ТЕХНИЧЕСКАЯ ДОКУМЕНТАЦИЯ", title: "СИСТЕМА КАРМЫ", text: "Этический Якорь — нейро-имплант. Убийство истинного Маньяка не штрафуется. Убийство невиновного — тяжелейшее нарушение.", footer: "ПОРОГ: -50 | СТАТУС ЯКОРЯ: ОНЛАЙН", stamp: "КАРМА", case: "ТЕХ.ДОК ЭЯ-12" },
+        { header: "ПРОТОКОЛ ИЗОЛЯЦИИ", title: "ЧИСТИЛИЩЕ", text: "Белые стены, абсолютная тишина, сенсорная депривация. 2-3 часа реального времени, которые субъективно растягиваются в вечность.", footer: "МОДУЛЬ: АВТОНОМНЫЙ | ВРЕМЯ: БЕСКОНЕЧНОСТЬ", stamp: "ТИШИНА", case: "ПРОТОКОЛ ЧЩ-00" },
+        { header: "ЦИКЛИЧЕСКИЙ ОТЧЁТ", title: "ПЕТЛЯ СЕССИЙ", text: "Эксперимент не заканчивается одной игрой. Препарат вводится снова. Память обнуляется, но шрамы на Этическом Якоре остаются.", footer: "ЦИКЛ: БЕСКОНЕЧНЫЙ | ПАМЯТЬ: СТЁРТА", stamp: "ПЕТЛЯ", case: "ОТЧЁТ Ц-99" },
+        { header: "АНАЛИТИЧЕСКАЯ ЗАПИСКА", title: "ИСТИННАЯ ЦЕЛЬ", text: "Является ли человек добрым по природе, или тьма живёт в каждом? У эксперимента нет конечной точки. Только новая сессия.", footer: "ВОПРОС БЕЗ ОТВЕТА", stamp: "?", case: "АНАЛИЗ ИЦ-01" },
+        { header: "ОБРЫВОК ЗАПИСКИ", title: "Я БЫЛ ЗДЕСЬ", text: "Это круг. Маньяк — не человек. Маньяк — сам эксперимент. Не верь им. Чистилище ждёт всех.", footer: "НАЙДЕНО НА ПОЛИГОНЕ №12", stamp: "ЖЕРТВА", case: "ВЕЩДОК 12-Б" },
+        { header: "ПРЕДУПРЕЖДЕНИЕ", title: "НЕ СМОТРИ В КАМЕРЫ", text: "Они видят всё. Кроме слепых зон. Найди слепую зону. Но помни — Маньяк тоже ищет слепые зоны.", footer: "ЗАПИСКА ПРЕДЫДУЩЕГО ИСПЫТУЕМОГО", stamp: "СМОТРИ", case: "ЗАПИСКА №47" }
       ];
 
       function spawnNewspaper() {
@@ -1005,6 +985,7 @@
         clipping.style.transform = `rotate(${rotation}deg) scale(0.9)`;
 
         newspaperContainer.appendChild(clipping);
+        increaseFear(10);
 
         requestAnimationFrame(() => {
           clipping.classList.add('show');
