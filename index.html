@@ -1,1059 +1,152 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>MELEECITY+ | Manhunt Style Psychosis</title>
-  <style>
-    :root {
-      --bg: #000000;
-      --text: #9a9a9a;
-      --white: #e0e0e0;
-      --accent: #ffffff;
-      --dark-line: #2a2a2a;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background-color: #000000;
-      font-family: 'Courier New', 'Lucida Console', monospace;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-      user-select: none;
-      -webkit-user-select: none;
-      cursor: none;
-    }
-
-    /* Базовые эффекты окружения */
-    .grain {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 10;
-      background-image: repeating-radial-gradient(circle at 50% 50%, transparent 0, rgba(255, 255, 255, 0.02) 1px, transparent 2px);
-      background-size: 4px 4px;
-      animation: grain 0.5s steps(5) infinite;
-    }
-    @keyframes grain {
-      0%, 100% { transform: translate(0, 0); }
-      25% { transform: translate(-1px, 1px); }
-      50% { transform: translate(1px, -1px); }
-      75% { transform: translate(-1px, -1px); }
-    }
-    .scanlines {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 11;
-      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.3) 2px, rgba(0, 0, 0, 0.3) 4px);
-    }
-
-    .vignette {
-      display: none;
-    }
-
-    /* Контейнер */
-    .container {
-      position: relative;
-      z-index: 5;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 30px;
-    }
-
-    /* ЗАГОЛОВОК */
-    .title-wrapper {
-      position: relative;
-      display: inline-block;
-    }
-    .title {
-      font-size: 76px;
-      font-weight: bold;
-      color: #ffffff;
-      letter-spacing: 14px;
-      text-transform: uppercase;
-      text-shadow: 3px 3px 0 rgba(255, 255, 255, 0.15), -1px -1px 0 rgba(255, 255, 255, 0.1);
-      position: relative;
-      line-height: 1;
-      display: inline-block;
-    }
-
-    .title-letter {
-      display: inline-block;
-      transition: color 0.15s ease, transform 0.15s ease, text-shadow 0.15s ease, opacity 0.15s ease;
-      position: relative;
-    }
-
-    .title-letter.black-letter {
-      color: #000000 !important;
-      text-shadow: none !important;
-    }
-
-    .title-letter.red-letter {
-      color: #ff1a1a !important;
-      text-shadow: 0 0 20px rgba(255, 0, 0, 0.9), 0 0 40px rgba(255, 0, 0, 0.6) !important;
-    }
-
-    .title-letter.glitch-left {
-      animation: letter-glitch-left 0.4s steps(3) forwards;
-    }
-    @keyframes letter-glitch-left {
-      0% { transform: translate(0, 0); opacity: 1; }
-      20% { transform: translate(-8px, 3px); opacity: 0.7; }
-      40% { transform: translate(5px, -2px); opacity: 0.9; }
-      60% { transform: translate(-12px, -4px); opacity: 0.4; }
-      80% { transform: translate(3px, 1px); opacity: 0.8; }
-      100% { transform: translate(0, 0); opacity: 1; }
-    }
-
-    .title-letter.glitch-right {
-      animation: letter-glitch-right 0.4s steps(3) forwards;
-    }
-    @keyframes letter-glitch-right {
-      0% { transform: translate(0, 0); opacity: 1; }
-      20% { transform: translate(8px, -3px); opacity: 0.7; }
-      40% { transform: translate(-5px, 2px); opacity: 0.9; }
-      60% { transform: translate(12px, 4px); opacity: 0.4; }
-      80% { transform: translate(-3px, -1px); opacity: 0.8; }
-      100% { transform: translate(0, 0); opacity: 1; }
-    }
-
-    .title-letter.glitch-up {
-      animation: letter-glitch-up 0.35s steps(3) forwards;
-    }
-    @keyframes letter-glitch-up {
-      0% { transform: translate(0, 0); opacity: 1; }
-      25% { transform: translate(3px, -10px); opacity: 0.5; }
-      50% { transform: translate(-4px, 3px); opacity: 0.9; }
-      75% { transform: translate(2px, -7px); opacity: 0.6; }
-      100% { transform: translate(0, 0); opacity: 1; }
-    }
-
-    .title-letter.glitch-down {
-      animation: letter-glitch-down 0.35s steps(3) forwards;
-    }
-    @keyframes letter-glitch-down {
-      0% { transform: translate(0, 0); opacity: 1; }
-      25% { transform: translate(-3px, 10px); opacity: 0.5; }
-      50% { transform: translate(4px, -3px); opacity: 0.9; }
-      75% { transform: translate(-2px, 7px); opacity: 0.6; }
-      100% { transform: translate(0, 0); opacity: 1; }
-    }
-
-    .separator {
-      width: 180px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent 0%, #4a4a4a 15%, #8a8a8a 50%, #4a4a4a 85%, transparent 100%);
-      opacity: 0.8;
-    }
-
-    /* Философская надпись */
-    .big-subtitle {
-      font-size: 18px;
-      color: #999999;
-      letter-spacing: 6px;
-      text-transform: uppercase;
-      opacity: 0.75;
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
-      animation: pulse-text 2.5s ease-in-out infinite;
-      font-weight: bold;
-      transition: color 0.3s ease, text-shadow 0.3s ease;
-      position: relative;
-    }
-    @keyframes pulse-text {
-      0%, 100% { opacity: 0.5; }
-      50% { opacity: 0.9; }
-    }
-
-    .big-subtitle.red-flash {
-      color: #ff1a1a;
-      text-shadow: 0 0 20px rgba(255, 0, 0, 0.9), 0 0 40px rgba(255, 0, 0, 0.5);
-      animation: red-pulse 0.8s ease-out;
-    }
-    @keyframes red-pulse {
-      0% { color: #ff1a1a; text-shadow: 0 0 20px rgba(255, 0, 0, 0.9), 0 0 40px rgba(255, 0, 0, 0.5); opacity: 1; }
-      50% { color: #ff4d4d; text-shadow: 0 0 30px rgba(255, 0, 0, 1), 0 0 60px rgba(255, 0, 0, 0.7); opacity: 0.95; }
-      100% { color: #999999; text-shadow: 0 0 8px rgba(255, 255, 255, 0.2); opacity: 0.75; }
-    }
-
-    .dots-container {
-      display: inline-block;
-      margin-left: 2px;
-    }
-    .dot {
-      display: inline-block;
-      width: 5px;
-      height: 5px;
-      background: #ffffff;
-      border-radius: 50%;
-      margin-left: 5px;
-      vertical-align: middle;
-      opacity: 0;
-      animation: dot-sequence 1.8s infinite;
-      box-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
-      transition: background 0.2s ease, box-shadow 0.2s ease;
-    }
-    .dot:nth-child(1) { animation-delay: 0s; }
-    .dot:nth-child(2) { animation-delay: 0.3s; }
-    .dot:nth-child(3) { animation-delay: 0.6s; }
-    @keyframes dot-sequence {
-      0%, 40% { opacity: 0; transform: scale(0.5); }
-      50% { opacity: 1; transform: scale(1.2); }
-      60%, 100% { opacity: 0; transform: scale(0.5); }
-    }
-    .dot.red-dot {
-      background: #ff1a1a;
-      box-shadow: 0 0 12px rgba(255, 0, 0, 0.9);
-    }
-
-    /* Углы */
-    .corner-decoration { position: fixed; z-index: 3; pointer-events: none; }
-    .corner-top-left { top: 30px; left: 30px; }
-    .corner-top-right { top: 30px; right: 30px; }
-    .corner-bottom-left { bottom: 30px; left: 30px; }
-    .corner-bottom-right { bottom: 30px; right: 30px; }
-    .corner-line { display: block; width: 30px; height: 1px; background: rgba(255, 255, 255, 0.15); margin: 5px 0; }
-    .corner-top-left .corner-line:nth-child(1) { width: 32px; }
-    .corner-top-left .corner-line:nth-child(2) { width: 20px; }
-    .corner-top-left .corner-line:nth-child(3) { width: 10px; }
-    .corner-top-right .corner-line:nth-child(1) { width: 10px; margin-left: auto; }
-    .corner-top-right .corner-line:nth-child(2) { width: 20px; margin-left: auto; }
-    .corner-top-right .corner-line:nth-child(3) { width: 32px; margin-left: auto; }
-    .corner-bottom-left .corner-line:nth-child(1) { width: 10px; }
-    .corner-bottom-left .corner-line:nth-child(2) { width: 20px; }
-    .corner-bottom-left .corner-line:nth-child(3) { width: 32px; }
-    .corner-bottom-right .corner-line:nth-child(1) { width: 32px; margin-left: auto; }
-    .corner-bottom-right .corner-line:nth-child(2) { width: 20px; margin-left: auto; }
-    .corner-bottom-right .corner-line:nth-child(3) { width: 10px; margin-left: auto; }
-
-    /* Плавающий текст */
-    .float-text {
-      position: fixed;
-      pointer-events: none;
-      z-index: 8;
-      font-family: 'Courier New', monospace;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      text-transform: uppercase;
-      will-change: transform, opacity;
-    }
-    .float-sm { font-size: 10px; letter-spacing: 4px; }
-    .float-md { font-size: 13px; letter-spacing: 6px; font-weight: bold; }
-    .float-lg { font-size: 18px; letter-spacing: 8px; font-weight: bold; }
-    .float-xl { font-size: 24px; letter-spacing: 10px; font-weight: bold; }
-    .float-bright { color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.6); }
-    .float-mid { color: #aaaaaa; text-shadow: 0 0 6px rgba(255,255,255,0.3); }
-    .float-dim { color: #666666; }
-    .float-faint { color: #444444; }
-    .float-glitch { animation: float-glitch-anim 0.3s steps(3) forwards; }
-    @keyframes float-glitch-anim {
-      0% { transform: translate(0, 0); opacity: 0.9; }
-      20% { transform: translate(-4px, 2px); opacity: 0.7; }
-      40% { transform: translate(3px, -1px); opacity: 1; }
-      60% { transform: translate(-2px, -3px); opacity: 0.5; }
-      80% { transform: translate(5px, 1px); opacity: 0.8; }
-      100% { transform: translate(0, 0); opacity: 0; }
-    }
-    .float-red-flash { animation: red-text-flash 0.6s ease-out forwards !important; }
-    @keyframes red-text-flash {
-      0% { color: #ff1a1a; text-shadow: 0 0 15px rgba(255, 0, 0, 0.9), 0 0 30px rgba(255, 0, 0, 0.6); opacity: 0.95; }
-      40% { color: #ff4d4d; text-shadow: 0 0 20px rgba(255, 0, 0, 1), 0 0 40px rgba(255, 0, 0, 0.8); opacity: 1; }
-      100% { color: inherit; text-shadow: inherit; opacity: inherit; }
-    }
-
-    /* Эффекты VHS */
-    .tracking-line {
-      position: fixed;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: rgba(255, 255, 255, 0.06);
-      pointer-events: none;
-      z-index: 9;
-      animation: tracking-move 4s linear infinite;
-    }
-    @keyframes tracking-move { 0% { top: -5%; } 100% { top: 105%; } }
-
-    .static-burst {
-      position: fixed;
-      pointer-events: none;
-      z-index: 13;
-      background: rgba(255, 255, 255, 0.04);
-      animation: burst 0.15s steps(4) forwards;
-    }
-    @keyframes burst { 0% { opacity: 0.7; } 50% { opacity: 0.15; } 100% { opacity: 0; } }
-
-    .bracket-flash {
-      position: fixed;
-      pointer-events: none;
-      z-index: 4;
-      color: #ffffff;
-      font-size: 20px;
-      opacity: 0;
-      animation: bracket-pop 0.6s ease-out forwards;
-    }
-    @keyframes bracket-pop {
-      0% { opacity: 0; transform: scale(0.8); }
-      30% { opacity: 0.9; transform: scale(1.1); }
-      100% { opacity: 0; transform: scale(1); }
-    }
-
-    /* ПСИХОЗНЫЕ КАРТИНКИ */
-    .psycho-image {
-      position: fixed;
-      pointer-events: none;
-      z-index: 20;
-      border: none;
-      outline: none;
-      box-shadow: 0 0 40px 20px rgba(0, 0, 0, 0.9), 0 0 80px 40px rgba(0, 0, 0, 0.8), inset 0 0 60px 30px rgba(0, 0, 0, 0.7);
-      border-radius: 8px;
-      opacity: 0;
-      transition: opacity 0.06s ease;
-      -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0.8) 60%, rgba(0, 0, 0, 0.3) 80%, rgba(0, 0, 0, 0) 100%);
-      mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0.8) 60%, rgba(0, 0, 0, 0.3) 80%, rgba(0, 0, 0, 0) 100%);
-      filter: grayscale(0.85) contrast(1.4) brightness(0.75) blur(0.5px);
-      mix-blend-mode: hard-light;
-      transform-origin: center;
-      image-rendering: auto;
-    }
-    .psycho-image.show {
-      opacity: 0.8;
-      animation: psycho-pop 0.12s ease-out;
-    }
-    @keyframes psycho-pop {
-      0% { transform: scale(0.7); opacity: 0; filter: grayscale(0.85) contrast(1.4) brightness(0.75) blur(2px); }
-      40% { transform: scale(1.08); opacity: 0.9; filter: grayscale(0.5) contrast(1.6) brightness(0.85) blur(0.5px); }
-      100% { transform: scale(1); opacity: 0.8; filter: grayscale(0.85) contrast(1.4) brightness(0.75) blur(0.5px); }
-    }
-    .psycho-image.flash {
-      opacity: 0.95;
-      filter: grayscale(0.1) contrast(2.0) brightness(1.2) blur(0px);
-      mix-blend-mode: normal;
-      box-shadow: 0 0 50px 25px rgba(255, 255, 255, 0.2), 0 0 100px 50px rgba(0, 0, 0, 0.6);
-      border-radius: 12px;
-    }
-
-    /* ГАЗЕТНЫЕ ВЫРЕЗКИ */
-    .newspaper-clipping {
-      position: fixed;
-      pointer-events: none;
-      z-index: 15;
-      background-color: #c4b896;
-      background-image: 
-        repeating-linear-gradient(2deg, transparent, transparent 2px, rgba(180, 160, 130, 0.3) 2px, rgba(180, 160, 130, 0.3) 2.5px),
-        repeating-linear-gradient(87deg, transparent, transparent 40px, rgba(200, 180, 150, 0.2) 40px, rgba(200, 180, 150, 0.2) 41px),
-        radial-gradient(ellipse at 20% 30%, rgba(160, 140, 100, 0.4) 0%, transparent 50%),
-        radial-gradient(ellipse at 75% 60%, rgba(180, 160, 120, 0.3) 0%, transparent 40%),
-        radial-gradient(ellipse at 50% 80%, rgba(200, 180, 140, 0.25) 0%, transparent 35%),
-        radial-gradient(circle at 85% 15%, rgba(140, 120, 80, 0.5) 0%, transparent 25%),
-        radial-gradient(ellipse at 30% 70%, rgba(220, 210, 180, 0.3) 0%, transparent 45%),
-        repeating-linear-gradient(45deg, transparent, transparent 15px, rgba(0, 0, 0, 0.03) 15px, rgba(0, 0, 0, 0.03) 15.5px);
-      clip-path: polygon(0% 2%, 2% 0%, 8% 1%, 15% 0%, 20% 3%, 28% 0%, 35% 2%, 42% 0%, 50% 3%, 58% 0%, 65% 2%, 72% 1%, 80% 3%, 88% 0%, 95% 2%, 98% 0%, 100% 3%, 100% 95%, 98% 100%, 92% 97%, 85% 100%, 78% 98%, 70% 100%, 62% 97%, 55% 100%, 48% 98%, 40% 100%, 32% 97%, 25% 100%, 18% 98%, 10% 100%, 5% 97%, 0% 95%, 0% 70%, 2% 55%, 0% 40%, 3% 25%, 0% 10%);
-      border: none;
-      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.9), 0 2px 10px rgba(0, 0, 0, 0.7), inset 0 0 30px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(0, 0, 0, 0.2);
-      padding: 25px 28px;
-      max-width: 520px;
-      min-width: 300px;
-      opacity: 0;
-      transform: rotate(-1deg) scale(0.9);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-      font-family: 'Times New Roman', 'Georgia', serif;
-      color: #3a3020;
-      text-transform: none;
-      letter-spacing: 0.5px;
-      overflow: hidden;
-    }
-
-    .newspaper-text {
-      font-size: 12px;
-      line-height: 1.6;
-      color: #2a2218;
-      opacity: 0.9;
-      margin-bottom: 8px;
-      font-family: 'Courier New', 'Lucida Console', monospace;
-      letter-spacing: 0.3px;
-      text-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
-    }
-
-    .newspaper-header {
-      font-size: 10px;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: #4a3a20;
-      border-bottom: 2px solid rgba(60, 40, 20, 0.4);
-      padding-bottom: 8px;
-      margin-bottom: 12px;
-      font-family: 'Courier New', monospace;
-      font-weight: bold;
-      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
-    }
-
-    .newspaper-title {
-      font-size: 18px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      color: #1a1008;
-      margin-bottom: 10px;
-      line-height: 1.3;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-      font-family: 'Times New Roman', serif;
-    }
-
-    .newspaper-footer {
-      font-size: 9px;
-      color: #5a4a30;
-      text-align: right;
-      font-style: italic;
-      margin-top: 10px;
-      border-top: 1px solid rgba(60, 40, 20, 0.3);
-      padding-top: 8px;
-      font-family: 'Courier New', monospace;
-      letter-spacing: 1px;
-    }
-
-    .blood-stamp {
-      position: absolute;
-      bottom: 18px;
-      right: 18px;
-      font-size: 26px;
-      color: rgba(180, 30, 30, 0.5);
-      font-family: 'Courier New', monospace;
-      font-weight: bold;
-      transform: rotate(-15deg);
-      letter-spacing: 3px;
-      pointer-events: none;
-      text-shadow: 0 0 10px rgba(255, 0, 0, 0.3), 0 0 20px rgba(200, 0, 0, 0.2);
-    }
-
-    .secret-stamp {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      color: rgba(200, 30, 30, 0.45);
-      font-size: 11px;
-      font-weight: bold;
-      border: 2px solid rgba(200, 30, 30, 0.45);
-      padding: 4px 10px;
-      transform: rotate(8deg);
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      font-family: 'Courier New', monospace;
-      pointer-events: none;
-      text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
-    }
-
-    .newspaper-image {
-      width: 100%;
-      height: auto;
-      margin: 12px 0;
-      filter: sepia(0.8) contrast(1.1) brightness(0.75) grayscale(0.3);
-      border: 2px solid rgba(60, 40, 20, 0.3);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(0, 0, 0, 0.3);
-      border-radius: 2px;
-    }
-
-    .case-number {
-      position: absolute;
-      top: 8px;
-      left: 12px;
-      font-size: 7px;
-      color: rgba(60, 40, 20, 0.5);
-      font-family: 'Courier New', monospace;
-      letter-spacing: 2px;
-    }
-
-    .fold-line {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      width: 100%;
-      height: 1px;
-      background: rgba(0, 0, 0, 0.1);
-      box-shadow: 0 1px 2px rgba(255, 255, 255, 0.2), 0 -1px 2px rgba(0, 0, 0, 0.1);
-      pointer-events: none;
-    }
-
-    .newspaper-clipping.show {
-      opacity: 0.94;
-      transform: rotate(-1deg) scale(1);
-      animation: newspaper-appear 0.6s ease-out;
-    }
-    @keyframes newspaper-appear {
-      0% { opacity: 0; transform: rotate(-4deg) scale(0.8); }
-      40% { opacity: 0.5; transform: rotate(1deg) scale(1.04); }
-      70% { opacity: 0.85; transform: rotate(-2deg) scale(0.98); }
-      100% { opacity: 0.94; transform: rotate(-1deg) scale(1); }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chelyabinsk RP — жизнь в городе</title>
+  <meta name="description" content="Chelyabinsk RP — серьёзный roleplay на Garry's Mod. Южный Урал, свои правила, своя история." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700&family=Unbounded:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="grain"></div>
-  <div class="scanlines"></div>
-  <div class="tracking-line"></div>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="frost" aria-hidden="true"></div>
 
-  <div class="corner-decoration corner-top-left"><div class="corner-line"></div><div class="corner-line"></div><div class="corner-line"></div></div>
-  <div class="corner-decoration corner-top-right"><div class="corner-line"></div><div class="corner-line"></div><div class="corner-line"></div></div>
-  <div class="corner-decoration corner-bottom-left"><div class="corner-line"></div><div class="corner-line"></div><div class="corner-line"></div></div>
-  <div class="corner-decoration corner-bottom-right"><div class="corner-line"></div><div class="corner-line"></div><div class="corner-line"></div></div>
+  <header class="nav">
+    <a class="nav-brand" href="#top">CHELYABINSK<span>RP</span></a>
+    <nav class="nav-links">
+      <a href="#city">Город</a>
+      <a href="#life">Жизнь</a>
+      <a href="#join">Войти</a>
+    </nav>
+    <a class="nav-cta" href="#join">Подключиться</a>
+  </header>
 
-  <div class="container">
-    <div class="title-wrapper">
-      <h1 class="title" id="mainTitle"></h1>
-    </div>
-    <div class="separator"></div>
-    <p class="big-subtitle" id="mainPhrase">
-      ВЫ СТАНОВИТЕСЬ ЧЕМ-ТО БОЛЬШИМ
-      <span class="dots-container" id="dotsContainer">
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-      </span>
-    </p>
-  </div>
+  <main id="top">
+    <section class="hero">
+      <div class="hero-media" aria-hidden="true">
+        <img class="hero-img is-active" src="assets/hero.png" alt="" />
+        <img class="hero-img" src="assets/night.png" alt="" />
+        <img class="hero-img" src="assets/street.png" alt="" />
+        <img class="hero-img" src="assets/real-miass.jpg" alt="" />
+        <div class="hero-veil"></div>
+        <div class="hero-grain"></div>
+      </div>
 
-  <div id="floatingTexts"></div>
-  <div id="psychoImages"></div>
-  <div id="newspapers"></div>
+      <div class="hero-copy">
+        <p class="hero-kicker">Garry's Mod · Южный Урал · Roleplay</p>
+        <h1 class="hero-title">
+          <span class="hero-title-main">CHELYABINSK</span>
+          <span class="hero-title-sub">RP</span>
+        </h1>
+        <p class="hero-lead">
+          Город, где снег скрипит под ногами, а каждый выбор оставляет след.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#join">Войти в город</a>
+          <button class="btn btn-ghost" type="button" id="copyIpBtn" data-ip="185.97.255.43:27735">
+            Скопировать IP
+          </button>
+        </div>
+      </div>
 
-  <script>
-    (function() {
-      // ========== СЕРДЦЕБИЕНИЕ (Web Audio API) ==========
-      let audioCtx = null;
-      let heartbeatInterval = null;
-      let currentBPM = 65;
-      let targetBPM = 65;
-      let fearLevel = 0;
+      <a class="scroll-hint" href="#city" aria-label="Дальше">
+        <span></span>
+      </a>
+    </section>
 
-      function initAudio() {
-        if (audioCtx) return;
-        try {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        } catch (e) {
-          console.warn('Web Audio API не поддерживается');
-        }
-      }
+    <section class="city" id="city">
+      <div class="city-intro">
+        <p class="section-eyebrow">74 регион</p>
+        <h2 class="section-title">Не декорация.<br />Настоящий город.</h2>
+        <p class="section-text">
+          Панельные дворы, заводской горизонт, тёплый свет окон в мороз.
+          Chelyabinsk RP — про быт, характер и последствия, а не про перестрелки ради галочки.
+        </p>
+      </div>
 
-      function playHeartbeat() {
-        if (!audioCtx) return;
-        
-        const now = audioCtx.currentTime;
-        
-        // Первый удар (lub)
-        const osc1 = audioCtx.createOscillator();
-        const gain1 = audioCtx.createGain();
-        const filter1 = audioCtx.createBiquadFilter();
-        
-        osc1.type = 'sine';
-        osc1.frequency.setValueAtTime(55, now);
-        osc1.frequency.exponentialRampToValueAtTime(30, now + 0.15);
-        
-        filter1.type = 'lowpass';
-        filter1.frequency.setValueAtTime(200, now);
-        filter1.frequency.exponentialRampToValueAtTime(50, now + 0.15);
-        
-        gain1.gain.setValueAtTime(0, now);
-        gain1.gain.linearRampToValueAtTime(0.25, now + 0.03);
-        gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-        
-        osc1.connect(filter1);
-        filter1.connect(gain1);
-        gain1.connect(audioCtx.destination);
-        
-        osc1.start(now);
-        osc1.stop(now + 0.25);
-        
-        // Второй удар (dub) - через 0.2 секунды
-        const osc2 = audioCtx.createOscillator();
-        const gain2 = audioCtx.createGain();
-        const filter2 = audioCtx.createBiquadFilter();
-        
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(60, now + 0.2);
-        osc2.frequency.exponentialRampToValueAtTime(35, now + 0.35);
-        
-        filter2.type = 'lowpass';
-        filter2.frequency.setValueAtTime(180, now + 0.2);
-        filter2.frequency.exponentialRampToValueAtTime(40, now + 0.35);
-        
-        gain2.gain.setValueAtTime(0, now + 0.2);
-        gain2.gain.linearRampToValueAtTime(0.2, now + 0.23);
-        gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-        
-        osc2.connect(filter2);
-        filter2.connect(gain2);
-        gain2.connect(audioCtx.destination);
-        
-        osc2.start(now + 0.2);
-        osc2.stop(now + 0.45);
-        
-        // Реверберация (эхо)
-        const oscEcho = audioCtx.createOscillator();
-        const gainEcho = audioCtx.createGain();
-        
-        oscEcho.type = 'sine';
-        oscEcho.frequency.setValueAtTime(20, now + 0.3);
-        
-        gainEcho.gain.setValueAtTime(0, now + 0.3);
-        gainEcho.gain.linearRampToValueAtTime(0.08, now + 0.35);
-        gainEcho.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-        
-        oscEcho.connect(gainEcho);
-        gainEcho.connect(audioCtx.destination);
-        
-        oscEcho.start(now + 0.3);
-        oscEcho.stop(now + 0.65);
-      }
+      <div class="city-mosaic" aria-hidden="true">
+        <figure class="mosaic-tall">
+          <img src="assets/panel.png" alt="" loading="lazy" />
+          <figcaption>Двор · зима</figcaption>
+        </figure>
+        <figure class="mosaic-wide">
+          <img src="assets/real-miass.jpg" alt="" loading="lazy" />
+          <figcaption>Миасс · центр</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/real-city.jpg" alt="" loading="lazy" />
+          <figcaption>Челябинск-Сити</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/city-2.png" alt="" loading="lazy" />
+          <figcaption>Улицы</figcaption>
+        </figure>
+      </div>
+    </section>
 
-      function updateHeartbeat() {
-        if (heartbeatInterval) clearInterval(heartbeatInterval);
-        
-        // Плавное приближение к целевому BPM
-        currentBPM += (targetBPM - currentBPM) * 0.1;
-        
-        const beatInterval = (60 / currentBPM) * 1000;
-        
-        playHeartbeat();
-        
-        heartbeatInterval = setInterval(() => {
-          currentBPM += (targetBPM - currentBPM) * 0.15;
-          const newInterval = (60 / currentBPM) * 1000;
-          
-          // Перенастраиваем интервал
-          clearInterval(heartbeatInterval);
-          heartbeatInterval = setInterval(() => {
-            currentBPM += (targetBPM - currentBPM) * 0.15;
-            const adjustedInterval = (60 / currentBPM) * 1000;
-            clearInterval(heartbeatInterval);
-            heartbeatInterval = setInterval(arguments.callee, adjustedInterval);
-            playHeartbeat();
-          }, newInterval);
-          
-          playHeartbeat();
-        }, beatInterval);
-      }
+    <section class="life" id="life">
+      <div class="life-head">
+        <p class="section-eyebrow">Как здесь играют</p>
+        <h2 class="section-title">Одна жизнь — своя история</h2>
+      </div>
 
-      function increaseFear(amount = 10) {
-        targetBPM = Math.min(130, targetBPM + amount);
-        
-        // Постепенное снижение страха
-        clearTimeout(window.fearTimeout);
-        window.fearTimeout = setTimeout(() => {
-          targetBPM = 65;
-        }, 3000);
-      }
+      <div class="life-grid">
+        <article class="life-block">
+          <span class="life-num">01</span>
+          <h3>Персонаж важнее килла</h3>
+          <p>Имя, прошлое, связи. Ты не «игрок с ником» — ты человек в городе.</p>
+        </article>
+        <article class="life-block">
+          <span class="life-num">02</span>
+          <h3>Последствия реальны</h3>
+          <p>Импульс стоит дорого. Город не прощает хаос ради веселья.</p>
+        </article>
+        <article class="life-block">
+          <span class="life-num">03</span>
+          <h3>Сцена важнее скрипта</h3>
+          <p>Роль, диалог, атмосфера. Механики — только чтобы жить было интереснее.</p>
+        </article>
+      </div>
 
-      // Запуск аудио при первом клике
-      document.addEventListener('click', () => {
-        initAudio();
-        if (audioCtx && !heartbeatInterval) {
-          updateHeartbeat();
-        }
-      }, { once: true });
+      <blockquote class="quote">
+        <p>«Здесь не побеждают. Здесь живут — пока могут.»</p>
+      </blockquote>
+    </section>
 
-      // ========== ЗАГОЛОВОК ==========
-      const titleText = "MELEECITY+";
-      const mainTitleElement = document.getElementById('mainTitle');
+    <section class="join" id="join">
+      <div class="join-panel">
+        <div class="join-copy">
+          <p class="section-eyebrow">Подключение</p>
+          <h2 class="section-title">Открой консоль и зайди</h2>
+          <p class="section-text">
+            Garry's Mod → клавиша <kbd>~</kbd> → вставь команду → Enter.
+            Первый заход может занять время: контент качается с сервера.
+          </p>
+        </div>
 
-      function buildTitle() {
-        mainTitleElement.innerHTML = '';
-        for (let i = 0; i < titleText.length; i++) {
-          const letterSpan = document.createElement('span');
-          letterSpan.classList.add('title-letter');
-          letterSpan.textContent = titleText[i];
-          letterSpan.setAttribute('data-index', i);
-          mainTitleElement.appendChild(letterSpan);
-        }
-      }
+        <div class="join-box">
+          <p class="join-label">Команда</p>
+          <code class="join-cmd" id="connectCmd">connect 185.97.255.43:27735</code>
+          <div class="join-actions">
+            <button class="btn btn-primary" type="button" id="copyCmdBtn">Скопировать команду</button>
+            <a class="btn btn-ghost" href="steam://connect/185.97.255.43:27735">Steam Connect</a>
+          </div>
+          <p class="join-note" id="copyStatus" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+  </main>
 
-      buildTitle();
-      const titleLetters = mainTitleElement.querySelectorAll('.title-letter');
-      const glitchClasses = ['glitch-left', 'glitch-right', 'glitch-up', 'glitch-down'];
+  <footer class="footer">
+    <div class="footer-brand">CHELYABINSK RP</div>
+    <p class="footer-text">Южный Урал · Serious Roleplay · Garry's Mod</p>
+    <p class="footer-ip">185.97.255.43:27735</p>
+  </footer>
 
-      function applyRandomLetterEffect() {
-        const affectedCount = randomInt(1, 3);
-        const totalLetters = titleLetters.length;
-        const indices = [];
-        while (indices.length < affectedCount) {
-          const idx = Math.floor(Math.random() * totalLetters);
-          if (!indices.includes(idx)) indices.push(idx);
-        }
-        indices.forEach(idx => {
-          const letter = titleLetters[idx];
-          const effectType = Math.random();
-          if (effectType < 0.3) {
-            letter.classList.add('black-letter');
-            setTimeout(() => letter.classList.remove('black-letter'), randomFloat(200, 600));
-          } else if (effectType < 0.55) {
-            letter.classList.add('red-letter');
-            setTimeout(() => letter.classList.remove('red-letter'), randomFloat(300, 700));
-            increaseFear(5);
-          } else {
-            const glitchClass = randomFromArray(glitchClasses);
-            letter.classList.add(glitchClass);
-            setTimeout(() => letter.classList.remove(glitchClass), 400);
-            increaseFear(3);
-          }
-        });
-        const nextDelay = randomFloat(1500, 5000);
-        setTimeout(applyRandomLetterEffect, nextDelay);
-      }
-
-      setTimeout(applyRandomLetterEffect, 2000);
-
-      // ========== ФИЛОСОФСКИЕ ФРАЗЫ ==========
-      const philosophicalPhrases = [
-        "ВЫ СТАНОВИТЕСЬ ЧЕМ-ТО БОЛЬШИМ", "ПОДОПЫТНЫЙ БЕЗ ЦЕЛИ",
-        "В НАШЕМ КРОВАВОМ ЭКСПЕРИМЕНТЕ", "ОН МОЖЕТ СТАТЬ КЕМ-ТО ВАЖНЫМ",
-        "ИЛИ ИСЧЕЗНУТЬ НАВСЕГДА", "ЖЕРТВА СТАНОВИТСЯ ОХОТНИКОМ",
-        "БОЛЬ — ЭТО ТВОЙ УРОК", "ТЫ ВСЕГО ЛИШЬ ИНСТРУМЕНТ",
-        "СМОТРИ В БЕЗДНУ", "БЕЗДНА СМОТРИ В ТЕБЯ",
-        "ТВОЯ ЖИЗНЬ — РАЗМЕННАЯ МОНЕТА", "КТО-ТО СТАНЕТ ЛЕГЕНДОЙ",
-        "А КТО-ТО — ПРОСТО МЯСОМ", "ЭКСПЕРИМЕНТ ПРОДОЛЖАЕТСЯ",
-        "ТЫ — СЛЕДУЮЩИЙ", "СТРАХ — ЭТО ДАР", "ПРИМИ СВОЮ РОЛЬ",
-        "ВЫХОДА НЕТ", "ЛИШЬ ВПЕРЁД", "СТАНЬ ТЕМ, КЕМ ДОЛЖЕН"
-      ];
-
-      let currentPhraseIndex = 0;
-      const mainPhraseElement = document.getElementById('mainPhrase');
-
-      function updateMainPhrase(text) {
-        const dotsHTML = '<span class="dots-container" id="dotsContainer"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>';
-        mainPhraseElement.innerHTML = text + ' ' + dotsHTML;
-        const newDots = mainPhraseElement.querySelectorAll('.dot');
-        newDots.forEach((dot, index) => {
-          dot.style.animation = 'none';
-          dot.offsetHeight;
-          dot.style.animation = `dot-sequence 1.8s infinite`;
-          dot.style.animationDelay = `${index * 0.3}s`;
-        });
-      }
-
-      function scheduleNextPhrase() {
-        const delay = randomFloat(5000, 9000);
-        setTimeout(() => {
-          let newIndex;
-          do {
-            newIndex = Math.floor(Math.random() * philosophicalPhrases.length);
-          } while (newIndex === currentPhraseIndex && philosophicalPhrases.length > 1);
-          currentPhraseIndex = newIndex;
-          updateMainPhrase(philosophicalPhrases[newIndex]);
-          mainPhraseElement.style.opacity = '0';
-          setTimeout(() => { mainPhraseElement.style.opacity = '0.75'; }, 150);
-          scheduleNextPhrase();
-        }, delay);
-      }
-
-      function scheduleRedFlashMain() {
-        const delay = randomFloat(8000, 20000);
-        setTimeout(() => {
-          mainPhraseElement.classList.add('red-flash');
-          increaseFear(15);
-          const dots = mainPhraseElement.querySelectorAll('.dot');
-          dots.forEach(dot => dot.classList.add('red-dot'));
-          setTimeout(() => {
-            mainPhraseElement.classList.remove('red-flash');
-            dots.forEach(dot => dot.classList.remove('red-dot'));
-          }, 800);
-          scheduleRedFlashMain();
-        }, delay);
-      }
-
-      // ========== ПЛАВАЮЩИЙ ТЕКСТ ==========
-      const floatingContainer = document.getElementById('floatingTexts');
-      const phrases = [
-        { text: "KILL OR BE KILLED", weight: 3 }, { text: "NO ESCAPE", weight: 3 },
-        { text: "WATCH YOUR BACK", weight: 2 }, { text: "HE'S WATCHING", weight: 2 },
-        { text: "RUN", weight: 3 }, { text: "HIDE", weight: 2 }, { text: "SURVIVE", weight: 3 },
-        { text: "EXECUTE", weight: 2 }, { text: "HUNTED", weight: 2 }, { text: "PREY", weight: 2 },
-        { text: "NO MERCY", weight: 2 }, { text: "FEAR", weight: 2 }, { text: "DEATH", weight: 2 },
-        { text: "SILENCE", weight: 2 }, { text: "DARKNESS", weight: 2 }, { text: "OBEY", weight: 1 },
-        { text: "NO HOPE", weight: 1 }, { text: "THE HUNT BEGINS", weight: 1 }, { text: "DON'T LOOK BACK", weight: 1 },
-        { text: "MANHUNT", weight: 1 }, { text: "HATRED", weight: 1 },
-        { text: "УБЕЙ ИЛИ УМРИ", weight: 1 }, { text: "ВЫХОДА НЕТ", weight: 1 }, { text: "СТРАХ", weight: 1 },
-        { text: "СМЕРТЬ", weight: 1 }, { text: "БЕГИ", weight: 1 }, { text: "ПРЯЧЬСЯ", weight: 1 },
-        { text: "ТЕНЬ", weight: 1 }, { text: "АГОНИЯ", weight: 1 }, { text: "САНЯ ЛОХ", weight: 1 }
-      ];
-
-      let weightedPhrases = [];
-      phrases.forEach(p => { for (let i = 0; i < p.weight; i++) weightedPhrases.push(p.text); });
-
-      const sizeClasses = ['float-sm', 'float-md', 'float-md', 'float-lg', 'float-xl'];
-      const sizeWeights = [4, 5, 4, 2, 1];
-      let weightedSizes = [];
-      sizeClasses.forEach((s, i) => { for (let j = 0; j < sizeWeights[i]; j++) weightedSizes.push(s); });
-
-      const colorClasses = ['float-bright', 'float-mid', 'float-mid', 'float-dim', 'float-dim', 'float-faint'];
-      const colorWeights = [1, 3, 3, 3, 2, 2];
-      let weightedColors = [];
-      colorClasses.forEach((c, i) => { for (let j = 0; j < colorWeights[i]; j++) weightedColors.push(c); });
-
-      function randomFromArray(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-      function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-      function randomFloat(min, max) { return Math.random() * (max - min) + min; }
-
-      function spawnFloatingText() {
-        const el = document.createElement('div');
-        el.classList.add('float-text');
-        el.classList.add(randomFromArray(weightedSizes));
-        el.classList.add(randomFromArray(weightedColors));
-        el.textContent = randomFromArray(weightedPhrases);
-        let x, y;
-        const zone = Math.random();
-        if (zone < 0.25) { x = randomFloat(5, 90); y = randomFloat(3, 25); }
-        else if (zone < 0.5) { x = randomFloat(5, 90); y = randomFloat(70, 93); }
-        else if (zone < 0.75) { x = randomFloat(2, 20); y = randomFloat(20, 75); }
-        else { x = randomFloat(78, 95); y = randomFloat(20, 75); }
-        el.style.left = x + '%';
-        el.style.top = y + '%';
-        el.style.transform = `rotate(${randomFloat(-8, 8)}deg)`;
-        if (Math.random() < 0.15) {
-          el.classList.add('float-glitch');
-          increaseFear(3);
-        }
-        if (Math.random() < 0.03) {
-          el.classList.add('float-red-flash');
-          increaseFear(8);
-        }
-        floatingContainer.appendChild(el);
-        requestAnimationFrame(() => { el.style.opacity = '1'; });
-        const isGlitch = el.classList.contains('float-glitch');
-        const isRedFlash = el.classList.contains('float-red-flash');
-        let lifetime;
-        if (isRedFlash) { lifetime = 600; }
-        else if (isGlitch) { lifetime = randomFloat(300, 600); }
-        else { lifetime = randomFloat(2000, 5000); }
-        setTimeout(() => { el.style.opacity = '0'; }, lifetime * 0.7);
-        setTimeout(() => { if (el.parentNode) el.remove(); }, lifetime);
-      }
-
-      function spawnStaticBurst() {
-        const burst = document.createElement('div');
-        burst.classList.add('static-burst');
-        burst.style.left = randomFloat(0, 95) + '%';
-        burst.style.top = randomFloat(0, 95) + '%';
-        burst.style.width = randomFloat(30, 200) + 'px';
-        burst.style.height = randomFloat(2, 8) + 'px';
-        document.body.appendChild(burst);
-        setTimeout(() => { if (burst.parentNode) burst.remove(); }, 200);
-      }
-
-      function spawnBracketFlash() {
-        const flash = document.createElement('div');
-        flash.classList.add('bracket-flash');
-        flash.textContent = randomFromArray(['[', ']', '//', '\\\\', '<', '>', '{', '}', '|', '#']);
-        flash.style.left = randomFloat(3, 93) + '%';
-        flash.style.top = randomFloat(3, 93) + '%';
-        document.body.appendChild(flash);
-        setTimeout(() => { if (flash.parentNode) flash.remove(); }, 700);
-      }
-
-      // ========== ПСИХОЗНЫЕ КАРТИНКИ ==========
-      const imageContainer = document.getElementById('psychoImages');
-      const imageFiles = [];
-      for (let i = 0; i <= 19; i++) imageFiles.push(i + '.jpg');
-
-      const preloadedImages = [];
-      imageFiles.forEach((file) => {
-        const img = new Image();
-        img.src = file;
-        img.onerror = () => console.warn('Изображение не найдено: ' + file);
-        img.onload = () => console.log('Загружено: ' + file);
-        preloadedImages.push(img);
-      });
-
-      function getUniqueRandomIndices(count, maxIndex) {
-        const availableIndices = [];
-        for (let i = 0; i <= maxIndex; i++) availableIndices.push(i);
-        for (let i = availableIndices.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [availableIndices[i], availableIndices[j]] = [availableIndices[j], availableIndices[i]];
-        }
-        return availableIndices.slice(0, count);
-      }
-
-      function spawnPsychoImage(forcedIndex = null) {
-        if (preloadedImages.length === 0) return;
-        const randomIndex = (forcedIndex !== null) ? forcedIndex : Math.floor(Math.random() * preloadedImages.length);
-        const imgSrc = imageFiles[randomIndex];
-        const imgEl = document.createElement('img');
-        imgEl.src = imgSrc;
-        imgEl.classList.add('psycho-image');
-        const size = randomInt(150, 500);
-        imgEl.style.width = size + 'px';
-        imgEl.style.height = 'auto';
-        let left, top;
-        const edge = Math.random();
-        if (edge < 0.25) { left = randomFloat(-5, 30); top = randomFloat(5, 85); }
-        else if (edge < 0.5) { left = randomFloat(65, 95); top = randomFloat(5, 85); }
-        else if (edge < 0.75) { left = randomFloat(15, 75); top = randomFloat(-5, 20); }
-        else { left = randomFloat(15, 75); top = randomFloat(75, 95); }
-        imgEl.style.left = left + '%';
-        imgEl.style.top = top + '%';
-        const rotation = randomFloat(-20, 20);
-        imgEl.style.transform = `rotate(${rotation}deg)`;
-        imageContainer.appendChild(imgEl);
-        increaseFear(12);
-        requestAnimationFrame(() => { imgEl.classList.add('show'); });
-        if (Math.random() < 0.2) {
-          setTimeout(() => {
-            if (imgEl.parentNode) {
-              imgEl.classList.add('flash');
-              increaseFear(20);
-              setTimeout(() => { if (imgEl.parentNode) imgEl.classList.remove('flash'); }, 80);
-            }
-          }, randomInt(20, 150));
-        }
-        const lifetime = randomFloat(400, 2200);
-        setTimeout(() => { if (imgEl.parentNode) { imgEl.style.opacity = '0'; imgEl.style.transition = 'opacity 0.4s ease'; } }, lifetime * 0.7);
-        setTimeout(() => { if (imgEl.parentNode) imgEl.remove(); }, lifetime + 150);
-      }
-
-      // ========== ГАЗЕТНЫЕ ВЫРЕЗКИ ==========
-      const newspaperContainer = document.getElementById('newspapers');
-      let newspaperActive = false;
-
-      const newspaperArticles = [
-        { header: "CHELYABINSK - C.L.K. | ДОСЬЕ", title: "ПРОЕКТ «ЧЕЛЯБИНСК»", text: "Закрытый научный эксперимент, замаскированный под промышленный объект где-то в уральской глуши. Официальная легенда: исследовательский центр изучения поведенческих паттернов. Реальность: полигон для моделирования идеальных условий зарождения и выявления насилия.", footer: "СЕКРЕТНО | УРОВЕНЬ ДОПУСКА: АЛЬФА", stamp: "СЕКРЕТНО", case: "ДЕЛО №734-Ч" },
-        { header: "МЕДИЦИНСКИЙ ПРОТОКОЛ", title: "ПРЕПАРАТ «Ч-0»", text: "Всем испытуемым вводится синтетическое соединение, временно стирающее автобиографическую память. Человек не помнит ни имени, ни прошлого, ни причин своего попадания на полигон.", footer: "ДОЗИРОВКА: 15ml | ЭФФЕКТ: 4-6 ЧАСОВ", stamp: "Ч-0", case: "ПРОТОКОЛ Ч-0/47" },
-        { header: "ОТЧЁТ НАБЛЮДЕНИЯ", title: "ПОЛИГОН", text: "Каждая сессия разворачивается в новом, случайно сгенерированном или заранее подготовленном месте. Место всегда замкнуто, изолировано, лишено связи с внешним миром.", footer: "СЕССИЯ №47 | ЛОКАЦИЯ: ЗАСЕКРЕЧЕНО", stamp: "ПОЛИГОН", case: "ОТЧЁТ Н-47" },
-        { header: "ВНУТРЕННИЙ ДОКУМЕНТ", title: "ИСПЫТУЕМЫЕ", text: "Группа людей, прошедших принудительную амнезию. Среди них скрыт Маньяк — человек, которому имплантирована ложная директива.", footer: "СТАТУС: АКТИВЕН | МАНЬЯК НЕ ИДЕНТИФИЦИРОВАН", stamp: "МАНЬЯК", case: "ДОСЬЕ М-12" },
-        { header: "ПРОТОКОЛ ЭКСТРЕННОГО ПЕРЕНОСА", title: "ПОЛИЦЕЙСКИЙ", text: "Если Свидетель погибает от руки Маньяка, его сознание не исчезает. Нейро-слепок личности загружается в резервное тело — Полицейского.", footer: "СТАЗИС-КАМЕРА: АКТИВНА | ТЕЛО ГОТОВО", stamp: "ВОЗВРАТ", case: "ПРОТОКОЛ П-03" },
-        { header: "ТАКТИЧЕСКОЕ РАСПОРЯЖЕНИЕ", title: "ГАНМЕН", text: "Среди Свидетелей всегда присутствует один человек, которому система выдаёт оружие. Он не выбирает эту роль, не помнит, как обращаться с пистолетом.", footer: "ОРУЖИЕ: ПМ | ПАТРОНЫ: 6", stamp: "СТРЕЛОК", case: "РАСПОРЯЖЕНИЕ Г-09" },
-        { header: "ТЕХНИЧЕСКАЯ ДОКУМЕНТАЦИЯ", title: "СИСТЕМА КАРМЫ", text: "Этический Якорь — нейро-имплант. Убийство истинного Маньяка не штрафуется. Убийство невиновного — тяжелейшее нарушение.", footer: "ПОРОГ: -50 | СТАТУС ЯКОРЯ: ОНЛАЙН", stamp: "КАРМА", case: "ТЕХ.ДОК ЭЯ-12" },
-        { header: "ПРОТОКОЛ ИЗОЛЯЦИИ", title: "ЧИСТИЛИЩЕ", text: "Белые стены, абсолютная тишина, сенсорная депривация. 2-3 часа реального времени, которые субъективно растягиваются в вечность.", footer: "МОДУЛЬ: АВТОНОМНЫЙ | ВРЕМЯ: БЕСКОНЕЧНОСТЬ", stamp: "ТИШИНА", case: "ПРОТОКОЛ ЧЩ-00" },
-        { header: "ЦИКЛИЧЕСКИЙ ОТЧЁТ", title: "ПЕТЛЯ СЕССИЙ", text: "Эксперимент не заканчивается одной игрой. Препарат вводится снова. Память обнуляется, но шрамы на Этическом Якоре остаются.", footer: "ЦИКЛ: БЕСКОНЕЧНЫЙ | ПАМЯТЬ: СТЁРТА", stamp: "ПЕТЛЯ", case: "ОТЧЁТ Ц-99" },
-        { header: "АНАЛИТИЧЕСКАЯ ЗАПИСКА", title: "ИСТИННАЯ ЦЕЛЬ", text: "Является ли человек добрым по природе, или тьма живёт в каждом? У эксперимента нет конечной точки. Только новая сессия.", footer: "ВОПРОС БЕЗ ОТВЕТА", stamp: "?", case: "АНАЛИЗ ИЦ-01" },
-        { header: "ОБРЫВОК ЗАПИСКИ", title: "Я БЫЛ ЗДЕСЬ", text: "Это круг. Маньяк — не человек. Маньяк — сам эксперимент. Не верь им. Чистилище ждёт всех.", footer: "НАЙДЕНО НА ПОЛИГОНЕ №12", stamp: "ЖЕРТВА", case: "ВЕЩДОК 12-Б" },
-        { header: "ПРЕДУПРЕЖДЕНИЕ", title: "НЕ СМОТРИ В КАМЕРЫ", text: "Они видят всё. Кроме слепых зон. Найди слепую зону. Но помни — Маньяк тоже ищет слепые зоны.", footer: "ЗАПИСКА ПРЕДЫДУЩЕГО ИСПЫТУЕМОГО", stamp: "СМОТРИ", case: "ЗАПИСКА №47" }
-      ];
-
-      function spawnNewspaper() {
-        if (newspaperActive) return;
-        const existingNewspapers = newspaperContainer.querySelectorAll('.newspaper-clipping');
-        if (existingNewspapers.length > 0) return;
-        newspaperActive = true;
-
-        const article = randomFromArray(newspaperArticles);
-        const clipping = document.createElement('div');
-        clipping.classList.add('newspaper-clipping');
-
-        const useImage = Math.random() < 0.7;
-        let imageHTML = '';
-        if (useImage) {
-          const randomImgIndex = Math.floor(Math.random() * imageFiles.length);
-          imageHTML = `<img class="newspaper-image" src="${imageFiles[randomImgIndex]}" alt="Фото" />`;
-        }
-
-        clipping.innerHTML = `
-          <div class="case-number">${article.case || 'ДЕЛО №___'}</div>
-          <div class="secret-stamp">СЕКРЕТНО</div>
-          <div class="newspaper-header">${article.header}</div>
-          <div class="newspaper-title">${article.title}</div>
-          ${imageHTML}
-          <div class="newspaper-text">${article.text}</div>
-          <div class="newspaper-footer">${article.footer}</div>
-          <div class="blood-stamp">${article.stamp}</div>
-          <div class="fold-line"></div>
-        `;
-
-        const posType = Math.random();
-        let left, top;
-        if (posType < 0.5) { left = randomFloat(10, 30); top = randomFloat(8, 28); }
-        else if (posType < 0.8) { left = randomFloat(48, 68); top = randomFloat(10, 30); }
-        else { left = randomFloat(20, 55); top = randomFloat(45, 65); }
-
-        clipping.style.left = left + '%';
-        clipping.style.top = top + '%';
-
-        const rotation = randomFloat(-2, 2);
-        clipping.style.transform = `rotate(${rotation}deg) scale(0.9)`;
-
-        newspaperContainer.appendChild(clipping);
-        increaseFear(10);
-
-        requestAnimationFrame(() => {
-          clipping.classList.add('show');
-          clipping.style.transform = `rotate(${rotation}deg) scale(1)`;
-        });
-
-        const lifetime = randomFloat(12000, 20000);
-
-        setTimeout(() => {
-          if (clipping.parentNode) {
-            clipping.style.opacity = '0';
-            clipping.style.transition = 'opacity 1s ease';
-          }
-        }, lifetime - 1000);
-
-        setTimeout(() => {
-          if (clipping.parentNode) clipping.remove();
-          newspaperActive = false;
-        }, lifetime);
-      }
-
-      // ========== ОСНОВНОЙ ЦИКЛ ==========
-      function spawnLoop() {
-        const textCount = randomInt(1, 3);
-        for (let i = 0; i < textCount; i++) {
-          setTimeout(() => spawnFloatingText(), i * randomInt(40, 350));
-        }
-
-        if (Math.random() < 0.3) spawnStaticBurst();
-        if (Math.random() < 0.1) spawnBracketFlash();
-
-        if (Math.random() < 0.22) {
-          const imageBurst = randomInt(1, 3);
-          const uniqueIndices = getUniqueRandomIndices(imageBurst, imageFiles.length - 1);
-          for (let i = 0; i < imageBurst; i++) {
-            setTimeout(() => spawnPsychoImage(uniqueIndices[i]), i * randomInt(50, 200));
-          }
-        }
-
-        if (Math.random() < 0.03 && !newspaperActive) {
-          spawnNewspaper();
-        }
-
-        const nextInterval = randomFloat(400, 2200);
-        setTimeout(spawnLoop, nextInterval);
-      }
-
-      // СТАРТ
-      setTimeout(spawnLoop, 800);
-      setTimeout(() => scheduleNextPhrase(), 7000);
-      setTimeout(() => scheduleRedFlashMain(), 10000);
-
-      setTimeout(() => {
-        for (let i = 0; i < 5; i++) setTimeout(() => spawnFloatingText(), i * 120);
-        if (Math.random() < 0.6) {
-          setTimeout(() => {
-            const initialBurst = randomInt(1, 3);
-            const uniqueIndices = getUniqueRandomIndices(initialBurst, imageFiles.length - 1);
-            for (let i = 0; i < initialBurst; i++) {
-              setTimeout(() => spawnPsychoImage(uniqueIndices[i]), i * 180);
-            }
-          }, 400);
-        }
-        if (Math.random() < 0.3) {
-          setTimeout(() => spawnNewspaper(), 5000);
-        }
-      }, 300);
-    })();
-  </script>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
 </body>
 </html>
