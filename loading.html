@@ -66,6 +66,46 @@
       pointer-events: none;
     }
     .title span { color: #d4a35a; }
+
+    /* Easter: Саня */
+    .egg {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: none;
+      background: #000;
+      pointer-events: none;
+    }
+    .egg.show { display: block; }
+    .egg img {
+      position: absolute;
+      left: 50%;
+      top: 46%;
+      transform: translate(-50%, -50%);
+      width: min(72vw, 520px);
+      height: auto;
+      object-fit: contain;
+      filter: none;
+      animation: eggPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes eggPulse {
+      0%, 100% { opacity: 0.92; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.03); }
+    }
+    .egg-caption {
+      position: absolute;
+      left: 50%;
+      bottom: 14%;
+      transform: translateX(-50%);
+      width: 90%;
+      text-align: center;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: clamp(16px, 3.2vw, 28px);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #fff;
+      text-shadow: 0 2px 18px rgba(0,0,0,0.9);
+    }
   </style>
 </head>
 <body>
@@ -83,18 +123,31 @@
     <img src="assets/bg/bg-11.jpg" alt="" draggable="false" />
     <img src="assets/bg/bg-12.jpg" alt="" draggable="false" />
   </div>
-  <div class="shade"></div>
-  <div class="title">Chelyabinsk <span>RP</span></div>
+  <div class="shade" id="shade"></div>
+  <div class="title" id="title">Chelyabinsk <span>RP</span></div>
+
+  <div class="egg" id="egg">
+    <img src="assets/sanya.png" alt="" draggable="false" />
+    <div class="egg-caption">Саня - Лох он же Xenon</div>
+  </div>
 
   <script>
     (function () {
-      var imgs = document.querySelectorAll("#loop img");
-      var i = 0;
-      setInterval(function () {
-        imgs[i].classList.remove("on");
-        i = (i + 1) % imgs.length;
-        imgs[i].classList.add("on");
-      }, 6000);
+      var eggRoll = Math.random() < 0.01;
+      if (eggRoll) {
+        document.getElementById("egg").className = "egg show";
+        document.getElementById("loop").style.display = "none";
+        document.getElementById("shade").style.display = "none";
+        document.getElementById("title").style.display = "none";
+      } else {
+        var imgs = document.querySelectorAll("#loop img");
+        var i = 0;
+        setInterval(function () {
+          imgs[i].classList.remove("on");
+          i = (i + 1) % imgs.length;
+          imgs[i].classList.add("on");
+        }, 6000);
+      }
 
       document.addEventListener("contextmenu", function (e) { e.preventDefault(); }, true);
       document.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); }, true);
