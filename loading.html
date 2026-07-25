@@ -3,358 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Chelyabinsk RP — загрузка</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet" />
+  <title>Chelyabinsk RP</title>
   <style>
-    :root {
-      --ink: #0a0e14;
-      --paper: #e8edf2;
-      --muted: rgba(232, 237, 242, 0.55);
-      --amber: #d4a35a;
-      --line: rgba(232, 237, 242, 0.16);
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
       width: 100%;
       height: 100%;
       overflow: hidden;
       background: #000;
-      color: var(--paper);
-      font-family: "Onest", system-ui, sans-serif;
       user-select: none;
       cursor: default;
     }
-
-    .bg {
+    .loop {
       position: fixed;
       inset: 0;
-      z-index: 0;
       overflow: hidden;
       background: #000;
     }
-
-    .bg-slide {
+    .loop img {
       position: absolute;
-      inset: -4%;
-      width: 108%;
-      height: 108%;
+      inset: -6%;
+      width: 112%;
+      height: 112%;
       object-fit: cover;
       opacity: 0;
-      filter: saturate(0.7) contrast(1.08) brightness(0.62);
-      transition: opacity 1.6s ease;
-      animation: ken 32s ease-in-out infinite alternate;
-      will-change: transform, opacity;
+      transition: opacity 1.4s ease;
+      animation: drift 24s ease-in-out infinite alternate;
+      filter: brightness(0.78) contrast(1.05) saturate(0.85);
     }
-
-    .bg-slide.is-on {
-      opacity: 1;
+    .loop img.on { opacity: 1; }
+    @keyframes drift {
+      from { transform: scale(1.05) translate(0, 0); }
+      to { transform: scale(1.16) translate(-2%, -1.5%); }
     }
-
-    @keyframes ken {
-      from { transform: scale(1.05) translate3d(0, 0, 0); }
-      to { transform: scale(1.14) translate3d(-1.8%, -1.2%, 0); }
-    }
-
-    .veil {
+    .shade {
       position: fixed;
       inset: 0;
-      z-index: 1;
       pointer-events: none;
       background:
-        linear-gradient(180deg, rgba(10, 14, 20, 0.45) 0%, rgba(10, 14, 20, 0.2) 40%, rgba(10, 14, 20, 0.88) 100%),
-        radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.55) 100%);
+        radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.55) 100%),
+        linear-gradient(180deg, rgba(0,0,0,0.25), transparent 30%, rgba(0,0,0,0.55));
     }
-
-    .grain {
+    .title {
       position: fixed;
-      inset: 0;
+      left: 50%;
+      bottom: 8%;
+      transform: translateX(-50%);
       z-index: 2;
-      pointer-events: none;
-      opacity: 0.05;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      mix-blend-mode: overlay;
-    }
-
-    .ui {
-      position: fixed;
-      inset: 0;
-      z-index: 5;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: clamp(1.5rem, 4vw, 3rem);
-    }
-
-    .top {
-      position: absolute;
-      top: clamp(1.25rem, 3vw, 2rem);
-      left: clamp(1.25rem, 4vw, 3rem);
-      right: clamp(1.25rem, 4vw, 3rem);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.72rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .top-dot {
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      margin-right: 8px;
-      border-radius: 50%;
-      background: var(--amber);
-      vertical-align: middle;
-      animation: blink 1.8s ease-in-out infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.25; }
-    }
-
-    .brand {
-      margin-bottom: 1.1rem;
-    }
-
-    .brand-kicker {
-      font-size: 0.75rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.7rem;
-    }
-
-    .brand-title {
-      font-family: "Unbounded", system-ui, sans-serif;
-      font-size: clamp(2.2rem, 7vw, 4.6rem);
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      line-height: 0.95;
-      text-transform: uppercase;
-    }
-
-    .brand-title span {
-      color: var(--amber);
-      margin-left: 0.35em;
-      font-size: 0.42em;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: clamp(22px, 4vw, 42px);
       font-weight: 700;
-      letter-spacing: 0.16em;
-      vertical-align: 0.55em;
-    }
-
-    .brand-lead {
-      max-width: 28rem;
-      margin-top: 0.85rem;
-      font-weight: 300;
-      font-size: clamp(0.95rem, 1.6vw, 1.1rem);
-      color: rgba(232, 237, 242, 0.78);
-    }
-
-    .panel {
-      margin-top: 1.75rem;
-      max-width: 42rem;
-      width: 100%;
-    }
-
-    .status-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 0.65rem;
-      font-size: 0.78rem;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.28em;
+      color: rgba(255,255,255,0.92);
       text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .status-text {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      max-width: 75%;
-    }
-
-    .pct {
-      font-family: "Unbounded", system-ui, sans-serif;
-      color: var(--paper);
-      letter-spacing: 0.06em;
-      flex-shrink: 0;
-    }
-
-    .bar {
-      height: 3px;
-      background: rgba(255, 255, 255, 0.1);
-      overflow: hidden;
-    }
-
-    .bar-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #b8893f, var(--amber), #f0d19a);
-      transition: width 0.25s ease;
-      box-shadow: 0 0 18px rgba(212, 163, 90, 0.45);
-    }
-
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.25rem 2rem;
-      margin-top: 1rem;
-      font-size: 0.72rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .meta b {
-      display: block;
-      margin-top: 0.25rem;
-      font-family: "Unbounded", system-ui, sans-serif;
-      font-size: 0.82rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      color: var(--paper);
-      text-transform: none;
-    }
-
-    .file {
-      margin-top: 0.85rem;
-      font-size: 0.72rem;
-      letter-spacing: 0.04em;
-      color: rgba(232, 237, 242, 0.35);
-      overflow: hidden;
-      text-overflow: ellipsis;
+      text-shadow: 0 2px 24px rgba(0,0,0,0.8);
       white-space: nowrap;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-      .bg-slide { animation: none; }
-      .top-dot { animation: none; }
-    }
+    .title span { color: #d4a35a; }
   </style>
 </head>
 <body>
-  <div class="bg" id="bg" aria-hidden="true">
-    <img class="bg-slide is-on" src="assets/hero.png" alt="" />
-    <img class="bg-slide" src="assets/night.png" alt="" />
-    <img class="bg-slide" src="assets/street.png" alt="" />
-    <img class="bg-slide" src="assets/panel.png" alt="" />
-    <img class="bg-slide" src="assets/real-miass.jpg" alt="" />
-    <img class="bg-slide" src="assets/city-2.png" alt="" />
+  <div class="loop" id="loop">
+    <img class="on" src="assets/hero.png" alt="" />
+    <img src="assets/night.png" alt="" />
+    <img src="assets/street.png" alt="" />
+    <img src="assets/panel.png" alt="" />
   </div>
-  <div class="veil"></div>
-  <div class="grain"></div>
-
-  <div class="ui">
-    <div class="top">
-      <div><span class="top-dot"></span>Загрузка · Chelyabinsk RP</div>
-      <div id="mapLabel">ожидание карты</div>
-    </div>
-
-    <div class="brand">
-      <p class="brand-kicker">Garry's Mod · Южный Урал · Roleplay</p>
-      <h1 class="brand-title">CHELYABINSK<span>RP</span></h1>
-      <p class="brand-lead">Город, где снег скрипит под ногами, а каждый выбор оставляет след.</p>
-    </div>
-
-    <div class="panel">
-      <div class="status-row">
-        <div class="status-text" id="statusText">Подключение к серверу…</div>
-        <div class="pct" id="pctText">0%</div>
-      </div>
-      <div class="bar"><div class="bar-fill" id="barFill"></div></div>
-      <div class="meta">
-        <div>Сервер<b id="serverName">Chelyabinsk RP</b></div>
-        <div>Режим<b id="gamemodeName">zcity</b></div>
-        <div>Карта<b id="mapName">—</b></div>
-      </div>
-      <div class="file" id="fileName"></div>
-    </div>
-  </div>
+  <div class="shade"></div>
+  <div class="title">Chelyabinsk <span>RP</span></div>
 
   <script>
     (function () {
-      var slides = document.querySelectorAll(".bg-slide");
-      var idx = 0;
-      if (slides.length > 1) {
-        setInterval(function () {
-          slides[idx].classList.remove("is-on");
-          idx = (idx + 1) % slides.length;
-          slides[idx].classList.add("is-on");
-        }, 7000);
-      }
-
-      var totalFiles = 0;
-      var neededFiles = 0;
-      var progress = 0;
-
-      function setProgress(p) {
-        progress = Math.max(0, Math.min(100, p || 0));
-        document.getElementById("barFill").style.width = progress.toFixed(1) + "%";
-        document.getElementById("pctText").textContent = Math.floor(progress) + "%";
-      }
-
-      function refreshFromFiles() {
-        if (totalFiles <= 0) return;
-        var done = totalFiles - neededFiles;
-        if (done < 0) done = 0;
-        setProgress((done / totalFiles) * 100);
-      }
-
-      window.GameDetails = function (servername, serverurl, mapname, maxplayers, steamid, gamemode) {
-        if (servername) document.getElementById("serverName").textContent = servername;
-        if (mapname) {
-          document.getElementById("mapName").textContent = mapname;
-          document.getElementById("mapLabel").textContent = mapname;
-        }
-        if (gamemode) document.getElementById("gamemodeName").textContent = gamemode;
-        document.getElementById("statusText").textContent = "Получение данных сервера…";
-      };
-
-      window.SetFilesTotal = function (total) {
-        totalFiles = parseInt(total, 10) || 0;
-        refreshFromFiles();
-      };
-
-      window.SetFilesNeeded = function (needed) {
-        neededFiles = parseInt(needed, 10) || 0;
-        refreshFromFiles();
-        if (neededFiles <= 0 && totalFiles > 0) {
-          document.getElementById("statusText").textContent = "Почти готово…";
-          setProgress(100);
-        }
-      };
-
-      window.DownloadingFile = function (fileName) {
-        var name = fileName || "";
-        document.getElementById("fileName").textContent = name;
-        document.getElementById("statusText").textContent = "Загрузка контента…";
-      };
-
-      window.SetStatusChanged = function (status) {
-        var s = (status || "").toString();
-        if (s) document.getElementById("statusText").textContent = s;
-        var low = s.toLowerCase();
-        if (low.indexOf("workshop") !== -1) setProgress(Math.max(progress, 8));
-        if (low.indexOf("sending client info") !== -1) setProgress(Math.max(progress, 92));
-        if (low.indexOf("starting lua") !== -1 || low.indexOf("client info") !== -1) setProgress(Math.max(progress, 96));
-      };
-
-      // Soft idle progress while engine has not reported files yet
-      var idle = 0;
+      var imgs = document.querySelectorAll("#loop img");
+      var i = 0;
       setInterval(function () {
-        if (totalFiles > 0) return;
-        if (progress >= 12) return;
-        idle += 0.35;
-        setProgress(Math.min(12, idle));
-      }, 400);
+        imgs[i].classList.remove("on");
+        i = (i + 1) % imgs.length;
+        imgs[i].classList.add("on");
+      }, 6000);
+
+      // GMod stubs (чтобы движок не ругался)
+      window.GameDetails = function () {};
+      window.SetFilesTotal = function () {};
+      window.SetFilesNeeded = function () {};
+      window.DownloadingFile = function () {};
+      window.SetStatusChanged = function () {};
     })();
   </script>
 </body>
