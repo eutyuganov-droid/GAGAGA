@@ -32,7 +32,7 @@
       opacity: 0;
       transition: opacity 1.4s ease;
       animation: drift 24s ease-in-out infinite alternate;
-      filter: brightness(0.78) contrast(1.05) saturate(0.85);
+      filter: brightness(0.72) contrast(1.06) saturate(0.9);
       pointer-events: none;
     }
     .loop img.on { opacity: 1; }
@@ -45,22 +45,23 @@
       inset: 0;
       pointer-events: none;
       background:
-        radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.55) 100%),
-        linear-gradient(180deg, rgba(0,0,0,0.25), transparent 30%, rgba(0,0,0,0.55));
+        radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 100%),
+        linear-gradient(180deg, rgba(0,0,0,0.35), transparent 40%, rgba(0,0,0,0.4));
     }
     .title {
       position: fixed;
       left: 50%;
-      bottom: 8%;
-      transform: translateX(-50%);
+      top: 50%;
+      transform: translate(-50%, -50%);
       z-index: 2;
       font-family: Arial, Helvetica, sans-serif;
-      font-size: clamp(22px, 4vw, 42px);
+      font-size: clamp(26px, 5vw, 56px);
       font-weight: 700;
       letter-spacing: 0.28em;
-      color: rgba(255,255,255,0.92);
+      color: rgba(255,255,255,0.95);
       text-transform: uppercase;
-      text-shadow: 0 2px 24px rgba(0,0,0,0.8);
+      text-align: center;
+      text-shadow: 0 2px 28px rgba(0,0,0,0.85), 0 0 40px rgba(0,0,0,0.5);
       white-space: nowrap;
       pointer-events: none;
     }
@@ -69,10 +70,18 @@
 </head>
 <body>
   <div class="loop" id="loop">
-    <img class="on" src="assets/hero.png" alt="" draggable="false" />
-    <img src="assets/night.png" alt="" draggable="false" />
-    <img src="assets/street.png" alt="" draggable="false" />
-    <img src="assets/panel.png" alt="" draggable="false" />
+    <img class="on" src="assets/bg/bg-01.jpg" alt="" draggable="false" />
+    <img src="assets/bg/bg-02.jpg" alt="" draggable="false" />
+    <img src="assets/bg/bg-03.jpg" alt="" draggable="false" />
+    <img src="assets/bg/bg-04.jpg" alt="" draggable="false" />
+    <img src="assets/bg/bg-05.jpg" alt="" draggable="false" />
+    <img src="assets/bg/bg-06.jpg" alt="" draggable="false" />
+    <img src="assets/bg/bg-07.jpg" alt="" draggable="false" />
+    <img src="assets/bg/bg-08.jpg" alt="" draggable="false" />
+    <img src="assets/bg/bg-09.jpg" alt="" draggable="false" />
+    <img src="assets/bg/bg-10.jpg" alt="" draggable="false" />
+    <img src="assets/bg/bg-11.jpg" alt="" draggable="false" />
+    <img src="assets/bg/bg-12.jpg" alt="" draggable="false" />
   </div>
   <div class="shade"></div>
   <div class="title">Chelyabinsk <span>RP</span></div>
