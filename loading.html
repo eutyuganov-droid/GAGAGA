@@ -12,8 +12,11 @@
       overflow: hidden;
       background: #000;
       user-select: none;
-      cursor: default;
+      -webkit-user-select: none;
+      cursor: none;
+      pointer-events: none;
     }
+    a, button, input, textarea, select { display: none !important; }
     .loop {
       position: fixed;
       inset: 0;
@@ -30,6 +33,7 @@
       transition: opacity 1.4s ease;
       animation: drift 24s ease-in-out infinite alternate;
       filter: brightness(0.78) contrast(1.05) saturate(0.85);
+      pointer-events: none;
     }
     .loop img.on { opacity: 1; }
     @keyframes drift {
@@ -58,16 +62,17 @@
       text-transform: uppercase;
       text-shadow: 0 2px 24px rgba(0,0,0,0.8);
       white-space: nowrap;
+      pointer-events: none;
     }
     .title span { color: #d4a35a; }
   </style>
 </head>
 <body>
   <div class="loop" id="loop">
-    <img class="on" src="assets/hero.png" alt="" />
-    <img src="assets/night.png" alt="" />
-    <img src="assets/street.png" alt="" />
-    <img src="assets/panel.png" alt="" />
+    <img class="on" src="assets/hero.png" alt="" draggable="false" />
+    <img src="assets/night.png" alt="" draggable="false" />
+    <img src="assets/street.png" alt="" draggable="false" />
+    <img src="assets/panel.png" alt="" draggable="false" />
   </div>
   <div class="shade"></div>
   <div class="title">Chelyabinsk <span>RP</span></div>
@@ -82,7 +87,11 @@
         imgs[i].classList.add("on");
       }, 6000);
 
-      // GMod stubs (чтобы движок не ругался)
+      document.addEventListener("contextmenu", function (e) { e.preventDefault(); }, true);
+      document.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); }, true);
+      document.addEventListener("mousedown", function (e) { e.preventDefault(); }, true);
+      document.addEventListener("keydown", function (e) { e.preventDefault(); }, true);
+
       window.GameDetails = function () {};
       window.SetFilesTotal = function () {};
       window.SetFilesNeeded = function () {};

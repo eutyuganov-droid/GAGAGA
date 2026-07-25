@@ -3,150 +3,101 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Chelyabinsk RP — жизнь в городе</title>
-  <meta name="description" content="Chelyabinsk RP — серьёзный roleplay на Garry's Mod. Южный Урал, свои правила, своя история." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700&family=Unbounded:wght@500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <title>Chelyabinsk RP</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      user-select: none;
+      -webkit-user-select: none;
+      cursor: none;
+      pointer-events: none;
+    }
+    a, button, input, textarea, select { display: none !important; }
+    .loop {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      background: #000;
+    }
+    .loop img {
+      position: absolute;
+      inset: -6%;
+      width: 112%;
+      height: 112%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1.4s ease;
+      animation: drift 24s ease-in-out infinite alternate;
+      filter: brightness(0.78) contrast(1.05) saturate(0.85);
+      pointer-events: none;
+    }
+    .loop img.on { opacity: 1; }
+    @keyframes drift {
+      from { transform: scale(1.05) translate(0, 0); }
+      to { transform: scale(1.16) translate(-2%, -1.5%); }
+    }
+    .shade {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.55) 100%),
+        linear-gradient(180deg, rgba(0,0,0,0.25), transparent 30%, rgba(0,0,0,0.55));
+    }
+    .title {
+      position: fixed;
+      left: 50%;
+      bottom: 8%;
+      transform: translateX(-50%);
+      z-index: 2;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: clamp(22px, 4vw, 42px);
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      color: rgba(255,255,255,0.92);
+      text-transform: uppercase;
+      text-shadow: 0 2px 24px rgba(0,0,0,0.8);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .title span { color: #d4a35a; }
+  </style>
 </head>
 <body>
-  <div class="noise" aria-hidden="true"></div>
-  <div class="frost" aria-hidden="true"></div>
+  <div class="loop" id="loop">
+    <img class="on" src="assets/hero.png" alt="" draggable="false" />
+    <img src="assets/night.png" alt="" draggable="false" />
+    <img src="assets/street.png" alt="" draggable="false" />
+    <img src="assets/panel.png" alt="" draggable="false" />
+  </div>
+  <div class="shade"></div>
+  <div class="title">Chelyabinsk <span>RP</span></div>
 
-  <header class="nav">
-    <a class="nav-brand" href="#top">CHELYABINSK<span>RP</span></a>
-    <nav class="nav-links">
-      <a href="#city">Город</a>
-      <a href="#life">Жизнь</a>
-      <a href="#join">Войти</a>
-    </nav>
-    <a class="nav-cta" href="#join">Подключиться</a>
-  </header>
+  <script>
+    (function () {
+      var imgs = document.querySelectorAll("#loop img");
+      var i = 0;
+      setInterval(function () {
+        imgs[i].classList.remove("on");
+        i = (i + 1) % imgs.length;
+        imgs[i].classList.add("on");
+      }, 6000);
 
-  <main id="top">
-    <section class="hero">
-      <div class="hero-media" aria-hidden="true">
-        <img class="hero-img is-active" src="assets/hero.png" alt="" />
-        <img class="hero-img" src="assets/night.png" alt="" />
-        <img class="hero-img" src="assets/street.png" alt="" />
-        <img class="hero-img" src="assets/real-miass.jpg" alt="" />
-        <div class="hero-veil"></div>
-        <div class="hero-grain"></div>
-      </div>
+      document.addEventListener("contextmenu", function (e) { e.preventDefault(); }, true);
+      document.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); }, true);
+      document.addEventListener("mousedown", function (e) { e.preventDefault(); }, true);
+      document.addEventListener("keydown", function (e) { e.preventDefault(); }, true);
 
-      <div class="hero-copy">
-        <p class="hero-kicker">Garry's Mod · Южный Урал · Roleplay</p>
-        <h1 class="hero-title">
-          <span class="hero-title-main">CHELYABINSK</span>
-          <span class="hero-title-sub">RP</span>
-        </h1>
-        <p class="hero-lead">
-          Город, где снег скрипит под ногами, а каждый выбор оставляет след.
-        </p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#join">Войти в город</a>
-          <button class="btn btn-ghost" type="button" id="copyIpBtn" data-ip="185.97.255.43:27735">
-            Скопировать IP
-          </button>
-        </div>
-      </div>
-
-      <a class="scroll-hint" href="#city" aria-label="Дальше">
-        <span></span>
-      </a>
-    </section>
-
-    <section class="city" id="city">
-      <div class="city-intro">
-        <p class="section-eyebrow">74 регион</p>
-        <h2 class="section-title">Не декорация.<br />Настоящий город.</h2>
-        <p class="section-text">
-          Панельные дворы, заводской горизонт, тёплый свет окон в мороз.
-          Chelyabinsk RP — про быт, характер и последствия, а не про перестрелки ради галочки.
-        </p>
-      </div>
-
-      <div class="city-mosaic" aria-hidden="true">
-        <figure class="mosaic-tall">
-          <img src="assets/panel.png" alt="" loading="lazy" />
-          <figcaption>Двор · зима</figcaption>
-        </figure>
-        <figure class="mosaic-wide">
-          <img src="assets/real-miass.jpg" alt="" loading="lazy" />
-          <figcaption>Миасс · центр</figcaption>
-        </figure>
-        <figure>
-          <img src="assets/real-city.jpg" alt="" loading="lazy" />
-          <figcaption>Челябинск-Сити</figcaption>
-        </figure>
-        <figure>
-          <img src="assets/city-2.png" alt="" loading="lazy" />
-          <figcaption>Улицы</figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <section class="life" id="life">
-      <div class="life-head">
-        <p class="section-eyebrow">Как здесь играют</p>
-        <h2 class="section-title">Одна жизнь — своя история</h2>
-      </div>
-
-      <div class="life-grid">
-        <article class="life-block">
-          <span class="life-num">01</span>
-          <h3>Персонаж важнее килла</h3>
-          <p>Имя, прошлое, связи. Ты не «игрок с ником» — ты человек в городе.</p>
-        </article>
-        <article class="life-block">
-          <span class="life-num">02</span>
-          <h3>Последствия реальны</h3>
-          <p>Импульс стоит дорого. Город не прощает хаос ради веселья.</p>
-        </article>
-        <article class="life-block">
-          <span class="life-num">03</span>
-          <h3>Сцена важнее скрипта</h3>
-          <p>Роль, диалог, атмосфера. Механики — только чтобы жить было интереснее.</p>
-        </article>
-      </div>
-
-      <blockquote class="quote">
-        <p>«Здесь не побеждают. Здесь живут — пока могут.»</p>
-      </blockquote>
-    </section>
-
-    <section class="join" id="join">
-      <div class="join-panel">
-        <div class="join-copy">
-          <p class="section-eyebrow">Подключение</p>
-          <h2 class="section-title">Открой консоль и зайди</h2>
-          <p class="section-text">
-            Garry's Mod → клавиша <kbd>~</kbd> → вставь команду → Enter.
-            Первый заход может занять время: контент качается с сервера.
-          </p>
-        </div>
-
-        <div class="join-box">
-          <p class="join-label">Команда</p>
-          <code class="join-cmd" id="connectCmd">connect 185.97.255.43:27735</code>
-          <div class="join-actions">
-            <button class="btn btn-primary" type="button" id="copyCmdBtn">Скопировать команду</button>
-            <a class="btn btn-ghost" href="steam://connect/185.97.255.43:27735">Steam Connect</a>
-          </div>
-          <p class="join-note" id="copyStatus" aria-live="polite"></p>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-brand">CHELYABINSK RP</div>
-    <p class="footer-text">Южный Урал · Serious Roleplay · Garry's Mod</p>
-    <p class="footer-ip">185.97.255.43:27735</p>
-  </footer>
-
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="script.js"></script>
+      window.GameDetails = function () {};
+      window.SetFilesTotal = function () {};
+      window.SetFilesNeeded = function () {};
+      window.DownloadingFile = function () {};
+      window.SetStatusChanged = function () {};
+    })();
+  </script>
 </body>
 </html>
