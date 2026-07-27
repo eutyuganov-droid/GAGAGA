@@ -3,107 +3,91 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <base href="https://eutyuganov-droid.github.io/GAGAGA/" />
   <title>Chelyabinsk RP</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; }
     html, body {
       width: 100%;
       height: 100%;
       overflow: hidden;
       background: #000;
       user-select: none;
-      -webkit-user-select: none;
       cursor: none;
-      pointer-events: none;
     }
-    a, button, input, textarea, select { display: none !important; }
     .loop {
       position: fixed;
-      inset: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       overflow: hidden;
       background: #000;
+      z-index: 0;
     }
     .loop img {
       position: absolute;
-      inset: -6%;
-      width: 112%;
-      height: 112%;
-      object-fit: cover;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
       opacity: 0;
-      transition: opacity 1.4s ease;
-      animation: drift 24s ease-in-out infinite alternate;
-      filter: brightness(0.72) contrast(1.06) saturate(0.9);
-      pointer-events: none;
+      z-index: 1;
     }
-    .loop img.on { opacity: 1; }
-    @keyframes drift {
-      from { transform: scale(1.05) translate(0, 0); }
-      to { transform: scale(1.16) translate(-2%, -1.5%); }
+    .loop img.on {
+      opacity: 1;
+      z-index: 2;
     }
     .shade {
       position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 100%),
-        linear-gradient(180deg, rgba(0,0,0,0.35), transparent 40%, rgba(0,0,0,0.4));
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 3;
+      background: rgba(0,0,0,0.35);
     }
     .title {
       position: fixed;
       left: 50%;
       top: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 2;
+      margin-left: -280px;
+      margin-top: -28px;
+      width: 560px;
+      z-index: 4;
       font-family: Arial, Helvetica, sans-serif;
-      font-size: clamp(26px, 5vw, 56px);
+      font-size: 42px;
       font-weight: 700;
-      letter-spacing: 0.28em;
-      color: rgba(255,255,255,0.95);
+      letter-spacing: 8px;
+      color: #f2f2f2;
       text-transform: uppercase;
       text-align: center;
-      text-shadow: 0 2px 28px rgba(0,0,0,0.85), 0 0 40px rgba(0,0,0,0.5);
-      white-space: nowrap;
-      pointer-events: none;
+      text-shadow: 0 2px 24px #000;
     }
     .title span { color: #d4a35a; }
 
     .egg {
       position: fixed;
-      inset: 0;
-      z-index: 10;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 20;
       display: none;
       background: #000;
-      pointer-events: none;
     }
     .egg.show { display: block; }
     .egg img {
       position: absolute;
       left: 50%;
-      top: 46%;
-      transform: translate(-50%, -50%);
-      width: min(72vw, 520px);
-      height: auto;
-      object-fit: contain;
-      filter: none;
-      animation: eggPulse 2.4s ease-in-out infinite;
-    }
-    @keyframes eggPulse {
-      0%, 100% { opacity: 0.92; transform: translate(-50%, -50%) scale(1); }
-      50% { opacity: 1; transform: translate(-50%, -50%) scale(1.03); }
+      top: 42%;
+      width: 420px;
+      margin-left: -210px;
+      margin-top: -210px;
     }
     .egg-caption {
       position: absolute;
-      left: 50%;
+      left: 0;
+      right: 0;
       bottom: 14%;
-      transform: translateX(-50%);
-      width: 90%;
       text-align: center;
       font-family: Arial, Helvetica, sans-serif;
-      font-size: clamp(16px, 3.2vw, 28px);
+      font-size: 24px;
       font-weight: 700;
-      letter-spacing: 0.08em;
       color: #fff;
-      text-shadow: 0 2px 18px rgba(0,0,0,0.9);
+      text-shadow: 0 2px 18px #000;
     }
 
     .devlog {
@@ -112,92 +96,76 @@
       right: 0;
       bottom: 0;
       z-index: 5;
-      padding: 0.85rem 1.25rem 1rem;
-      background: linear-gradient(180deg, transparent, rgba(0,0,0,0.82) 35%, rgba(0,0,0,0.92));
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.6s ease;
+      padding: 14px 18px 16px;
+      background: rgba(0,0,0,0.78);
+      display: none;
     }
-    .devlog.show { opacity: 1; }
+    .devlog.show { display: block; }
     .devlog-head {
-      display: flex;
-      align-items: baseline;
-      gap: 0.75rem;
-      margin-bottom: 0.45rem;
+      margin-bottom: 6px;
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 0.68rem;
-      letter-spacing: 0.22em;
+      font-size: 11px;
+      letter-spacing: 3px;
       text-transform: uppercase;
-      color: rgba(212, 163, 90, 0.9);
+      color: #d4a35a;
     }
     .devlog-track {
       overflow: hidden;
       white-space: nowrap;
-      mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-      -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+      width: 100%;
     }
     .devlog-marquee {
       display: inline-block;
       white-space: nowrap;
       font-family: Arial, Helvetica, sans-serif;
-      font-size: clamp(12px, 1.5vw, 15px);
-      color: rgba(232, 237, 242, 0.82);
+      font-size: 14px;
+      color: #d8dde3;
       animation: marquee 55s linear infinite;
     }
-    .devlog-marquee .item {
-      display: inline-block;
-      margin-right: 2.5rem;
-    }
-    .devlog-marquee .date {
-      color: rgba(212, 163, 90, 0.85);
-      margin-right: 0.45rem;
-      letter-spacing: 0.06em;
-    }
-    .devlog-marquee .sep {
-      margin: 0 1.4rem;
-      color: rgba(255,255,255,0.22);
-    }
+    .devlog-marquee .item { display: inline-block; margin-right: 36px; }
+    .devlog-marquee .date { color: #d4a35a; margin-right: 8px; }
+    .devlog-marquee .sep { margin: 0 18px; color: #555; }
     @keyframes marquee {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
+      from { margin-left: 0; }
+      to { margin-left: -50%; }
     }
   </style>
 </head>
 <body>
   <div class="loop" id="loop">
-    <img class="on" src="assets/bg/bg-01.jpg" alt="" draggable="false" />
-    <img src="assets/bg/bg-02.jpg" alt="" draggable="false" />
-    <img src="assets/bg/bg-03.jpg" alt="" draggable="false" />
-    <img src="assets/bg/bg-04.jpg" alt="" draggable="false" />
-    <img src="assets/bg/bg-05.jpg" alt="" draggable="false" />
-    <img src="assets/bg/bg-06.jpg" alt="" draggable="false" />
-    <img src="assets/bg/bg-07.jpg" alt="" draggable="false" />
-    <img src="assets/bg/bg-08.jpg" alt="" draggable="false" />
-    <img src="assets/bg/bg-09.jpg" alt="" draggable="false" />
-    <img src="assets/bg/bg-10.jpg" alt="" draggable="false" />
-    <img src="assets/bg/bg-11.jpg" alt="" draggable="false" />
-    <img src="assets/bg/bg-12.jpg" alt="" draggable="false" />
+    <img class="on" id="bg0" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-01.jpg" alt="" />
+    <img id="bg1" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-02.jpg" alt="" />
+    <img id="bg2" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-03.jpg" alt="" />
+    <img id="bg3" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-04.jpg" alt="" />
+    <img id="bg4" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-05.jpg" alt="" />
+    <img id="bg5" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-06.jpg" alt="" />
+    <img id="bg6" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-07.jpg" alt="" />
+    <img id="bg7" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-08.jpg" alt="" />
+    <img id="bg8" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-09.jpg" alt="" />
+    <img id="bg9" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-10.jpg" alt="" />
+    <img id="bg10" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-11.jpg" alt="" />
+    <img id="bg11" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-12.jpg" alt="" />
   </div>
   <div class="shade" id="shade"></div>
   <div class="title" id="title">Chelyabinsk <span>RP</span></div>
 
   <div class="devlog" id="devlog">
-    <div class="devlog-head">
-      <span>Dev Log</span>
-    </div>
+    <div class="devlog-head">Dev Log</div>
     <div class="devlog-track">
       <div class="devlog-marquee" id="devlogMarquee"></div>
     </div>
   </div>
 
   <div class="egg" id="egg">
-    <img src="assets/sanya.png" alt="" draggable="false" />
+    <img src="https://eutyuganov-droid.github.io/GAGAGA/assets/sanya.png" alt="" />
     <div class="egg-caption">Саня - Лох он же Xenon</div>
   </div>
 
   <script>
     (function () {
+      var BASE = "https://eutyuganov-droid.github.io/GAGAGA/";
       var eggRoll = Math.random() < 0.01;
+
       if (eggRoll) {
         document.getElementById("egg").className = "egg show";
         document.getElementById("loop").style.display = "none";
@@ -205,12 +173,16 @@
         document.getElementById("title").style.display = "none";
         document.getElementById("devlog").style.display = "none";
       } else {
-        var imgs = document.querySelectorAll("#loop img");
+        var imgs = document.getElementById("loop").getElementsByTagName("img");
         var i = 0;
+        // force first visible even if CSS class fails
+        imgs[0].style.opacity = "1";
         setInterval(function () {
-          imgs[i].classList.remove("on");
+          imgs[i].className = "";
+          imgs[i].style.opacity = "0";
           i = (i + 1) % imgs.length;
-          imgs[i].classList.add("on");
+          imgs[i].className = "on";
+          imgs[i].style.opacity = "1";
         }, 6000);
         loadDevLog();
       }
@@ -228,9 +200,10 @@
         var box = document.getElementById("devlog");
         if (!entries || !entries.length) return;
         var html = "";
-        for (var n = 0; n < 2; n++) {
-          for (var j = 0; j < entries.length; j++) {
-            var e = entries[j];
+        var n, j, e;
+        for (n = 0; n < 2; n++) {
+          for (j = 0; j < entries.length; j++) {
+            e = entries[j];
             html += '<span class="item"><span class="date">' + esc(e.date) + "</span>" + esc(e.text) + '</span><span class="sep">///</span>';
           }
         }
@@ -241,7 +214,8 @@
       function normalizeManual(data) {
         var out = [];
         var list = (data && data.entries) || [];
-        for (var i = 0; i < list.length; i++) {
+        var i;
+        for (i = 0; i < list.length; i++) {
           if (!list[i] || !list[i].text) continue;
           out.push({ date: list[i].date || "", text: list[i].text });
         }
@@ -250,16 +224,15 @@
 
       function normalizeCommits(commits) {
         var out = [];
-        for (var i = 0; i < (commits || []).length; i++) {
-          var c = commits[i];
+        var i, c, msg, date;
+        for (i = 0; i < (commits || []).length; i++) {
+          c = commits[i];
           if (!c || !c.commit) continue;
-          var msg = (c.commit.message || "").split("\n")[0].trim();
+          msg = (c.commit.message || "").split("\n")[0].trim();
           if (!msg) continue;
           if (/^merge /i.test(msg)) continue;
-          var date = "";
-          if (c.commit.author && c.commit.author.date) {
-            date = String(c.commit.author.date).slice(0, 10);
-          }
+          date = "";
+          if (c.commit.author && c.commit.author.date) date = String(c.commit.author.date).slice(0, 10);
           out.push({ date: date, text: msg });
         }
         return out;
@@ -269,8 +242,9 @@
         var seen = {};
         var out = [];
         function add(arr) {
-          for (var i = 0; i < arr.length; i++) {
-            var key = (arr[i].date + "|" + arr[i].text).toLowerCase();
+          var i, key;
+          for (i = 0; i < arr.length; i++) {
+            key = (arr[i].date + "|" + arr[i].text).toLowerCase();
             if (seen[key]) continue;
             seen[key] = 1;
             out.push(arr[i]);
@@ -283,29 +257,17 @@
       }
 
       function loadDevLog() {
-        var bust = "?t=" + Date.now();
-        var manualP = fetch("devlog.json" + bust, { cache: "no-store" })
+        var bust = "?t=" + (new Date()).getTime();
+        var manualP = fetch(BASE + "devlog.json" + bust)
           .then(function (r) { return r.ok ? r.json() : null; })
           .catch(function () { return null; });
-
-        var commitsP = fetch("https://api.github.com/repos/eutyuganov-droid/GAGAGA/commits?per_page=12", {
-          headers: { Accept: "application/vnd.github+json" }
-        })
+        var commitsP = fetch("https://api.github.com/repos/eutyuganov-droid/GAGAGA/commits?per_page=12")
           .then(function (r) { return r.ok ? r.json() : []; })
           .catch(function () { return []; });
-
         Promise.all([manualP, commitsP]).then(function (res) {
-          var manual = normalizeManual(res[0]);
-          var commits = normalizeCommits(res[1]);
-          var merged = mergeUnique(manual, commits, 16);
-          renderEntries(merged);
+          renderEntries(mergeUnique(normalizeManual(res[0]), normalizeCommits(res[1]), 16));
         });
       }
-
-      document.addEventListener("contextmenu", function (e) { e.preventDefault(); }, true);
-      document.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); }, true);
-      document.addEventListener("mousedown", function (e) { e.preventDefault(); }, true);
-      document.addEventListener("keydown", function (e) { e.preventDefault(); }, true);
 
       window.GameDetails = function () {};
       window.SetFilesTotal = function () {};
