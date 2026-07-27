@@ -67,7 +67,6 @@
     }
     .title span { color: #d4a35a; }
 
-    /* Easter: Саня */
     .egg {
       position: fixed;
       inset: 0;
@@ -106,6 +105,67 @@
       color: #fff;
       text-shadow: 0 2px 18px rgba(0,0,0,0.9);
     }
+
+    .devlog {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 5;
+      padding: 0.85rem 1.25rem 1rem;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,0.82) 35%, rgba(0,0,0,0.92));
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .devlog.show { opacity: 1; }
+    .devlog-head {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 0.45rem;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(212, 163, 90, 0.9);
+    }
+    .devlog-head .sync {
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.12em;
+      font-size: 0.62rem;
+    }
+    .devlog-track {
+      overflow: hidden;
+      white-space: nowrap;
+      mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    }
+    .devlog-marquee {
+      display: inline-block;
+      white-space: nowrap;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: clamp(12px, 1.5vw, 15px);
+      color: rgba(232, 237, 242, 0.82);
+      animation: marquee 55s linear infinite;
+    }
+    .devlog-marquee .item {
+      display: inline-block;
+      margin-right: 2.5rem;
+    }
+    .devlog-marquee .date {
+      color: rgba(212, 163, 90, 0.85);
+      margin-right: 0.45rem;
+      letter-spacing: 0.06em;
+    }
+    .devlog-marquee .sep {
+      margin: 0 1.4rem;
+      color: rgba(255,255,255,0.22);
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
   </style>
 </head>
 <body>
@@ -126,6 +186,16 @@
   <div class="shade" id="shade"></div>
   <div class="title" id="title">Chelyabinsk <span>RP</span></div>
 
+  <div class="devlog" id="devlog">
+    <div class="devlog-head">
+      <span>Dev Log</span>
+      <span class="sync" id="devlogSync">синхронизация…</span>
+    </div>
+    <div class="devlog-track">
+      <div class="devlog-marquee" id="devlogMarquee"></div>
+    </div>
+  </div>
+
   <div class="egg" id="egg">
     <img src="assets/sanya.png" alt="" draggable="false" />
     <div class="egg-caption">Саня - Лох он же Xenon</div>
@@ -139,6 +209,7 @@
         document.getElementById("loop").style.display = "none";
         document.getElementById("shade").style.display = "none";
         document.getElementById("title").style.display = "none";
+        document.getElementById("devlog").style.display = "none";
       } else {
         var imgs = document.querySelectorAll("#loop img");
         var i = 0;
@@ -147,6 +218,102 @@
           i = (i + 1) % imgs.length;
           imgs[i].classList.add("on");
         }, 6000);
+        loadDevLog();
+      }
+
+      function esc(s) {
+        return String(s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function renderEntries(entries, sourceLabel) {
+        var el = document.getElementById("devlogMarquee");
+        var sync = document.getElementById("devlogSync");
+        var box = document.getElementById("devlog");
+        if (!entries || !entries.length) {
+          sync.textContent = "нет записей";
+          return;
+        }
+        var html = "";
+        for (var n = 0; n < 2; n++) {
+          for (var j = 0; j < entries.length; j++) {
+            var e = entries[j];
+            html += '<span class="item"><span class="date">' + esc(e.date) + "</span>" + esc(e.text) + '</span><span class="sep">///</span>';
+          }
+        }
+        el.innerHTML = html;
+        sync.textContent = sourceLabel || "online";
+        box.className = "devlog show";
+      }
+
+      function normalizeManual(data) {
+        var out = [];
+        var list = (data && data.entries) || [];
+        for (var i = 0; i < list.length; i++) {
+          if (!list[i] || !list[i].text) continue;
+          out.push({ date: list[i].date || "", text: list[i].text });
+        }
+        return out;
+      }
+
+      function normalizeCommits(commits) {
+        var out = [];
+        for (var i = 0; i < (commits || []).length; i++) {
+          var c = commits[i];
+          if (!c || !c.commit) continue;
+          var msg = (c.commit.message || "").split("\n")[0].trim();
+          if (!msg) continue;
+          if (/^merge /i.test(msg)) continue;
+          var date = "";
+          if (c.commit.author && c.commit.author.date) {
+            date = String(c.commit.author.date).slice(0, 10);
+          }
+          out.push({ date: date, text: msg });
+        }
+        return out;
+      }
+
+      function mergeUnique(primary, secondary, max) {
+        var seen = {};
+        var out = [];
+        function add(arr) {
+          for (var i = 0; i < arr.length; i++) {
+            var key = (arr[i].date + "|" + arr[i].text).toLowerCase();
+            if (seen[key]) continue;
+            seen[key] = 1;
+            out.push(arr[i]);
+            if (out.length >= max) return;
+          }
+        }
+        add(primary);
+        add(secondary);
+        return out;
+      }
+
+      function loadDevLog() {
+        var bust = "?t=" + Date.now();
+        var manualP = fetch("devlog.json" + bust, { cache: "no-store" })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .catch(function () { return null; });
+
+        var commitsP = fetch("https://api.github.com/repos/eutyuganov-droid/GAGAGA/commits?per_page=12", {
+          headers: { Accept: "application/vnd.github+json" }
+        })
+          .then(function (r) { return r.ok ? r.json() : []; })
+          .catch(function () { return []; });
+
+        Promise.all([manualP, commitsP]).then(function (res) {
+          var manual = normalizeManual(res[0]);
+          var commits = normalizeCommits(res[1]);
+          var merged = mergeUnique(manual, commits, 16);
+          var label = "devlog.json";
+          if (manual.length && commits.length) label = "devlog.json + github";
+          else if (commits.length && !manual.length) label = "github commits";
+          renderEntries(merged, label);
+        });
       }
 
       document.addEventListener("contextmenu", function (e) { e.preventDefault(); }, true);
