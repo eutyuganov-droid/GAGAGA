@@ -130,11 +130,6 @@
       text-transform: uppercase;
       color: rgba(212, 163, 90, 0.9);
     }
-    .devlog-head .sync {
-      color: rgba(255,255,255,0.35);
-      letter-spacing: 0.12em;
-      font-size: 0.62rem;
-    }
     .devlog-track {
       overflow: hidden;
       white-space: nowrap;
@@ -189,7 +184,6 @@
   <div class="devlog" id="devlog">
     <div class="devlog-head">
       <span>Dev Log</span>
-      <span class="sync" id="devlogSync">синхронизация…</span>
     </div>
     <div class="devlog-track">
       <div class="devlog-marquee" id="devlogMarquee"></div>
@@ -229,14 +223,10 @@
           .replace(/"/g, "&quot;");
       }
 
-      function renderEntries(entries, sourceLabel) {
+      function renderEntries(entries) {
         var el = document.getElementById("devlogMarquee");
-        var sync = document.getElementById("devlogSync");
         var box = document.getElementById("devlog");
-        if (!entries || !entries.length) {
-          sync.textContent = "нет записей";
-          return;
-        }
+        if (!entries || !entries.length) return;
         var html = "";
         for (var n = 0; n < 2; n++) {
           for (var j = 0; j < entries.length; j++) {
@@ -245,7 +235,6 @@
           }
         }
         el.innerHTML = html;
-        sync.textContent = sourceLabel || "online";
         box.className = "devlog show";
       }
 
@@ -309,10 +298,7 @@
           var manual = normalizeManual(res[0]);
           var commits = normalizeCommits(res[1]);
           var merged = mergeUnique(manual, commits, 16);
-          var label = "devlog.json";
-          if (manual.length && commits.length) label = "devlog.json + github";
-          else if (commits.length && !manual.length) label = "github commits";
-          renderEntries(merged, label);
+          renderEntries(merged);
         });
       }
 
