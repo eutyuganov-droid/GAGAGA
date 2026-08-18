@@ -1,13 +1,16 @@
-# Chelyabinsk RP
+# meleecity loading screen
 
-- `index.html` / `loading.html` — загрузочный экран (`sv_loadingurl`)
-- `devlog.json` — **dev log**: правь этот файл и пушь — лента внизу экрана обновится
-- `home.html` — старый лендинг (если нужен)
+Тёмный CCTV-экран загрузки в духе Manhunt: камеры по району, зерно, скретчи, без неона.
 
-Dev log также подтягивает свежие коммиты публичного репо GAGAGA.
+## GitHub Pages
 
-## sv_loadingurl
+После пуша в `main`:
+
+- https://eutyuganov-droid.github.io/GAGAGA/
+- https://eutyuganov-droid.github.io/GAGAGA/loading.html
+
+## server.cfg
 
 ```
-sv_loadingurl "https://eutyuganov-droid.github.io/GAGAGA/"
+sv_loadingurl "https://eutyuganov-droid.github.io/GAGAGA/loading.html?steamid=%s&map=%m"
 ```

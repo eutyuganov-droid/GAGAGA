@@ -1,279 +1,550 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <base href="https://eutyuganov-droid.github.io/GAGAGA/" />
-  <title>Chelyabinsk RP</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>meleecity</title>
   <style>
-    * { margin: 0; padding: 0; }
+    @font-face {
+      font-family: "Oswald";
+      src: url("assets/fonts/oswald-500.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Oswald";
+      src: url("assets/fonts/oswald-700.woff2") format("woff2");
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Share Tech Mono";
+      src: url("assets/fonts/share-tech-mono.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
     html, body {
       width: 100%;
       height: 100%;
+      margin: 0;
       overflow: hidden;
-      background: #000;
+      background: #070706;
+      color: #d6cec3;
+      font-family: "Share Tech Mono", Consolas, monospace;
       user-select: none;
-      cursor: none;
+      cursor: default;
     }
-    .loop {
+
+    .stage {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      inset: 0;
       overflow: hidden;
-      background: #000;
-      z-index: 0;
+      background: #070706;
     }
-    .loop img {
+
+    .stage.is-glitch {
+      transform: translate(2px, -1px);
+    }
+
+    .slide {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
+      inset: -4%;
+      width: 108%;
+      height: 108%;
+      background-size: cover;
+      background-position: center;
       opacity: 0;
-      z-index: 1;
+      filter: grayscale(0.38) contrast(1.12) brightness(0.52) saturate(0.55);
+      transform: scale(1.04);
+      transition: opacity 1.8s ease;
     }
-    .loop img.on {
+
+    .slide.is-on {
       opacity: 1;
+      animation: ken 22s ease-in-out infinite alternate;
+    }
+
+    @keyframes ken {
+      from { transform: scale(1.04) translate(0, 0); }
+      to { transform: scale(1.12) translate(-1.4%, -0.8%); }
+    }
+
+    .grade,
+    .concrete,
+    .grain,
+    .scratches,
+    .scan,
+    .vignette,
+    .frame {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .grade {
+      background:
+        linear-gradient(180deg, rgba(8, 7, 6, 0.42) 0%, rgba(8, 7, 6, 0.08) 38%, rgba(8, 7, 6, 0.78) 100%),
+        linear-gradient(90deg, rgba(10, 9, 8, 0.35) 0%, transparent 22%, transparent 78%, rgba(10, 9, 8, 0.35) 100%),
+        radial-gradient(ellipse at center, rgba(48, 58, 44, 0.08), transparent 58%);
       z-index: 2;
     }
-    .shade {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+
+    .concrete {
       z-index: 3;
-      background: rgba(0,0,0,0.35);
+      background: url("assets/fx/concrete.jpg") center / cover no-repeat;
+      opacity: 0.14;
+      mix-blend-mode: multiply;
     }
-    .title {
-      position: fixed;
-      left: 50%;
-      top: 50%;
-      margin-left: -280px;
-      margin-top: -28px;
-      width: 560px;
+
+    .grain {
       z-index: 4;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 42px;
-      font-weight: 700;
-      letter-spacing: 8px;
-      color: #f2f2f2;
-      text-transform: uppercase;
-      text-align: center;
-      text-shadow: 0 2px 24px #000;
-    }
-    .title span { color: #d4a35a; }
-
-    .egg {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      z-index: 20;
-      display: none;
-      background: #000;
-    }
-    .egg.show { display: block; }
-    .egg img {
-      position: absolute;
-      left: 50%;
-      top: 42%;
-      width: 420px;
-      margin-left: -210px;
-      margin-top: -210px;
-    }
-    .egg-caption {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 14%;
-      text-align: center;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 24px;
-      font-weight: 700;
-      color: #fff;
-      text-shadow: 0 2px 18px #000;
+      background: url("assets/fx/grain.jpg") repeat;
+      background-size: 380px 380px;
+      opacity: 0.16;
+      mix-blend-mode: overlay;
+      animation: grain 0.32s steps(2) infinite;
     }
 
-    .devlog {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
+    .scratches {
       z-index: 5;
-      padding: 14px 18px 16px;
-      background: rgba(0,0,0,0.78);
-      display: none;
+      background: url("assets/fx/scratches.jpg") center / cover no-repeat;
+      opacity: 0.11;
+      mix-blend-mode: screen;
     }
-    .devlog.show { display: block; }
-    .devlog-head {
-      margin-bottom: 6px;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 11px;
-      letter-spacing: 3px;
+
+    .scan {
+      z-index: 6;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 0,
+        rgba(0, 0, 0, 0) 2px,
+        rgba(0, 0, 0, 0.16) 3px
+      );
+      opacity: 0.28;
+    }
+
+    .vignette {
+      z-index: 7;
+      box-shadow: inset 0 0 140px 36px rgba(0, 0, 0, 0.72);
+    }
+
+    .frame {
+      z-index: 8;
+      border: 1px solid rgba(210, 200, 185, 0.08);
+      margin: 18px;
+      width: auto;
+      height: auto;
+    }
+
+    .frame:before,
+    .frame:after,
+    .corners:before,
+    .corners:after {
+      content: "";
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-color: rgba(214, 206, 195, 0.42);
+      border-style: solid;
+    }
+
+    .frame:before { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
+    .frame:after { top: 10px; right: 10px; border-width: 1px 1px 0 0; }
+    .corners:before { bottom: 10px; left: 10px; border-width: 0 0 1px 1px; }
+    .corners:after { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
+
+    .corners {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .sweep {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      height: 1px;
+      background: rgba(214, 206, 195, 0.12);
+      z-index: 9;
+      pointer-events: none;
+      animation: sweep 7.5s linear infinite;
+    }
+
+    @keyframes sweep {
+      from { top: 18px; opacity: 0; }
+      8% { opacity: 0.55; }
+      92% { opacity: 0.18; }
+      to { top: calc(100% - 18px); opacity: 0; }
+    }
+
+    @keyframes grain {
+      from { background-position: 0 0; }
+      to { background-position: 12px -8px; }
+    }
+
+    .hud {
+      position: relative;
+      z-index: 12;
+      height: 100%;
+      box-sizing: border-box;
+      padding: 34px 42px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .top,
+    .bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+    }
+
+    .cam-id,
+    .rec,
+    .meta,
+    .file,
+    .hint,
+    .status {
+      font-size: 12px;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: #d4a35a;
+      color: rgba(214, 206, 195, 0.72);
+      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.85);
     }
-    .devlog-track {
-      overflow: hidden;
-      white-space: nowrap;
-      width: 100%;
+
+    .cam-id strong,
+    .rec strong {
+      color: #ece6dc;
+      font-weight: 400;
     }
-    .devlog-marquee {
+
+    .dot {
       display: inline-block;
-      white-space: nowrap;
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 14px;
-      color: #d8dde3;
-      animation: marquee 55s linear infinite;
+      width: 7px;
+      height: 7px;
+      margin-right: 8px;
+      border-radius: 50%;
+      background: #8b322c;
+      box-shadow: 0 0 8px rgba(139, 50, 44, 0.45);
+      animation: pulse 1.8s ease-in-out infinite;
+      vertical-align: middle;
     }
-    .devlog-marquee .item { display: inline-block; margin-right: 36px; }
-    .devlog-marquee .date { color: #d4a35a; margin-right: 8px; }
-    .devlog-marquee .sep { margin: 0 18px; color: #555; }
-    @keyframes marquee {
-      from { margin-left: 0; }
-      to { margin-left: -50%; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.45; }
+      50% { opacity: 1; }
+    }
+
+    .center {
+      text-align: center;
+      margin-top: -4vh;
+    }
+
+    .kicker {
+      font-size: 11px;
+      letter-spacing: 0.46em;
+      text-transform: uppercase;
+      color: rgba(168, 158, 144, 0.8);
+      margin-bottom: 14px;
+    }
+
+    .title {
+      font-family: "Oswald", "Arial Narrow", Arial, sans-serif;
+      font-weight: 700;
+      font-size: clamp(48px, 8.4vw, 118px);
+      line-height: 0.9;
+      letter-spacing: 0.22em;
+      text-transform: lowercase;
+      color: #e7e0d6;
+      text-shadow: 0 2px 28px rgba(0, 0, 0, 0.7);
+      margin: 0;
+    }
+
+    .rule {
+      width: 88px;
+      height: 1px;
+      margin: 18px auto 14px;
+      background: #6e3a34;
+      opacity: 0.85;
+    }
+
+    .sub {
+      font-size: 13px;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: rgba(196, 186, 172, 0.78);
+    }
+
+    .load {
+      width: min(520px, 72vw);
+      margin: 28px auto 0;
+    }
+
+    .bar {
+      height: 2px;
+      background: rgba(214, 206, 195, 0.12);
+      overflow: hidden;
+    }
+
+    .bar > span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: #cfc6b8;
+      box-shadow: 0 0 12px rgba(207, 198, 184, 0.25);
+      transition: width 0.35s linear;
+    }
+
+    .load-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(214, 206, 195, 0.55);
+    }
+
+    .file {
+      margin-top: 8px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: none;
+      color: rgba(168, 160, 148, 0.7);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bottom {
+      align-items: flex-end;
+    }
+
+    .hint {
+      max-width: 46%;
+      color: rgba(168, 160, 148, 0.7);
+      line-height: 1.55;
+      letter-spacing: 0.12em;
+    }
+
+    .meta {
+      text-align: right;
+      line-height: 1.7;
+    }
+
+    .meta b {
+      color: #ece6dc;
+      font-weight: 400;
+    }
+
+    @media (max-width: 720px) {
+      .hud { padding: 22px 18px; }
+      .title { letter-spacing: 0.12em; }
+      .hint { display: none; }
     }
   </style>
 </head>
 <body>
-  <div class="loop" id="loop">
-    <img class="on" id="bg0" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-01.jpg" alt="" />
-    <img id="bg1" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-02.jpg" alt="" />
-    <img id="bg2" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-03.jpg" alt="" />
-    <img id="bg3" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-04.jpg" alt="" />
-    <img id="bg4" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-05.jpg" alt="" />
-    <img id="bg5" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-06.jpg" alt="" />
-    <img id="bg6" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-07.jpg" alt="" />
-    <img id="bg7" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-08.jpg" alt="" />
-    <img id="bg8" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-09.jpg" alt="" />
-    <img id="bg9" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-10.jpg" alt="" />
-    <img id="bg10" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-11.jpg" alt="" />
-    <img id="bg11" src="https://eutyuganov-droid.github.io/GAGAGA/assets/bg/bg-12.jpg" alt="" />
-  </div>
-  <div class="shade" id="shade"></div>
-  <div class="title" id="title">Chelyabinsk <span>RP</span></div>
-
-  <div class="devlog" id="devlog">
-    <div class="devlog-head">Dev Log</div>
-    <div class="devlog-track">
-      <div class="devlog-marquee" id="devlogMarquee"></div>
+  <div class="stage" id="stage">
+    <div id="slides"></div>
+    <div class="grade"></div>
+    <div class="concrete"></div>
+    <div class="grain"></div>
+    <div class="scratches"></div>
+    <div class="scan"></div>
+    <div class="vignette"></div>
+    <div class="frame">
+      <div class="corners"></div>
     </div>
+    <div class="sweep"></div>
   </div>
 
-  <div class="egg" id="egg">
-    <img src="https://eutyuganov-droid.github.io/GAGAGA/assets/sanya.png" alt="" />
-    <div class="egg-caption">Саня - Лох он же Xenon</div>
+  <div class="hud">
+    <div class="top">
+      <div class="cam-id">
+        <strong id="cam">CAM 04</strong> &nbsp;•&nbsp; LIVE<br>
+        <span id="zone">EAST ALLEY</span>
+      </div>
+      <div class="rec">
+        <span class="dot"></span><strong>REC</strong>
+        &nbsp;&nbsp;<span id="clock">00:00:00</span>
+      </div>
+    </div>
+
+    <div class="center">
+      <div class="kicker" id="kicker">a scene is being prepared</div>
+      <h1 class="title">meleecity</h1>
+      <div class="rule"></div>
+      <div class="sub" id="status">waiting for server</div>
+      <div class="load">
+        <div class="bar"><span id="fill"></span></div>
+        <div class="load-row">
+          <span id="pct">0%</span>
+          <span id="left">—</span>
+        </div>
+        <div class="file" id="file">retrieving server info</div>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <div class="hint" id="hint">Тише двигаешься — дольше живёшь.</div>
+      <div class="meta">
+        <div id="server">meleecity</div>
+        <div>MAP &nbsp;<b id="map">—</b></div>
+        <div>MODE &nbsp;<b id="mode">—</b></div>
+        <div>PLY &nbsp;<b id="ply">—</b></div>
+      </div>
+    </div>
   </div>
 
   <script>
     (function () {
-      var BASE = "https://eutyuganov-droid.github.io/GAGAGA/";
-      var eggRoll = Math.random() < 0.01;
+      var SCENES = [
+        { src: "assets/bg/01-alley.jpg", cam: "CAM 04", zone: "EAST ALLEY" },
+        { src: "assets/bg/02-warehouse.jpg", cam: "CAM 11", zone: "LOADING BAY" },
+        { src: "assets/bg/03-garage.jpg", cam: "CAM 02", zone: "SUBLEVEL B" },
+        { src: "assets/bg/04-underpass.jpg", cam: "CAM 09", zone: "SERVICE TUNNEL" },
+        { src: "assets/bg/05-fence.jpg", cam: "CAM 07", zone: "YARD PERIMETER" },
+        { src: "assets/bg/06-corridor.jpg", cam: "CAM 15", zone: "BLOCK C" }
+      ];
 
-      if (eggRoll) {
-        document.getElementById("egg").className = "egg show";
-        document.getElementById("loop").style.display = "none";
-        document.getElementById("shade").style.display = "none";
-        document.getElementById("title").style.display = "none";
-        document.getElementById("devlog").style.display = "none";
-      } else {
-        var imgs = document.getElementById("loop").getElementsByTagName("img");
-        var i = 0;
-        // force first visible even if CSS class fails
-        imgs[0].style.opacity = "1";
-        setInterval(function () {
-          imgs[i].className = "";
-          imgs[i].style.opacity = "0";
-          i = (i + 1) % imgs.length;
-          imgs[i].className = "on";
-          imgs[i].style.opacity = "1";
-        }, 6000);
-        loadDevLog();
+      var HINTS = [
+        "Тише двигаешься — дольше живёшь.",
+        "Не стой на свету.",
+        "Удар сзади закрывает сцену.",
+        "Камера уже пишет.",
+        "Stay in the dark.",
+        "Холодное оружие. Близко. Грязно.",
+        "Не шуми, пока не надо."
+      ];
+
+      var slidesEl = document.getElementById("slides");
+      var nodes = [];
+      var i, n;
+
+      for (i = 0; i < SCENES.length; i++) {
+        n = document.createElement("div");
+        n.className = "slide";
+        n.style.backgroundImage = "url('" + SCENES[i].src + "')";
+        slidesEl.appendChild(n);
+        nodes.push(n);
       }
 
-      function esc(s) {
-        return String(s || "")
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;");
+      var idx = 0;
+      nodes[0].className = "slide is-on";
+      document.getElementById("cam").innerHTML = SCENES[0].cam;
+      document.getElementById("zone").innerHTML = SCENES[0].zone;
+
+      setInterval(function () {
+        nodes[idx].className = "slide";
+        idx = (idx + 1) % nodes.length;
+        nodes[idx].className = "slide is-on";
+        document.getElementById("cam").innerHTML = SCENES[idx].cam;
+        document.getElementById("zone").innerHTML = SCENES[idx].zone;
+      }, 7000);
+
+      var hintI = 0;
+      setInterval(function () {
+        hintI = (hintI + 1) % HINTS.length;
+        document.getElementById("hint").innerHTML = HINTS[hintI];
+      }, 9000);
+
+      var t0 = new Date();
+      setInterval(function () {
+        var d = new Date() - t0;
+        var s = Math.floor(d / 1000);
+        var hh = pad(Math.floor(s / 3600));
+        var mm = pad(Math.floor((s % 3600) / 60));
+        var ss = pad(s % 60);
+        document.getElementById("clock").innerHTML = hh + ":" + mm + ":" + ss;
+      }, 250);
+
+      var stage = document.getElementById("stage");
+      setInterval(function () {
+        if (Math.random() > 0.35) return;
+        stage.className = "stage is-glitch";
+        setTimeout(function () { stage.className = "stage"; }, 70);
+      }, 11000);
+
+      var total = 0;
+      var needed = 0;
+      var gotDetails = false;
+
+      function pad(v) {
+        return (v < 10 ? "0" : "") + v;
       }
 
-      function renderEntries(entries) {
-        var el = document.getElementById("devlogMarquee");
-        var box = document.getElementById("devlog");
-        if (!entries || !entries.length) return;
-        var html = "";
-        var n, j, e;
-        for (n = 0; n < 2; n++) {
-          for (j = 0; j < entries.length; j++) {
-            e = entries[j];
-            html += '<span class="item"><span class="date">' + esc(e.date) + "</span>" + esc(e.text) + '</span><span class="sep">///</span>';
-          }
-        }
-        el.innerHTML = html;
-        box.className = "devlog show";
+      function clip(s, n) {
+        s = String(s || "");
+        if (s.length <= n) return s;
+        return "…" + s.slice(-n);
       }
 
-      function normalizeManual(data) {
-        var out = [];
-        var list = (data && data.entries) || [];
-        var i;
-        for (i = 0; i < list.length; i++) {
-          if (!list[i] || !list[i].text) continue;
-          out.push({ date: list[i].date || "", text: list[i].text });
-        }
-        return out;
+      function setProgress() {
+        var pct = 0;
+        if (total > 0) pct = Math.max(0, Math.min(100, Math.round(((total - needed) / total) * 100)));
+        document.getElementById("fill").style.width = pct + "%";
+        document.getElementById("pct").innerHTML = pct + "%";
+        if (total > 0) document.getElementById("left").innerHTML = needed + " files left";
       }
 
-      function normalizeCommits(commits) {
-        var out = [];
-        var i, c, msg, date;
-        for (i = 0; i < (commits || []).length; i++) {
-          c = commits[i];
-          if (!c || !c.commit) continue;
-          msg = (c.commit.message || "").split("\n")[0].trim();
-          if (!msg) continue;
-          if (/^merge /i.test(msg)) continue;
-          date = "";
-          if (c.commit.author && c.commit.author.date) date = String(c.commit.author.date).slice(0, 10);
-          out.push({ date: date, text: msg });
-        }
-        return out;
+      function q(name) {
+        var m = location.search.match(new RegExp("[?&]" + name + "=([^&]*)", "i"));
+        return m ? decodeURIComponent(m[1].replace(/\+/g, " ")) : "";
       }
 
-      function mergeUnique(primary, secondary, max) {
-        var seen = {};
-        var out = [];
-        function add(arr) {
-          var i, key;
-          for (i = 0; i < arr.length; i++) {
-            key = (arr[i].date + "|" + arr[i].text).toLowerCase();
-            if (seen[key]) continue;
-            seen[key] = 1;
-            out.push(arr[i]);
-            if (out.length >= max) return;
-          }
-        }
-        add(primary);
-        add(secondary);
-        return out;
-      }
+      window.GameDetails = function (servername, serverurl, mapname, maxplayers, steamid, gamemode) {
+        gotDetails = true;
+        if (servername) document.getElementById("server").innerHTML = servername;
+        if (mapname) document.getElementById("map").innerHTML = mapname;
+        if (gamemode) document.getElementById("mode").innerHTML = gamemode;
+        if (maxplayers) document.getElementById("ply").innerHTML = "0 / " + maxplayers;
+        document.getElementById("kicker").innerHTML = "joining " + (servername || "meleecity");
+      };
 
-      function loadDevLog() {
-        var bust = "?t=" + (new Date()).getTime();
-        var manualP = fetch(BASE + "devlog.json" + bust)
-          .then(function (r) { return r.ok ? r.json() : null; })
-          .catch(function () { return null; });
-        var commitsP = fetch("https://api.github.com/repos/eutyuganov-droid/GAGAGA/commits?per_page=12")
-          .then(function (r) { return r.ok ? r.json() : []; })
-          .catch(function () { return []; });
-        Promise.all([manualP, commitsP]).then(function (res) {
-          renderEntries(mergeUnique(normalizeManual(res[0]), normalizeCommits(res[1]), 16));
-        });
-      }
+      window.SetFilesTotal = function (n) {
+        total = parseInt(n, 10) || 0;
+        setProgress();
+      };
 
-      window.GameDetails = function () {};
-      window.SetFilesTotal = function () {};
-      window.SetFilesNeeded = function () {};
-      window.DownloadingFile = function () {};
-      window.SetStatusChanged = function () {};
+      window.SetFilesNeeded = function (n) {
+        needed = parseInt(n, 10) || 0;
+        setProgress();
+      };
+
+      window.DownloadingFile = function (fileName) {
+        document.getElementById("file").innerHTML = clip(fileName, 54);
+        document.getElementById("status").innerHTML = "downloading";
+      };
+
+      window.SetStatusChanged = function (status) {
+        document.getElementById("status").innerHTML = status || "loading";
+        document.getElementById("file").innerHTML = status || "";
+      };
+
+      var mapQ = q("map") || q("m") || q("Map");
+      var steamQ = q("steamid") || q("SteamId") || q("s");
+      if (mapQ) document.getElementById("map").innerHTML = mapQ;
+      if (steamQ) document.getElementById("ply").innerHTML = steamQ;
+
+      if (location.protocol !== "asset:" && location.hostname !== "" && !gotDetails) {
+        var fake = 0;
+        var demo = setInterval(function () {
+          if (gotDetails) { clearInterval(demo); return; }
+          fake += Math.random() * 7;
+          if (fake > 96) fake = 96;
+          document.getElementById("fill").style.width = Math.round(fake) + "%";
+          document.getElementById("pct").innerHTML = Math.round(fake) + "%";
+          document.getElementById("left").innerHTML = "preview";
+          document.getElementById("status").innerHTML = "preview mode";
+        }, 700);
+      }
     })();
   </script>
 </body>
