@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>meleecity</title>
+  <title>MANHUNT</title>
   <style>
     @font-face {
       font-family: "Oswald";
@@ -36,7 +36,6 @@
       color: #d6cec3;
       font-family: "Share Tech Mono", Consolas, monospace;
       user-select: none;
-      cursor: default;
     }
 
     .stage {
@@ -78,8 +77,7 @@
     .grain,
     .scratches,
     .scan,
-    .vignette,
-    .frame {
+    .vignette {
       position: absolute;
       inset: 0;
       pointer-events: none;
@@ -88,8 +86,7 @@
     .grade {
       background:
         linear-gradient(180deg, rgba(8, 7, 6, 0.42) 0%, rgba(8, 7, 6, 0.08) 38%, rgba(8, 7, 6, 0.78) 100%),
-        linear-gradient(90deg, rgba(10, 9, 8, 0.35) 0%, transparent 22%, transparent 78%, rgba(10, 9, 8, 0.35) 100%),
-        radial-gradient(ellipse at center, rgba(48, 58, 44, 0.08), transparent 58%);
+        linear-gradient(90deg, rgba(10, 9, 8, 0.35) 0%, transparent 22%, transparent 78%, rgba(10, 9, 8, 0.35) 100%);
       z-index: 2;
     }
 
@@ -132,221 +129,65 @@
       box-shadow: inset 0 0 140px 36px rgba(0, 0, 0, 0.72);
     }
 
-    .frame {
-      z-index: 8;
-      border: 1px solid rgba(210, 200, 185, 0.08);
-      margin: 18px;
-      width: auto;
-      height: auto;
-    }
-
-    .frame:before,
-    .frame:after,
-    .corners:before,
-    .corners:after {
-      content: "";
-      position: absolute;
-      width: 28px;
-      height: 28px;
-      border-color: rgba(214, 206, 195, 0.42);
-      border-style: solid;
-    }
-
-    .frame:before { top: 10px; left: 10px; border-width: 1px 0 0 1px; }
-    .frame:after { top: 10px; right: 10px; border-width: 1px 1px 0 0; }
-    .corners:before { bottom: 10px; left: 10px; border-width: 0 0 1px 1px; }
-    .corners:after { bottom: 10px; right: 10px; border-width: 0 1px 1px 0; }
-
-    .corners {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    .sweep {
-      position: absolute;
-      left: 18px;
-      right: 18px;
-      height: 1px;
-      background: rgba(214, 206, 195, 0.12);
-      z-index: 9;
-      pointer-events: none;
-      animation: sweep 7.5s linear infinite;
-    }
-
-    @keyframes sweep {
-      from { top: 18px; opacity: 0; }
-      8% { opacity: 0.55; }
-      92% { opacity: 0.18; }
-      to { top: calc(100% - 18px); opacity: 0; }
-    }
-
     @keyframes grain {
       from { background-position: 0 0; }
       to { background-position: 12px -8px; }
     }
 
-    .hud {
-      position: relative;
-      z-index: 12;
-      height: 100%;
-      box-sizing: border-box;
-      padding: 34px 42px 30px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .top,
-    .bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 24px;
-    }
-
-    .cam-id,
-    .rec,
-    .meta,
-    .file,
-    .hint,
-    .status {
-      font-size: 12px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(214, 206, 195, 0.72);
-      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.85);
-    }
-
-    .cam-id strong,
-    .rec strong {
-      color: #ece6dc;
-      font-weight: 400;
-    }
-
-    .dot {
-      display: inline-block;
-      width: 7px;
-      height: 7px;
-      margin-right: 8px;
-      border-radius: 50%;
-      background: #8b322c;
-      box-shadow: 0 0 8px rgba(139, 50, 44, 0.45);
-      animation: pulse 1.8s ease-in-out infinite;
-      vertical-align: middle;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.45; }
-      50% { opacity: 1; }
-    }
-
-    .center {
-      text-align: center;
-      margin-top: -4vh;
-    }
-
-    .kicker {
-      font-size: 11px;
-      letter-spacing: 0.46em;
-      text-transform: uppercase;
-      color: rgba(168, 158, 144, 0.8);
-      margin-bottom: 14px;
-    }
-
     .title {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 44%;
+      z-index: 12;
+      margin: 0;
+      text-align: center;
       font-family: "Oswald", "Arial Narrow", Arial, sans-serif;
       font-weight: 700;
-      font-size: clamp(48px, 8.4vw, 118px);
+      font-size: clamp(56px, 11vw, 148px);
       line-height: 0.9;
-      letter-spacing: 0.22em;
-      text-transform: lowercase;
+      letter-spacing: 0.28em;
+      text-indent: 0.28em;
+      text-transform: uppercase;
       color: #e7e0d6;
       text-shadow: 0 2px 28px rgba(0, 0, 0, 0.7);
-      margin: 0;
+      pointer-events: none;
     }
 
-    .rule {
-      width: 88px;
-      height: 1px;
-      margin: 18px auto 14px;
-      background: #6e3a34;
-      opacity: 0.85;
-    }
-
-    .sub {
-      font-size: 13px;
-      letter-spacing: 0.42em;
+    .caption {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 7%;
+      z-index: 12;
+      text-align: center;
+      font-size: clamp(13px, 1.6vw, 18px);
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: rgba(196, 186, 172, 0.78);
+      color: rgba(214, 206, 195, 0.78);
+      text-shadow: 0 1px 12px rgba(0, 0, 0, 0.9);
+      pointer-events: none;
     }
 
-    .load {
-      width: min(520px, 72vw);
-      margin: 28px auto 0;
-    }
-
-    .bar {
-      height: 2px;
-      background: rgba(214, 206, 195, 0.12);
-      overflow: hidden;
-    }
-
-    .bar > span {
-      display: block;
-      height: 100%;
-      width: 0;
-      background: #cfc6b8;
-      box-shadow: 0 0 12px rgba(207, 198, 184, 0.25);
-      transition: width 0.35s linear;
-    }
-
-    .load-row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
+    .flick {
+      position: fixed;
+      z-index: 10;
       font-size: 11px;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: rgba(214, 206, 195, 0.55);
-    }
-
-    .file {
-      margin-top: 8px;
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      text-transform: none;
-      color: rgba(168, 160, 148, 0.7);
+      color: rgba(214, 206, 195, 0.38);
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+      pointer-events: none;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      opacity: 0;
     }
 
-    .bottom {
-      align-items: flex-end;
+    .flick.is-on {
+      opacity: 1;
     }
 
-    .hint {
-      max-width: 46%;
-      color: rgba(168, 160, 148, 0.7);
-      line-height: 1.55;
-      letter-spacing: 0.12em;
-    }
-
-    .meta {
-      text-align: right;
-      line-height: 1.7;
-    }
-
-    .meta b {
-      color: #ece6dc;
-      font-weight: 400;
-    }
-
-    @media (max-width: 720px) {
-      .hud { padding: 22px 18px; }
-      .title { letter-spacing: 0.12em; }
-      .hint { display: none; }
+    .flick.is-hard {
+      color: rgba(180, 70, 62, 0.55);
     }
   </style>
 </head>
@@ -359,69 +200,50 @@
     <div class="scratches"></div>
     <div class="scan"></div>
     <div class="vignette"></div>
-    <div class="frame">
-      <div class="corners"></div>
-    </div>
-    <div class="sweep"></div>
   </div>
 
-  <div class="hud">
-    <div class="top">
-      <div class="cam-id">
-        <strong id="cam">CAM 04</strong> &nbsp;•&nbsp; LIVE<br>
-        <span id="zone">EAST ALLEY</span>
-      </div>
-      <div class="rec">
-        <span class="dot"></span><strong>REC</strong>
-        &nbsp;&nbsp;<span id="clock">00:00:00</span>
-      </div>
-    </div>
-
-    <div class="center">
-      <div class="kicker" id="kicker">a scene is being prepared</div>
-      <h1 class="title">meleecity</h1>
-      <div class="rule"></div>
-      <div class="sub" id="status">waiting for server</div>
-      <div class="load">
-        <div class="bar"><span id="fill"></span></div>
-        <div class="load-row">
-          <span id="pct">0%</span>
-          <span id="left">—</span>
-        </div>
-        <div class="file" id="file">retrieving server info</div>
-      </div>
-    </div>
-
-    <div class="bottom">
-      <div class="hint" id="hint">Тише двигаешься — дольше живёшь.</div>
-      <div class="meta">
-        <div id="server">meleecity</div>
-        <div>MAP &nbsp;<b id="map">—</b></div>
-        <div>MODE &nbsp;<b id="mode">—</b></div>
-        <div>PLY &nbsp;<b id="ply">—</b></div>
-      </div>
-    </div>
-  </div>
+  <div id="flecks"></div>
+  <h1 class="title">MANHUNT</h1>
+  <div class="caption" id="caption">Я хочу хорошее шоу.</div>
 
   <script>
     (function () {
       var SCENES = [
-        { src: "assets/bg/01-alley.jpg", cam: "CAM 04", zone: "EAST ALLEY" },
-        { src: "assets/bg/02-warehouse.jpg", cam: "CAM 11", zone: "LOADING BAY" },
-        { src: "assets/bg/03-garage.jpg", cam: "CAM 02", zone: "SUBLEVEL B" },
-        { src: "assets/bg/04-underpass.jpg", cam: "CAM 09", zone: "SERVICE TUNNEL" },
-        { src: "assets/bg/05-fence.jpg", cam: "CAM 07", zone: "YARD PERIMETER" },
-        { src: "assets/bg/06-corridor.jpg", cam: "CAM 15", zone: "BLOCK C" }
+        "assets/bg/01-alley.jpg",
+        "assets/bg/02-warehouse.jpg",
+        "assets/bg/03-garage.jpg",
+        "assets/bg/04-underpass.jpg",
+        "assets/bg/05-fence.jpg",
+        "assets/bg/06-corridor.jpg"
       ];
 
-      var HINTS = [
-        "Тише двигаешься — дольше живёшь.",
-        "Не стой на свету.",
-        "Удар сзади закрывает сцену.",
+      var CAPTIONS = [
+        "Я хочу хорошее шоу.",
+        "Сделай это красиво.",
+        "Не дай им себя увидеть.",
         "Камера уже пишет.",
-        "Stay in the dark.",
-        "Холодное оружие. Близко. Грязно.",
-        "Не шуми, пока не надо."
+        "Бей сзади. Тихо.",
+        "Они тебя не видят.",
+        "Это будет больно.",
+        "Добей его.",
+        "Не шуми.",
+        "Сними это.",
+        "Ещё один.",
+        "В тени. Жди.",
+        "Покажи им.",
+        "Режиссёр смотрит.",
+        "Не стой на свету.",
+        "Удар. Пауза. Удар."
+      ];
+
+      var WORDS = [
+        "УБЕЙ", "ТЕНЬ", "СЦЕНА", "КРОВЬ", "ТИШЕ", "УДАР", "ЖДИ", "СМОТРИ",
+        "ДОБЕЙ", "РЕЖИССЁР", "КАМЕРА", "ЖИВОЙ", "МЁРТВЫЙ", "ОХОТА", "ДОБЫЧА",
+        "НОЧЬ", "УЛИЦА", "ПОДВАЛ", "ЗАБОР", "СПИНА", "ГОРЛО", "МЕШОК",
+        "БИТА", "НОЖ", "ПРОВОЛОКА", "БЕГИ", "СТОЙ", "РЕЖЬ", "ДАВИ",
+        "EXECUTE", "HUNT", "CASH", "CUT", "LIVE", "KILL", "SCENE",
+        "CAM", "REC", "DIRTY", "CLOSE", "QUIET", "NOW", "AGAIN",
+        "07", "11", "23:41", "OK", "NO", "YES", "ERR", "SIG"
       ];
 
       var slidesEl = document.getElementById("slides");
@@ -431,120 +253,75 @@
       for (i = 0; i < SCENES.length; i++) {
         n = document.createElement("div");
         n.className = "slide";
-        n.style.backgroundImage = "url('" + SCENES[i].src + "')";
+        n.style.backgroundImage = "url('" + SCENES[i] + "')";
         slidesEl.appendChild(n);
         nodes.push(n);
       }
 
       var idx = 0;
       nodes[0].className = "slide is-on";
-      document.getElementById("cam").innerHTML = SCENES[0].cam;
-      document.getElementById("zone").innerHTML = SCENES[0].zone;
-
       setInterval(function () {
         nodes[idx].className = "slide";
         idx = (idx + 1) % nodes.length;
         nodes[idx].className = "slide is-on";
-        document.getElementById("cam").innerHTML = SCENES[idx].cam;
-        document.getElementById("zone").innerHTML = SCENES[idx].zone;
       }, 7000);
 
-      var hintI = 0;
+      var capI = 0;
       setInterval(function () {
-        hintI = (hintI + 1) % HINTS.length;
-        document.getElementById("hint").innerHTML = HINTS[hintI];
-      }, 9000);
-
-      var t0 = new Date();
-      setInterval(function () {
-        var d = new Date() - t0;
-        var s = Math.floor(d / 1000);
-        var hh = pad(Math.floor(s / 3600));
-        var mm = pad(Math.floor((s % 3600) / 60));
-        var ss = pad(s % 60);
-        document.getElementById("clock").innerHTML = hh + ":" + mm + ":" + ss;
-      }, 250);
+        capI = (capI + 1) % CAPTIONS.length;
+        document.getElementById("caption").innerHTML = CAPTIONS[capI];
+      }, 4500);
 
       var stage = document.getElementById("stage");
       setInterval(function () {
-        if (Math.random() > 0.35) return;
+        if (Math.random() > 0.4) return;
         stage.className = "stage is-glitch";
         setTimeout(function () { stage.className = "stage"; }, 70);
-      }, 11000);
+      }, 9000);
 
-      var total = 0;
-      var needed = 0;
-      var gotDetails = false;
-
-      function pad(v) {
-        return (v < 10 ? "0" : "") + v;
+      var flecks = document.getElementById("flecks");
+      var pool = [];
+      for (i = 0; i < 14; i++) {
+        n = document.createElement("div");
+        n.className = "flick";
+        flecks.appendChild(n);
+        pool.push(n);
       }
 
-      function clip(s, n) {
-        s = String(s || "");
-        if (s.length <= n) return s;
-        return "…" + s.slice(-n);
+      function pick(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
       }
 
-      function setProgress() {
-        var pct = 0;
-        if (total > 0) pct = Math.max(0, Math.min(100, Math.round(((total - needed) / total) * 100)));
-        document.getElementById("fill").style.width = pct + "%";
-        document.getElementById("pct").innerHTML = pct + "%";
-        if (total > 0) document.getElementById("left").innerHTML = needed + " files left";
+      function flashOne(el) {
+        var x = 4 + Math.random() * 88;
+        var y = 6 + Math.random() * 82;
+        if (y > 38 && y < 58) y = Math.random() < 0.5 ? 12 + Math.random() * 18 : 62 + Math.random() * 20;
+        el.style.left = x + "%";
+        el.style.top = y + "%";
+        el.style.fontSize = (10 + Math.floor(Math.random() * 8)) + "px";
+        el.innerHTML = pick(WORDS);
+        el.className = Math.random() < 0.18 ? "flick is-on is-hard" : "flick is-on";
+        setTimeout(function () {
+          el.className = "flick";
+        }, 180 + Math.random() * 900);
       }
 
-      function q(name) {
-        var m = location.search.match(new RegExp("[?&]" + name + "=([^&]*)", "i"));
-        return m ? decodeURIComponent(m[1].replace(/\+/g, " ")) : "";
-      }
+      setInterval(function () {
+        var count = 1 + Math.floor(Math.random() * 3);
+        var used = [];
+        while (used.length < count) {
+          var el = pick(pool);
+          if (used.indexOf(el) !== -1) continue;
+          used.push(el);
+          flashOne(el);
+        }
+      }, 220);
 
-      window.GameDetails = function (servername, serverurl, mapname, maxplayers, steamid, gamemode) {
-        gotDetails = true;
-        if (servername) document.getElementById("server").innerHTML = servername;
-        if (mapname) document.getElementById("map").innerHTML = mapname;
-        if (gamemode) document.getElementById("mode").innerHTML = gamemode;
-        if (maxplayers) document.getElementById("ply").innerHTML = "0 / " + maxplayers;
-        document.getElementById("kicker").innerHTML = "joining " + (servername || "meleecity");
-      };
-
-      window.SetFilesTotal = function (n) {
-        total = parseInt(n, 10) || 0;
-        setProgress();
-      };
-
-      window.SetFilesNeeded = function (n) {
-        needed = parseInt(n, 10) || 0;
-        setProgress();
-      };
-
-      window.DownloadingFile = function (fileName) {
-        document.getElementById("file").innerHTML = clip(fileName, 54);
-        document.getElementById("status").innerHTML = "downloading";
-      };
-
-      window.SetStatusChanged = function (status) {
-        document.getElementById("status").innerHTML = status || "loading";
-        document.getElementById("file").innerHTML = status || "";
-      };
-
-      var mapQ = q("map") || q("m") || q("Map");
-      var steamQ = q("steamid") || q("SteamId") || q("s");
-      if (mapQ) document.getElementById("map").innerHTML = mapQ;
-      if (steamQ) document.getElementById("ply").innerHTML = steamQ;
-
-      if (location.protocol !== "asset:" && location.hostname !== "" && !gotDetails) {
-        var fake = 0;
-        var demo = setInterval(function () {
-          if (gotDetails) { clearInterval(demo); return; }
-          fake += Math.random() * 7;
-          if (fake > 96) fake = 96;
-          document.getElementById("fill").style.width = Math.round(fake) + "%";
-          document.getElementById("pct").innerHTML = Math.round(fake) + "%";
-          document.getElementById("left").innerHTML = "preview";
-          document.getElementById("status").innerHTML = "preview mode";
-        }, 700);
-      }
+      window.GameDetails = function () {};
+      window.SetFilesTotal = function () {};
+      window.SetFilesNeeded = function () {};
+      window.DownloadingFile = function () {};
+      window.SetStatusChanged = function () {};
     })();
   </script>
 </body>
