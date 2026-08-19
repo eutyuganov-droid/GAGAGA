@@ -198,9 +198,30 @@
   <div id="flecks"></div>
   <h1 class="title">MANHUNT</h1>
   <div class="caption" id="caption">Казнь: зайди со спины и удерживай E.</div>
+  <audio id="theme" src="assets/audio/white-room.mp3" loop preload="auto"></audio>
 
   <script>
     (function () {
+      var music = document.getElementById("theme");
+      var musicVol = 0.55;
+      var musicStarted = false;
+
+      function applyMusicVol() {
+        if (!music) return;
+        music.volume = Math.max(0, Math.min(1, musicVol));
+      }
+
+      function startMusic() {
+        if (!music || musicStarted) return;
+        musicStarted = true;
+        applyMusicVol();
+        var playPromise = music.play();
+        if (playPromise && playPromise.catch) {
+          playPromise.catch(function () {
+            musicStarted = false;
+          });
+        }
+      }
       var SCENES = [
         "assets/bg/01-alley.jpg",
         "assets/bg/02-warehouse.jpg",
@@ -307,11 +328,21 @@
       }
       setTimeout(tickFlecks, 900);
 
-      window.GameDetails = function () {};
+      window.GameDetails = function (servername, serverurl, mapname, maxplayers, steamid, gamemode, volume) {
+        if (typeof volume === "number" && !isNaN(volume)) {
+          musicVol = volume;
+        }
+        applyMusicVol();
+        startMusic();
+      };
+
       window.SetFilesTotal = function () {};
       window.SetFilesNeeded = function () {};
       window.DownloadingFile = function () {};
       window.SetStatusChanged = function () {};
+
+      applyMusicVol();
+      setTimeout(startMusic, 400);
     })();
   </script>
 </body>
