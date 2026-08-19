@@ -6,23 +6,10 @@
   <title>MANHUNT</title>
   <style>
     @font-face {
-      font-family: "Oswald";
-      src: url("assets/fonts/oswald-500.woff2") format("woff2");
-      font-weight: 500;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: "Oswald";
-      src: url("assets/fonts/oswald-700.woff2") format("woff2");
+      font-family: "TrixiePro";
+      src: url("assets/fonts/trixiepro_heavy.otf") format("opentype"),
+           url("assets/fonts/trixiepro_heavy.ttf") format("truetype");
       font-weight: 700;
-      font-style: normal;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: "Share Tech Mono";
-      src: url("assets/fonts/share-tech-mono.woff2") format("woff2");
-      font-weight: 400;
       font-style: normal;
       font-display: swap;
     }
@@ -34,7 +21,7 @@
       overflow: hidden;
       background: #070706;
       color: #d6cec3;
-      font-family: "Share Tech Mono", Consolas, monospace;
+      font-family: "TrixiePro", "Times New Roman", serif;
       user-select: none;
     }
 
@@ -142,12 +129,12 @@
       z-index: 12;
       margin: 0;
       text-align: center;
-      font-family: "Oswald", "Arial Narrow", Arial, sans-serif;
+      font-family: "TrixiePro", "Times New Roman", serif;
       font-weight: 700;
       font-size: clamp(56px, 11vw, 148px);
       line-height: 0.9;
-      letter-spacing: 0.28em;
-      text-indent: 0.28em;
+      letter-spacing: 0.18em;
+      text-indent: 0.18em;
       text-transform: uppercase;
       color: #e7e0d6;
       text-shadow: 0 2px 28px rgba(0, 0, 0, 0.7);
@@ -156,30 +143,36 @@
 
     .caption {
       position: fixed;
-      left: 0;
-      right: 0;
+      left: 8%;
+      right: 8%;
       bottom: 7%;
       z-index: 12;
       text-align: center;
-      font-size: clamp(13px, 1.6vw, 18px);
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(214, 206, 195, 0.78);
+      font-size: clamp(14px, 1.7vw, 20px);
+      letter-spacing: 0.08em;
+      color: rgba(214, 206, 195, 0.82);
       text-shadow: 0 1px 12px rgba(0, 0, 0, 0.9);
       pointer-events: none;
+      opacity: 1;
+      transition: opacity 1.6s ease;
+    }
+
+    .caption.is-out {
+      opacity: 0;
     }
 
     .flick {
       position: fixed;
       z-index: 10;
-      font-size: 11px;
-      letter-spacing: 0.18em;
+      font-size: 13px;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: rgba(214, 206, 195, 0.38);
+      color: rgba(214, 206, 195, 0.34);
       text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
       pointer-events: none;
       white-space: nowrap;
       opacity: 0;
+      transition: opacity 1.4s ease;
     }
 
     .flick.is-on {
@@ -187,7 +180,7 @@
     }
 
     .flick.is-hard {
-      color: rgba(180, 70, 62, 0.55);
+      color: rgba(180, 70, 62, 0.48);
     }
   </style>
 </head>
@@ -204,7 +197,7 @@
 
   <div id="flecks"></div>
   <h1 class="title">MANHUNT</h1>
-  <div class="caption" id="caption">Я хочу хорошее шоу.</div>
+  <div class="caption" id="caption">Казнь: зайди со спины и удерживай E.</div>
 
   <script>
     (function () {
@@ -218,32 +211,29 @@
       ];
 
       var CAPTIONS = [
-        "Я хочу хорошее шоу.",
-        "Сделай это красиво.",
-        "Не дай им себя увидеть.",
-        "Камера уже пишет.",
-        "Бей сзади. Тихо.",
-        "Они тебя не видят.",
-        "Это будет больно.",
-        "Добей его.",
-        "Не шуми.",
-        "Сними это.",
-        "Ещё один.",
-        "В тени. Жди.",
-        "Покажи им.",
-        "Режиссёр смотрит.",
-        "Не стой на свету.",
-        "Удар. Пауза. Удар."
+        "Казнь: зайди со спины и удерживай E.",
+        "Не беги и не дерись — казнь не пойдёт.",
+        "Выживи до конца сцены. Охоться из тени.",
+        "Найди жертву. Казни со спины — звёзды.",
+        "Удар в спину сильнее, если зашёл сзади.",
+        "Открытый бой — не ваншот. Боль и стамина.",
+        "Оружие ломается. Не бей впустую.",
+        "Лут в ящиках. У охотника — кирпич и фонарик.",
+        "Жертва тише на шаге. Не высовывайся.",
+        "ПКМ — блок. Тяжёлый удар добивает.",
+        "Казнь работает с обеих сторон.",
+        "Сцена длится девять минут.",
+        "Крути QTE, пока идёт казнь.",
+        "Охотник по охотнику бьёт слабее.",
+        "Жертва выживает — если дожила сцену.",
+        "Охотники закрывают сцену, если всех сняли."
       ];
 
       var WORDS = [
-        "УБЕЙ", "ТЕНЬ", "СЦЕНА", "КРОВЬ", "ТИШЕ", "УДАР", "ЖДИ", "СМОТРИ",
-        "ДОБЕЙ", "РЕЖИССЁР", "КАМЕРА", "ЖИВОЙ", "МЁРТВЫЙ", "ОХОТА", "ДОБЫЧА",
-        "НОЧЬ", "УЛИЦА", "ПОДВАЛ", "ЗАБОР", "СПИНА", "ГОРЛО", "МЕШОК",
-        "БИТА", "НОЖ", "ПРОВОЛОКА", "БЕГИ", "СТОЙ", "РЕЖЬ", "ДАВИ",
-        "EXECUTE", "HUNT", "CASH", "CUT", "LIVE", "KILL", "SCENE",
-        "CAM", "REC", "DIRTY", "CLOSE", "QUIET", "NOW", "AGAIN",
-        "07", "11", "23:41", "OK", "NO", "YES", "ERR", "SIG"
+        "ЖЕРТВА", "ОХОТНИК", "КАЗНЬ", "СЦЕНА", "СПИНА", "ТЕНЬ",
+        "УДЕРЖИВАЙ E", "ЗВЁЗДЫ", "НОЖ", "КИРПИЧ", "ФОНАРИК",
+        "ЯЩИК", "БЛОК", "СТАМИНА", "БОЛЬ", "QTE",
+        "CASH", "HUNT", "EXECUTE", "LIVE", "CUT"
       ];
 
       var slidesEl = document.getElementById("slides");
@@ -266,11 +256,16 @@
         nodes[idx].className = "slide is-on";
       }, 7000);
 
+      var capEl = document.getElementById("caption");
       var capI = 0;
       setInterval(function () {
-        capI = (capI + 1) % CAPTIONS.length;
-        document.getElementById("caption").innerHTML = CAPTIONS[capI];
-      }, 4500);
+        capEl.className = "caption is-out";
+        setTimeout(function () {
+          capI = (capI + 1) % CAPTIONS.length;
+          capEl.innerHTML = CAPTIONS[capI];
+          capEl.className = "caption";
+        }, 1600);
+      }, 11000);
 
       var stage = document.getElementById("stage");
       setInterval(function () {
@@ -281,7 +276,7 @@
 
       var flecks = document.getElementById("flecks");
       var pool = [];
-      for (i = 0; i < 14; i++) {
+      for (i = 0; i < 8; i++) {
         n = document.createElement("div");
         n.className = "flick";
         flecks.appendChild(n);
@@ -294,28 +289,23 @@
 
       function flashOne(el) {
         var x = 4 + Math.random() * 88;
-        var y = 6 + Math.random() * 82;
-        if (y > 38 && y < 58) y = Math.random() < 0.5 ? 12 + Math.random() * 18 : 62 + Math.random() * 20;
+        var y = 8 + Math.random() * 78;
+        if (y > 38 && y < 58) y = Math.random() < 0.5 ? 10 + Math.random() * 20 : 62 + Math.random() * 18;
         el.style.left = x + "%";
         el.style.top = y + "%";
-        el.style.fontSize = (10 + Math.floor(Math.random() * 8)) + "px";
+        el.style.fontSize = (12 + Math.floor(Math.random() * 7)) + "px";
         el.innerHTML = pick(WORDS);
-        el.className = Math.random() < 0.18 ? "flick is-on is-hard" : "flick is-on";
+        el.className = Math.random() < 0.16 ? "flick is-on is-hard" : "flick is-on";
         setTimeout(function () {
           el.className = "flick";
-        }, 180 + Math.random() * 900);
+        }, 2200 + Math.random() * 1800);
       }
 
-      setInterval(function () {
-        var count = 1 + Math.floor(Math.random() * 3);
-        var used = [];
-        while (used.length < count) {
-          var el = pick(pool);
-          if (used.indexOf(el) !== -1) continue;
-          used.push(el);
-          flashOne(el);
-        }
-      }, 220);
+      function tickFlecks() {
+        flashOne(pick(pool));
+        setTimeout(tickFlecks, 1600 + Math.random() * 1800);
+      }
+      setTimeout(tickFlecks, 900);
 
       window.GameDetails = function () {};
       window.SetFilesTotal = function () {};
