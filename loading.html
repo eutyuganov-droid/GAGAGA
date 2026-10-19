@@ -3,347 +3,338 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MANHUNT</title>
+  <title>ЧЕЛЯБИНСК · C.L.K</title>
   <style>
     @font-face {
       font-family: "TrixiePro";
       src: url("assets/fonts/trixiepro_heavy.otf") format("opentype"),
            url("assets/fonts/trixiepro_heavy.ttf") format("truetype");
       font-weight: 700;
-      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Mono";
+      src: url("assets/fonts/share-tech-mono.woff2") format("woff2");
       font-display: swap;
     }
 
     html, body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      overflow: hidden;
-      background: #070706;
-      color: #d6cec3;
-      font-family: "TrixiePro", "Times New Roman", serif;
+      width: 100%; height: 100%; margin: 0; overflow: hidden;
+      background: #050404; color: #d6cec3;
+      font-family: "Mono", "Courier New", monospace;
       user-select: none;
     }
 
-    .stage {
-      position: fixed;
-      inset: 0;
-      overflow: hidden;
-      background: #070706;
-    }
-
-    .stage.is-glitch {
-      transform: translate(2px, -1px);
-    }
+    /* ---------- CCTV feed ---------- */
+    .stage { position: fixed; inset: 0; overflow: hidden; background: #050404; }
+    .stage.is-glitch { transform: translate(3px, -1px); filter: hue-rotate(-12deg) saturate(1.4); }
 
     .slide {
-      position: absolute;
-      inset: -4%;
-      width: 108%;
-      height: 108%;
-      background-size: cover;
-      background-position: center;
+      position: absolute; inset: -4%; width: 108%; height: 108%;
+      background-size: cover; background-position: center;
       opacity: 0;
-      filter: grayscale(0.38) contrast(1.12) brightness(0.52) saturate(0.55);
+      filter: grayscale(0.75) sepia(0.35) hue-rotate(-18deg) saturate(1.6) contrast(1.25) brightness(0.48);
       transform: scale(1.04);
-      transition: opacity 1.8s ease;
     }
-
-    .slide.is-on {
-      opacity: 1;
-      animation: ken 22s ease-in-out infinite alternate;
-    }
-
+    .slide.is-on { opacity: 1; animation: ken 16s ease-in-out infinite alternate; }
     @keyframes ken {
       from { transform: scale(1.04) translate(0, 0); }
-      to { transform: scale(1.12) translate(-1.4%, -0.8%); }
+      to   { transform: scale(1.12) translate(-1.4%, -0.8%); }
     }
 
-    .grade,
-    .concrete,
-    .grain,
-    .scratches,
-    .scan,
-    .vignette {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
+    .layer { position: absolute; inset: 0; pointer-events: none; }
     .grade {
-      background:
-        linear-gradient(180deg, rgba(8, 7, 6, 0.42) 0%, rgba(8, 7, 6, 0.08) 38%, rgba(8, 7, 6, 0.78) 100%),
-        linear-gradient(90deg, rgba(10, 9, 8, 0.35) 0%, transparent 22%, transparent 78%, rgba(10, 9, 8, 0.35) 100%);
       z-index: 2;
+      background:
+        linear-gradient(180deg, rgba(5,3,3,.55) 0%, rgba(5,3,3,.05) 35%, rgba(5,3,3,.85) 100%),
+        linear-gradient(90deg, rgba(5,3,3,.75) 0%, rgba(5,3,3,.2) 45%, transparent 70%);
     }
-
-    .concrete {
-      z-index: 3;
-      background: url("assets/fx/concrete.jpg") center / cover no-repeat;
-      opacity: 0.14;
-      mix-blend-mode: multiply;
-    }
-
+    .blood { z-index: 3; background: #6e0d0a; mix-blend-mode: multiply; opacity: .35; }
+    .concrete { z-index: 4; background: url("assets/fx/concrete.jpg") center / cover; opacity: .14; mix-blend-mode: multiply; }
     .grain {
-      z-index: 4;
-      background: url("assets/fx/grain.jpg") repeat;
-      background-size: 380px 380px;
-      opacity: 0.16;
-      mix-blend-mode: overlay;
-      animation: grain 0.32s steps(2) infinite;
+      z-index: 5; background: url("assets/fx/grain.jpg") repeat; background-size: 380px;
+      opacity: .2; mix-blend-mode: overlay; animation: grain .3s steps(2) infinite;
     }
-
-    .scratches {
-      z-index: 5;
-      background: url("assets/fx/scratches.jpg") center / cover no-repeat;
-      opacity: 0.11;
-      mix-blend-mode: screen;
-    }
-
+    @keyframes grain { to { background-position: 14px -9px; } }
+    .scratches { z-index: 6; background: url("assets/fx/scratches.jpg") center / cover; opacity: .12; mix-blend-mode: screen; }
     .scan {
-      z-index: 6;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0) 0,
-        rgba(0, 0, 0, 0) 2px,
-        rgba(0, 0, 0, 0.16) 3px
-      );
-      opacity: 0.28;
+      z-index: 7; opacity: .35;
+      background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(0,0,0,.2) 3px);
     }
+    .track {
+      z-index: 8; height: 7%; top: -10%; bottom: auto;
+      background: linear-gradient(180deg, transparent, rgba(255,235,230,.06) 40%, rgba(255,235,230,.1) 50%, transparent);
+      animation: track 9s linear infinite;
+    }
+    @keyframes track { to { top: 110%; } }
+    .vignette { z-index: 9; box-shadow: inset 0 0 180px 50px rgba(0,0,0,.85); }
+    .cut { z-index: 10; background: #777; opacity: 0; mix-blend-mode: screen; }
+    .cut.is-on { opacity: .8; }
 
-    .vignette {
-      z-index: 7;
-      box-shadow: inset 0 0 140px 36px rgba(0, 0, 0, 0.72);
+    /* ---------- camera OSD ---------- */
+    .osd { position: fixed; z-index: 20; font-size: clamp(12px, 1.25vw, 17px); letter-spacing: .14em; color: #e8e2d8; text-shadow: 0 0 6px rgba(0,0,0,.9); }
+    .osd.tl { top: 4vh; left: 4vw; }
+    .osd.tr { top: 4vh; right: 4vw; text-align: right; }
+    .osd .dim { color: rgba(214,206,195,.55); }
+    .rec::before {
+      content: ""; display: inline-block; width: .7em; height: .7em; margin-right: .5em;
+      border-radius: 50%; background: #ec3426; vertical-align: -.05em;
+      animation: blink 1.25s steps(1) infinite;
     }
+    @keyframes blink { 50% { opacity: 0; } }
+    .corner { position: fixed; z-index: 20; width: 3vw; height: 3vw; border: 0 solid rgba(232,226,216,.55); }
+    .corner.a { top: 2.4vh; left: 2vw; border-top-width: 2px; border-left-width: 2px; }
+    .corner.b { top: 2.4vh; right: 2vw; border-top-width: 2px; border-right-width: 2px; }
+    .corner.c { bottom: 2.4vh; left: 2vw; border-bottom-width: 2px; border-left-width: 2px; }
+    .corner.d { bottom: 2.4vh; right: 2vw; border-bottom-width: 2px; border-right-width: 2px; }
 
-    @keyframes grain {
-      from { background-position: 0 0; }
-      to { background-position: 12px -8px; }
+    /* ---------- title block ---------- */
+    .brand { position: fixed; z-index: 20; left: 7vw; top: 30vh; max-width: 60vw; }
+    .brand .proj { font-size: clamp(12px, 1.2vw, 16px); letter-spacing: .35em; color: rgba(214,206,195,.6); }
+    .brand h1 {
+      margin: .15em 0 .1em; font-family: "TrixiePro", serif; font-weight: 700;
+      font-size: clamp(54px, 8.5vw, 132px); line-height: .95; letter-spacing: .06em;
+      color: #e7e0d6; text-shadow: -2px 0 rgba(255,40,30,.55), 2px 0 rgba(40,200,255,.35), 0 4px 30px rgba(0,0,0,.8);
     }
+    .brand h1.is-glitch { transform: translateX(-4px); text-shadow: -6px 0 rgba(255,40,30,.8), 5px 0 rgba(40,200,255,.6); }
+    .brand .rule { height: 2px; width: 100%; background: #c41c16; box-shadow: 0 0 12px rgba(196,28,22,.6); }
+    .brand .directive {
+      margin-top: 1.1em; font-family: "TrixiePro", serif; font-size: clamp(16px, 1.8vw, 26px);
+      letter-spacing: .08em; color: #c41c16; text-transform: uppercase; min-height: 1.3em;
+    }
+    .caret { display: inline-block; width: .5em; height: 1em; background: #c41c16; vertical-align: -.12em; margin-left: .15em; animation: blink 1s steps(1) infinite; }
 
-    .title {
-      position: fixed;
-      left: 0;
-      right: 0;
-      top: 44%;
-      z-index: 12;
-      margin: 0;
-      text-align: center;
-      font-family: "TrixiePro", "Times New Roman", serif;
-      font-weight: 700;
-      font-size: clamp(56px, 11vw, 148px);
-      line-height: 0.9;
-      letter-spacing: 0.18em;
-      text-indent: 0.18em;
-      text-transform: uppercase;
-      color: #e7e0d6;
-      text-shadow: 0 2px 28px rgba(0, 0, 0, 0.7);
-      pointer-events: none;
-    }
+    /* ---------- delivery log + progress ---------- */
+    .delivery { position: fixed; z-index: 20; left: 7vw; right: 7vw; bottom: 9vh; }
+    .delivery .head { display: flex; justify-content: space-between; font-size: clamp(11px, 1.05vw, 15px); letter-spacing: .2em; color: rgba(214,206,195,.6); margin-bottom: .7em; }
+    .bar { height: 4px; background: rgba(255,255,255,.08); outline: 1px solid rgba(214,206,195,.18); outline-offset: 2px; }
+    .bar i { display: block; height: 100%; width: 0; background: #c41c16; box-shadow: 0 0 10px rgba(196,28,22,.7); transition: width .4s ease; }
+    .log { margin-top: 1.1em; font-size: clamp(11px, 1vw, 14px); letter-spacing: .08em; line-height: 1.6; color: rgba(214,206,195,.7); height: 6.4em; overflow: hidden; }
+    .log div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .log div:last-child { color: #e8e2d8; }
+    .log .hot { color: #ec3426; }
 
-    .caption {
-      position: fixed;
-      left: 8%;
-      right: 8%;
-      bottom: 7%;
-      z-index: 12;
-      text-align: center;
-      font-size: clamp(14px, 1.7vw, 20px);
-      letter-spacing: 0.08em;
-      color: rgba(214, 206, 195, 0.82);
-      text-shadow: 0 1px 12px rgba(0, 0, 0, 0.9);
-      pointer-events: none;
-      opacity: 1;
-      transition: opacity 1.6s ease;
+    .tip {
+      position: fixed; z-index: 20; right: 7vw; top: 34vh; width: 26vw;
+      font-size: clamp(12px, 1.1vw, 16px); line-height: 1.55; letter-spacing: .05em;
+      color: rgba(214,206,195,.85); border-left: 2px solid #c41c16; padding-left: 1.1em;
+      transition: opacity 1.2s ease;
     }
+    .tip b { display: block; font-family: "TrixiePro", serif; font-weight: 700; letter-spacing: .14em; color: #e8e2d8; margin-bottom: .45em; text-transform: uppercase; }
+    .tip.is-out { opacity: 0; }
 
-    .caption.is-out {
-      opacity: 0;
-    }
+    .flick { position: fixed; z-index: 15; font-size: 13px; letter-spacing: .14em; color: rgba(214,206,195,.3); white-space: nowrap; opacity: 0; transition: opacity 1.2s ease; pointer-events: none; }
+    .flick.is-on { opacity: 1; }
+    .flick.is-hard { color: rgba(236,52,38,.55); }
 
-    .flick {
-      position: fixed;
-      z-index: 10;
-      font-size: 13px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(214, 206, 195, 0.34);
-      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
-      pointer-events: none;
-      white-space: nowrap;
-      opacity: 0;
-      transition: opacity 1.4s ease;
-    }
-
-    .flick.is-on {
-      opacity: 1;
-    }
-
-    .flick.is-hard {
-      color: rgba(180, 70, 62, 0.48);
-    }
+    @media (max-width: 900px) { .tip { display: none; } .brand { max-width: 86vw; } }
   </style>
 </head>
 <body>
   <div class="stage" id="stage">
     <div id="slides"></div>
-    <div class="grade"></div>
-    <div class="concrete"></div>
-    <div class="grain"></div>
-    <div class="scratches"></div>
-    <div class="scan"></div>
-    <div class="vignette"></div>
+    <div class="layer grade"></div>
+    <div class="layer blood"></div>
+    <div class="layer concrete"></div>
+    <div class="layer grain"></div>
+    <div class="layer scratches"></div>
+    <div class="layer scan"></div>
+    <div class="layer track"></div>
+    <div class="layer vignette"></div>
+    <div class="layer cut" id="cut"></div>
+  </div>
+
+  <div class="corner a"></div><div class="corner b"></div><div class="corner c"></div><div class="corner d"></div>
+
+  <div class="osd tl">
+    <div class="rec">REC <span class="dim" id="tc">00:00:00:00</span></div>
+    <div class="dim" id="cam">ПОЛИГОН · КАМЕРА 01</div>
+  </div>
+  <div class="osd tr">
+    <div>C.L.K / ПРОЕКТ «ЧЕЛЯБИНСК»</div>
+    <div class="dim" id="subj">СУБЪЕКТ № —————</div>
+  </div>
+
+  <div class="brand">
+    <div class="proj">ЗАКРЫТЫЙ ЭКСПЕРИМЕНТ · C.L.K</div>
+    <h1 id="title">ЧЕЛЯБИНСК</h1>
+    <div class="rule"></div>
+    <div class="directive"><span id="dir"></span><span class="caret"></span></div>
+  </div>
+
+  <div class="tip" id="tip"><b>Препарат «Ч-0»</b>Ты не вспомнишь ни имени, ни прошлого. Темперамент и инстинкты останутся — контекст нет.</div>
+
+  <div class="delivery">
+    <div class="head"><span>ДОСТАВКА СУБЪЕКТА НА ПОЛИГОН</span><span id="pct">000.0%</span></div>
+    <div class="bar"><i id="bar"></i></div>
+    <div class="log" id="log"></div>
   </div>
 
   <div id="flecks"></div>
-  <h1 class="title">MANHUNT</h1>
-  <div class="caption" id="caption">Казнь: зайди со спины и удерживай E.</div>
   <audio id="theme" src="assets/audio/white-room.mp3" loop preload="auto"></audio>
 
   <script>
-    (function () {
-      var music = document.getElementById("theme");
-      var musicVol = 0.55;
-      var musicStarted = false;
+  (function () {
+    function $(id) { return document.getElementById(id); }
+    function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
 
-      function applyMusicVol() {
-        if (!music) return;
-        music.volume = Math.max(0, Math.min(1, musicVol));
-      }
+    /* ---------- music ---------- */
+    var music = $("theme"), musicVol = 0.5, musicStarted = false;
+    function applyVol() { if (music) music.volume = Math.max(0, Math.min(1, musicVol)); }
+    function startMusic() {
+      if (!music || musicStarted) return;
+      musicStarted = true; applyVol();
+      var p = music.play();
+      if (p && p.catch) p.catch(function () { musicStarted = false; });
+    }
 
-      function startMusic() {
-        if (!music || musicStarted) return;
-        musicStarted = true;
-        applyMusicVol();
-        var playPromise = music.play();
-        if (playPromise && playPromise.catch) {
-          playPromise.catch(function () {
-            musicStarted = false;
-          });
-        }
-      }
-      var SCENES = [
-        "assets/bg/01-alley.jpg",
-        "assets/bg/02-warehouse.jpg",
-        "assets/bg/03-garage.jpg",
-        "assets/bg/04-underpass.jpg",
-        "assets/bg/05-fence.jpg",
-        "assets/bg/06-corridor.jpg"
-      ];
+    /* ---------- CCTV slides: hard cuts like a camera switcher ---------- */
+    var SCENES = ["assets/bg/01-alley.jpg", "assets/bg/02-warehouse.jpg", "assets/bg/03-garage.jpg",
+                  "assets/bg/04-underpass.jpg", "assets/bg/05-fence.jpg", "assets/bg/06-corridor.jpg"];
+    var ZONES = ["СЛЕПАЯ ЗОНА", "ПЕРИМЕТР", "ТЕХ. ПОМЕЩЕНИЕ", "СТАЗИС-КАМЕРЫ", "КОРИДОР Б", "СКЛАД"];
+    var slidesEl = $("slides"), nodes = [], i, n;
+    for (i = 0; i < SCENES.length; i++) {
+      n = document.createElement("div"); n.className = "slide";
+      n.style.backgroundImage = "url('" + SCENES[i] + "')";
+      slidesEl.appendChild(n); nodes.push(n);
+    }
+    var idx = 0;
+    function showCam(k) {
+      nodes[idx].className = "slide"; idx = k; nodes[idx].className = "slide is-on";
+      $("cam").textContent = "ПОЛИГОН · КАМЕРА " + ("0" + (k + 1)).slice(-2) + " · " + ZONES[k % ZONES.length];
+      var cut = $("cut"); cut.className = "layer cut is-on";
+      setTimeout(function () { cut.className = "layer cut"; }, 90);
+    }
+    showCam(0);
+    setInterval(function () { showCam((idx + 1) % nodes.length); }, 6500);
 
-      var CAPTIONS = [
-        "Казнь: зайди со спины и удерживай E.",
-        "Не беги и не дерись — казнь не пойдёт.",
-        "Выживи до конца сцены. Охоться из тени.",
-        "Найди жертву. Казни со спины — звёзды.",
-        "Удар в спину сильнее, если зашёл сзади.",
-        "Открытый бой — не ваншот. Боль и стамина.",
-        "Оружие ломается. Не бей впустую.",
-        "Лут в ящиках. У охотника — кирпич и фонарик.",
-        "Жертва тише на шаге. Не высовывайся.",
-        "ПКМ — блок. Тяжёлый удар добивает.",
-        "Казнь работает с обеих сторон.",
-        "Сцена длится девять минут.",
-        "Крути QTE, пока идёт казнь.",
-        "Охотник по охотнику бьёт слабее.",
-        "Жертва выживает — если дожила сцену.",
-        "Охотники закрывают сцену, если всех сняли."
-      ];
+    /* ---------- timecode ---------- */
+    var t0 = Date.now();
+    setInterval(function () {
+      var t = (Date.now() - t0) / 1000;
+      function z(v) { return ("0" + Math.floor(v)).slice(-2); }
+      $("tc").textContent = z(t / 3600) + ":" + z(t / 60 % 60) + ":" + z(t % 60) + ":" + z(t * 24 % 24);
+    }, 42);
 
-      var WORDS = [
-        "ЖЕРТВА", "ОХОТНИК", "КАЗНЬ", "СЦЕНА", "СПИНА", "ТЕНЬ",
-        "УДЕРЖИВАЙ E", "ЗВЁЗДЫ", "НОЖ", "КИРПИЧ", "ФОНАРИК",
-        "ЯЩИК", "БЛОК", "СТАМИНА", "БОЛЬ", "QTE",
-        "CASH", "HUNT", "EXECUTE", "LIVE", "CUT"
-      ];
+    /* ---------- the implanted directive, typed over and over ---------- */
+    var DIRECTIVES = ["Ты — мирный житель.", "Среди вас — убийца.", "Выживи и узнай, кто это.", "Система помнит."];
+    var dI = 0;
+    function typeDirective() {
+      var s = DIRECTIVES[dI % DIRECTIVES.length], k = 0, el = $("dir");
+      el.textContent = "";
+      var iv = setInterval(function () {
+        k++; el.textContent = s.slice(0, k);
+        if (k >= s.length) { clearInterval(iv); dI++; setTimeout(typeDirective, 3200); }
+      }, 55);
+    }
+    setTimeout(typeDirective, 700);
 
-      var slidesEl = document.getElementById("slides");
-      var nodes = [];
-      var i, n;
+    setInterval(function () {
+      if (Math.random() > 0.45) return;
+      $("stage").className = "stage is-glitch"; $("title").className = "is-glitch";
+      setTimeout(function () { $("stage").className = "stage"; $("title").className = ""; }, 80);
+    }, 5000);
 
-      for (i = 0; i < SCENES.length; i++) {
-        n = document.createElement("div");
-        n.className = "slide";
-        n.style.backgroundImage = "url('" + SCENES[i] + "')";
-        slidesEl.appendChild(n);
-        nodes.push(n);
-      }
+    /* ---------- briefing tips (lore + rules) ---------- */
+    var TIPS = [
+      ["Препарат «Ч-0»", "Ты не вспомнишь ни имени, ни прошлого. Темперамент и инстинкты останутся — контекст нет."],
+      ["Маньяк", "Одному из вас вшита ложная директива: убей всех — и выйдешь. Он не садист. Он жертва программы."],
+      ["Свидетели", "Наблюдайте, спорьте, голосуйте. Убийца среди вас и действует в слепых зонах."],
+      ["Ганмен", "Одному Свидетелю система выдаст оружие. Приговор исполнит он — но стрелять в невиновного дорого."],
+      ["Полицейский", "Убитый Свидетель вернётся в резервном теле — в форме, со значком и с памятью о своей смерти."],
+      ["Этический Якорь", "Каждый поступок взвешен. Убийство невиновного — тяжкий грех. Мучительная смерть — вдвойне."],
+      ["Чистилище", "Карма ниже порога — тело изымут. Белые стены, тишина, два-три часа, растянутые в вечность."],
+      ["Слепые зоны", "Камеры видят почти всё. Почти. Убийца знает, где их нет. Теперь знаешь и ты."],
+      ["Петля сессий", "Сессия закончится — препарат введут снова. Память обнулится. Карма — нет."]
+    ];
+    var tI = 0, tip = $("tip");
+    setInterval(function () {
+      tip.className = "tip is-out";
+      setTimeout(function () {
+        tI = (tI + 1) % TIPS.length;
+        tip.innerHTML = "<b>" + TIPS[tI][0] + "</b>" + TIPS[tI][1];
+        tip.className = "tip";
+      }, 1200);
+    }, 10000);
 
-      var idx = 0;
-      nodes[0].className = "slide is-on";
-      setInterval(function () {
-        nodes[idx].className = "slide";
-        idx = (idx + 1) % nodes.length;
-        nodes[idx].className = "slide is-on";
-      }, 7000);
+    /* ---------- subliminal flecks ---------- */
+    var WORDS = ["СУБЪЕКТ", "Ч-0", "ЯКОРЬ", "КАРМА", "ЧИСТИЛИЩЕ", "СЛЕПАЯ ЗОНА", "ПОЛИГОН", "СЕССИЯ",
+                 "ГАНМЕН", "СВИДЕТЕЛЬ", "КТО ИЗ НИХ?", "НЕ ОГЛЯДЫВАЙСЯ", "СИСТЕМА ПОМНИТ", "ТЫ НИГДЕ НЕ ДОМА"];
+    var flecks = $("flecks"), pool = [];
+    for (i = 0; i < 6; i++) { n = document.createElement("div"); n.className = "flick"; flecks.appendChild(n); pool.push(n); }
+    function flash() {
+      var el = pick(pool);
+      el.style.left = (45 + Math.random() * 48) + "%";
+      el.style.top = (12 + Math.random() * 18) + "%";
+      el.textContent = pick(WORDS);
+      el.className = Math.random() < 0.2 ? "flick is-on is-hard" : "flick is-on";
+      setTimeout(function () { el.className = "flick"; }, 1800 + Math.random() * 1500);
+      setTimeout(flash, 1500 + Math.random() * 1800);
+    }
+    setTimeout(flash, 900);
 
-      var capEl = document.getElementById("caption");
-      var capI = 0;
-      setInterval(function () {
-        capEl.className = "caption is-out";
-        setTimeout(function () {
-          capI = (capI + 1) % CAPTIONS.length;
-          capEl.innerHTML = CAPTIONS[capI];
-          capEl.className = "caption";
-        }, 1600);
-      }, 11000);
+    /* ---------- delivery log fed by the real GMod loading callbacks ---------- */
+    var logEl = $("log"), total = 0, needed = 0, faked = 0;
+    function log(txt, hot) {
+      var d = document.createElement("div");
+      d.textContent = "> " + txt; if (hot) d.className = "hot";
+      logEl.appendChild(d);
+      while (logEl.children.length > 4) logEl.removeChild(logEl.firstChild);
+    }
+    function setPct(p) {
+      p = Math.max(0, Math.min(1, p));
+      $("bar").style.width = (p * 100).toFixed(1) + "%";
+      $("pct").textContent = ("00" + (p * 100).toFixed(1)).slice(-5) + "%";
+    }
+    function filePct() { return total > 0 ? (total - needed) / total : 0; }
 
-      var stage = document.getElementById("stage");
-      setInterval(function () {
-        if (Math.random() > 0.4) return;
-        stage.className = "stage is-glitch";
-        setTimeout(function () { stage.className = "stage"; }, 70);
-      }, 9000);
+    log("ЗАПРОС НА ДОСТАВКУ ПРИНЯТ");
+    log("ВВЕДЕНИЕ «Ч-0» · ПАМЯТЬ: 0%");
 
-      var flecks = document.getElementById("flecks");
-      var pool = [];
-      for (i = 0; i < 8; i++) {
-        n = document.createElement("div");
-        n.className = "flick";
-        flecks.appendChild(n);
-        pool.push(n);
-      }
+    // Without callbacks (e.g. browser preview) creep slowly so the bar never looks dead.
+    setInterval(function () {
+      if (total > 0) return;
+      faked = Math.min(0.92, faked + 0.004 + Math.random() * 0.006);
+      setPct(faked);
+    }, 250);
 
-      function pick(arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
-      }
+    function subjectNo(steamid) {
+      var h = 0, s = String(steamid || "");
+      for (var k = 0; k < s.length; k++) h = (h * 31 + s.charCodeAt(k)) % 100000;
+      return ("0000" + h).slice(-5);
+    }
 
-      function flashOne(el) {
-        var x = 4 + Math.random() * 88;
-        var y = 8 + Math.random() * 78;
-        if (y > 38 && y < 58) y = Math.random() < 0.5 ? 10 + Math.random() * 20 : 62 + Math.random() * 18;
-        el.style.left = x + "%";
-        el.style.top = y + "%";
-        el.style.fontSize = (12 + Math.floor(Math.random() * 7)) + "px";
-        el.innerHTML = pick(WORDS);
-        el.className = Math.random() < 0.16 ? "flick is-on is-hard" : "flick is-on";
-        setTimeout(function () {
-          el.className = "flick";
-        }, 2200 + Math.random() * 1800);
-      }
+    window.GameDetails = function (servername, serverurl, mapname, maxplayers, steamid, gamemode, volume) {
+      if (typeof volume === "number" && !isNaN(volume)) musicVol = volume;
+      applyVol(); startMusic();
+      $("subj").textContent = "СУБЪЕКТ № " + subjectNo(steamid);
+      log("ПОЛИГОН: " + String(mapname || "НЕИЗВЕСТНО").toUpperCase());
+      log("РОЛЬ СУБЪЕКТА: ЗАСЕКРЕЧЕНО", true);
+    };
+    window.SetFilesTotal = function (n) { total = n; needed = n; log("ОБЪЕКТОВ ПОЛИГОНА: " + n); setPct(filePct()); };
+    window.SetFilesNeeded = function (n) { needed = n; setPct(filePct()); };
+    window.DownloadingFile = function (f) {
+      var name = String(f || "").split("/").pop();
+      log("ЗАГРУЗКА: " + name);
+    };
+    window.SetStatusChanged = function (s) {
+      var m = String(s || "");
+      if (!m) return;
+      if (/sending client info/i.test(m)) { log("ЭТИЧЕСКИЙ ЯКОРЬ: СИНХРОНИЗАЦИЯ"); setPct(Math.max(filePct(), 0.97)); }
+      else if (/workshop/i.test(m)) log("ПОЛУЧЕНИЕ ОБОРУДОВАНИЯ ПОЛИГОНА");
+      else if (/lua/i.test(m)) log("ЗАГРУЗКА ДИРЕКТИВ");
+      else log(m.toUpperCase());
+    };
 
-      function tickFlecks() {
-        flashOne(pick(pool));
-        setTimeout(tickFlecks, 1600 + Math.random() * 1800);
-      }
-      setTimeout(tickFlecks, 900);
+    // Optional: steamid/map from the sv_loadingurl query string (%s / %m).
+    var q = {};
+    location.search.replace(/[?&]([^=&]+)=([^&]*)/g, function (_, k, v) { q[k] = decodeURIComponent(v); });
+    if (q.steamid) $("subj").textContent = "СУБЪЕКТ № " + subjectNo(q.steamid);
+    if (q.map) log("ПОЛИГОН: " + q.map.toUpperCase());
 
-      window.GameDetails = function (servername, serverurl, mapname, maxplayers, steamid, gamemode, volume) {
-        if (typeof volume === "number" && !isNaN(volume)) {
-          musicVol = volume;
-        }
-        applyMusicVol();
-        startMusic();
-      };
-
-      window.SetFilesTotal = function () {};
-      window.SetFilesNeeded = function () {};
-      window.DownloadingFile = function () {};
-      window.SetStatusChanged = function () {};
-
-      applyMusicVol();
-      setTimeout(startMusic, 400);
-    })();
+    applyVol();
+    setTimeout(startMusic, 400);
+  })();
   </script>
 </body>
 </html>
